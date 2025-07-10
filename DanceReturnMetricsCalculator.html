@@ -604,7 +604,7 @@
                         </div>
 
                         <!-- Instructor Container (shared between both modes) -->
-                        <div id="instructorsContainer" class="flex space-x-4 overflow-x-auto pb-4 mb-4">
+                        <div id="instructorsContainer" class="flex space-x-4 overflow-x-auto pb-4 mb-4 mt-6">
                             <!-- Dynamic instructor inputs will be generated here -->
                         </div>
                         <div id="instructorNote" class="text-center py-8 text-gray-500">
@@ -976,6 +976,38 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Chart Toggle Controls -->
+                <div class="mb-4 p-3 bg-gray-50 rounded-lg">
+                    <div class="flex flex-wrap gap-3 items-center">
+                        <span class="text-sm font-medium text-gray-700">Chart Lines:</span>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="toggleRevenue" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            <span class="text-sm text-gray-700">Revenue</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="toggleExpenses" checked class="rounded border-gray-300 text-red-600 focus:ring-red-500">
+                            <span class="text-sm text-gray-700">Expenses</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="toggleIncome" checked class="rounded border-gray-300 text-green-600 focus:ring-green-500">
+                            <span class="text-sm text-gray-700">Net Income</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="toggleBank" checked class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
+                            <span class="text-sm text-gray-700">Bank Balance</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="toggleSP500" checked class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
+                            <span class="text-sm text-gray-700">S&P 500</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="toggleCD" checked class="rounded border-gray-300 text-orange-600 focus:ring-orange-500">
+                            <span class="text-sm text-gray-700">CD</span>
+                        </label>
+                    </div>
+                </div>
+                
                 <div style="height: 400px; position: relative;">
                     <canvas id="financialChart"></canvas>
                 </div>
@@ -1246,8 +1278,17 @@
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-semibold text-gray-900">Financial Ratios & Returns</h3>
                         <div class="flex space-x-1">
+                            <button id="irr1Year" class="irr-timeframe-btn px-3 py-1 rounded border border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-colors text-xs">
+                                1 Year
+                            </button>
+                            <button id="irr2Year" class="irr-timeframe-btn px-3 py-1 rounded border border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-colors text-xs">
+                                2 Years
+                            </button>
                             <button id="irr3Year" class="irr-timeframe-btn px-3 py-1 rounded border border-blue-500 bg-blue-500 text-white transition-colors text-xs">
                                 3 Years
+                            </button>
+                            <button id="irr4Year" class="irr-timeframe-btn px-3 py-1 rounded border border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-colors text-xs">
+                                4 Years
                             </button>
                             <button id="irr5Year" class="irr-timeframe-btn px-3 py-1 rounded border border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-colors text-xs">
                                 5 Years
@@ -1322,8 +1363,24 @@
             <!-- Save to PDF Button -->
             <div class="text-center space-y-2">
                 <button id="savePdfBtn" class="btn-primary w-full">
-                    📄 Save Dashboard to PDF
+                    📄 Preview & Save Dashboard to PDF
                 </button>
+            </div>
+            
+            <!-- PDF Preview Modal -->
+            <div id="pdfPreviewModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+                <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-900">PDF Preview</h3>
+                        <div class="flex space-x-2">
+                            <button id="downloadPdfBtn" class="btn-primary">💾 Download PDF</button>
+                            <button id="closePdfModal" class="btn-secondary">✕ Close</button>
+                        </div>
+                    </div>
+                    <div id="pdfPreviewContent" class="p-6 space-y-6">
+                        <!-- PDF content will be generated here -->
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1935,7 +1992,11 @@
             document.getElementById('expenseBreakdownYearlyView').addEventListener('click', () => switchExpenseBreakdownTimeframe('yearly'));
 
             // Save PDF button
-            document.getElementById('savePdfBtn').addEventListener('click', saveToPDF);
+            document.getElementById('savePdfBtn').addEventListener('click', showPdfPreview);
+            
+            // PDF Modal event listeners
+            document.getElementById('closePdfModal').addEventListener('click', closePdfModal);
+            document.getElementById('downloadPdfBtn').addEventListener('click', downloadPdf);
 
             // Initialize payroll mode first
             updatePayrollMode();
@@ -2157,9 +2218,37 @@
             // Find peak lessons per week
             const peakLessonsPerWeek = Math.max(phase1Lessons, phase2Lessons, phase3Lessons, phase4Lessons);
             
-            // Calculate required instructors - always round up to next whole number
-            const peakInstructorsRequired = peakLessonsPerWeek / maxLessonsPerInstructor;
-            const recommendedHires = Math.ceil(peakInstructorsRequired);
+            // Calculate required instructors using 25 baseline logic
+            let peakInstructorsRequired = 1;
+            let recommendedHires = 1;
+            
+            if (peakLessonsPerWeek > 25) {
+                if (peakLessonsPerWeek <= 35) {
+                    // Can fit in one instructor
+                    peakInstructorsRequired = 1;
+                    recommendedHires = 1;
+                } else {
+                    // Need multiple instructors - try to balance them
+                    const requiredInstructors = Math.ceil(peakLessonsPerWeek / 35);
+                    if (requiredInstructors === 2) {
+                        // With 2 instructors, try to balance the load
+                        const firstInstructor = Math.ceil(peakLessonsPerWeek / 2);
+                        if (firstInstructor <= 35) {
+                            // Can balance between 2 instructors
+                            peakInstructorsRequired = 2;
+                            recommendedHires = 2;
+                        } else {
+                            // Need 3 instructors to stay under 35
+                            peakInstructorsRequired = 3;
+                            recommendedHires = 3;
+                        }
+                    } else {
+                        // More than 2 instructors needed
+                        peakInstructorsRequired = requiredInstructors;
+                        recommendedHires = requiredInstructors;
+                    }
+                }
+            }
             
             document.getElementById('peakInstructorsRequired').textContent = peakInstructorsRequired.toFixed(1);
             document.getElementById('recommendedHires').textContent = recommendedHires;
@@ -2187,37 +2276,83 @@
             
             // Find peak lessons per week
             const peakLessonsPerWeek = Math.max(phase1Lessons, phase2Lessons, phase3Lessons, phase4Lessons);
-            const requiredInstructors = peakLessonsPerWeek / maxLessonsPerInstructor;
-            const effectiveInstructors = Math.ceil(requiredInstructors);
+            
+            // Implement 25 baseline logic: try to use 25 lessons per instructor first
+            let effectiveInstructors = 1;
+            let lessonsPerInstructor = 25;
+            
+            if (peakLessonsPerWeek > 25) {
+                // If we need more than 25 lessons, try to fit within 35 lessons per instructor
+                if (peakLessonsPerWeek <= 35) {
+                    // Can fit in one instructor with up to 35 lessons
+                    effectiveInstructors = 1;
+                    lessonsPerInstructor = peakLessonsPerWeek;
+                } else {
+                    // Need multiple instructors - try to balance them
+                    const requiredInstructors = Math.ceil(peakLessonsPerWeek / 35);
+                    if (requiredInstructors === 2) {
+                        // With 2 instructors, try to balance the load
+                        const firstInstructor = Math.ceil(peakLessonsPerWeek / 2);
+                        if (firstInstructor <= 35) {
+                            // Can balance between 2 instructors
+                            effectiveInstructors = 2;
+                        } else {
+                            // Need 3 instructors to stay under 35
+                            effectiveInstructors = 3;
+                        }
+                    } else {
+                        // More than 2 instructors needed
+                        effectiveInstructors = requiredInstructors;
+                    }
+                }
+            }
             
             // Clear existing instructors
             instructorsContainer.innerHTML = '';
             
-            // Create automatic instructors with intelligent bonus logic
+            // Create automatic instructors with intelligent distribution
             for (let i = 0; i < effectiveInstructors; i++) {
-                
-                let lessonsPerInstructor;
+                let currentLessonsPerInstructor;
                 let effectiveHourlyRate = avgInstructorRate;
                 let instructorName = `Auto Instructor ${i + 1}`;
                 
-                if (i < effectiveInstructors - 1) {
-                    // Full instructors get max lessons and bonus
-                    lessonsPerInstructor = maxLessonsPerInstructor;
-                    if (lessonsPerInstructor >= 5) { // Bonus threshold
-                        effectiveHourlyRate = avgInstructorRate + 2.50; // Bonus amount
+                if (effectiveInstructors === 1) {
+                    // Single instructor gets all lessons
+                    currentLessonsPerInstructor = peakLessonsPerWeek;
+                    if (currentLessonsPerInstructor >= 5) {
+                        effectiveHourlyRate = avgInstructorRate + 2.50;
+                        instructorName = `Auto Instructor ${i + 1} (Full-Time)`;
+                    }
+                } else if (effectiveInstructors === 2) {
+                    // Two instructors - balance the load
+                    if (i === 0) {
+                        currentLessonsPerInstructor = Math.ceil(peakLessonsPerWeek / 2);
+                    } else {
+                        currentLessonsPerInstructor = peakLessonsPerWeek - Math.ceil(peakLessonsPerWeek / 2);
+                    }
+                    if (currentLessonsPerInstructor >= 5) {
+                        effectiveHourlyRate = avgInstructorRate + 2.50;
                         instructorName = `Auto Instructor ${i + 1} (Full-Time)`;
                     }
                 } else {
-                    // Last instructor gets remaining lessons (no bonus)
-                    const totalLessonsAssigned = (effectiveInstructors - 1) * maxLessonsPerInstructor;
-                    lessonsPerInstructor = Math.max(0, peakLessonsPerWeek - totalLessonsAssigned);
-                    instructorName = `Auto Instructor ${i + 1} (Part-Time)`;
+                    // Three or more instructors - distribute evenly
+                    if (i < effectiveInstructors - 1) {
+                        currentLessonsPerInstructor = Math.ceil(peakLessonsPerWeek / effectiveInstructors);
+                    } else {
+                        // Last instructor gets remaining lessons
+                        const totalAssigned = (effectiveInstructors - 1) * Math.ceil(peakLessonsPerWeek / effectiveInstructors);
+                        currentLessonsPerInstructor = Math.max(0, peakLessonsPerWeek - totalAssigned);
+                    }
+                    if (currentLessonsPerInstructor >= 5) {
+                        effectiveHourlyRate = avgInstructorRate + 2.50;
+                        instructorName = `Auto Instructor ${i + 1} (Full-Time)`;
+                    }
                 }
                 
-                const monthlyPay = lessonsPerInstructor * weeksPerMonth * effectiveHourlyRate;
-                const annualPay = lessonsPerInstructor * workableWeeksPerYear * effectiveHourlyRate;
+                const monthlyPay = currentLessonsPerInstructor * weeksPerMonth * effectiveHourlyRate;
+                const annualPay = currentLessonsPerInstructor * workableWeeksPerYear * effectiveHourlyRate;
                 
-                // Create instructor card in manual format
+                // Create instructor card in live format (editable)
                 const instructorId = Date.now() + i; // Unique ID
                 const newInstructorDiv = document.createElement('div');
                 newInstructorDiv.className = 'border border-gray-200 rounded-lg p-4 bg-blue-50 min-w-[300px] flex-shrink-0';
@@ -2231,26 +2366,26 @@
                     <div class="space-y-3 mb-3">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Instructor Name</label>
-                            <input type="text" class="instructor-name input-field w-full" value="${instructorName}" readonly>
+                            <input type="text" class="instructor-name input-field w-full" value="${instructorName}">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Lessons Taught Per Week</label>
-                            <input type="number" class="instructor-lessons input-field w-full" value="${lessonsPerInstructor}" min="0" step="0.5" readonly>
+                            <input type="number" class="instructor-lessons input-field w-full" value="${currentLessonsPerInstructor}" min="0" step="0.5">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Baseline Hourly Rate</label>
                             <div class="input-adornment-container currency">
-                                <input type="number" class="instructor-rate" value="${avgInstructorRate}" min="0" step="0.01" readonly>
+                                <input type="number" class="instructor-rate" value="${avgInstructorRate}" min="0" step="0.01">
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Bonus Threshold (Lessons)</label>
-                            <input type="number" class="instructor-bonus-threshold input-field w-full" value="5" min="0" step="1" readonly>
+                            <input type="number" class="instructor-bonus-threshold input-field w-full" value="5" min="0" step="1">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Bonus Amount</label>
                             <div class="input-adornment-container currency">
-                                <input type="number" class="instructor-bonus-amount" value="2.50" min="0" step="0.01" readonly>
+                                <input type="number" class="instructor-bonus-amount" value="2.50" min="0" step="0.01">
                             </div>
                         </div>
                     </div>
@@ -2265,16 +2400,24 @@
                                 <span class="instructor-annual-pay text-blue-600 font-semibold">$${annualPay.toLocaleString(undefined, {maximumFractionDigits: 0})}</span>
                             </div>
                             <div class="bg-gray-100 p-2 rounded mt-2">
-                                <p class="text-xs text-gray-600 font-mono instructor-formula">${lessonsPerInstructor} lessons/wk × $${effectiveHourlyRate}/hr × ${weeksPerMonth.toFixed(2)} wks/mo</p>
+                                <p class="text-xs text-gray-600 font-mono instructor-formula">${currentLessonsPerInstructor} lessons/wk × $${effectiveHourlyRate}/hr × ${weeksPerMonth.toFixed(2)} wks/mo</p>
                             </div>
                         </div>
                     </div>
                 `;
                 
                 instructorsContainer.appendChild(newInstructorDiv);
+                
+                // Add event listeners to make the card live
+                const inputs = newInstructorDiv.querySelectorAll('input');
+                inputs.forEach(input => {
+                    input.addEventListener('input', updateDashboard);
+                    input.addEventListener('change', updateDashboard);
+                });
             }
             
             updateInstructorNote();
+            updateDashboard(); // Update the dashboard immediately after generating instructors
         }
 
         function clearAutomaticInstructors() {
@@ -4047,7 +4190,315 @@
 
 
 
-        async function saveToPDF() {
+        // PDF Preview and Generation Functions
+        function showPdfPreview() {
+            try {
+                // Get current calculations
+                const calc = performCalculations();
+                if (!calc) {
+                    alert('Unable to perform calculations. Please check your inputs.');
+                    return;
+                }
+                
+                // Generate preview content
+                generatePdfPreview(calc);
+                
+                // Show modal
+                document.getElementById('pdfPreviewModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                
+            } catch (error) {
+                console.error('Error showing PDF preview:', error);
+                alert('Error generating preview: ' + error.message + '. Please try again.');
+            }
+        }
+        
+        function closePdfModal() {
+            document.getElementById('pdfPreviewModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+        
+        function generatePdfPreview(calc) {
+            const previewContent = document.getElementById('pdfPreviewContent');
+            
+            // Get all current data
+            const currentData = getAllCurrentData(calc);
+            
+            // Generate HTML preview
+            let html = `
+                <div class="space-y-6">
+                    <!-- Page 1: Overview and Financial Summary -->
+                    <div class="border border-gray-200 rounded-lg p-6 bg-gray-50">
+                        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">DANCE STUDIO FINANCIAL ANALYSIS REPORT</h2>
+                        <p class="text-center text-gray-600 mb-6">Generated: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}</p>
+                        
+                        <!-- Executive Summary -->
+                        <div class="bg-white p-4 rounded-lg border border-gray-200 mb-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">📊 EXECUTIVE SUMMARY</h3>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div class="space-y-2">
+                                    <div class="flex justify-between">
+                                        <span class="font-medium">Monthly Revenue:</span>
+                                        <span class="text-blue-600 font-semibold">$${calc.totalMonthlyRevenue ? calc.totalMonthlyRevenue.toLocaleString() : '0'}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="font-medium">Monthly Net Income:</span>
+                                        <span class="text-green-600 font-semibold">$${calc.netMonthlyIncome ? calc.netMonthlyIncome.toLocaleString() : '0'}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="font-medium">Profit Per Lesson:</span>
+                                        <span class="text-blue-600 font-semibold">$${calc.profitPerLessonMonthly ? calc.profitPerLessonMonthly.toFixed(2) : '0.00'}</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between">
+                                        <span class="font-medium">Break-Even Point:</span>
+                                        <span class="text-orange-600 font-semibold">${calc.breakEvenMonth ? calc.breakEvenMonth : '0'} months</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="font-medium">Profit Margin:</span>
+                                        <span class="text-green-600 font-semibold">${calc.totalMonthlyRevenue && calc.netMonthlyIncome ? ((calc.netMonthlyIncome / calc.totalMonthlyRevenue) * 100).toFixed(1) : '0'}%</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="font-medium">Customer Acquisition Cost:</span>
+                                        <span class="text-blue-600 font-semibold">$${calc.cac ? calc.cac.toFixed(0) : '0'}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Revenue & Profitability -->
+                        <div class="bg-white p-4 rounded-lg border border-gray-200 mb-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">💰 REVENUE & PROFITABILITY</h3>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                ${Object.entries(currentData.revenueData).map(([key, value]) => 
+                                    `<div class="flex justify-between">
+                                        <span class="font-medium">${key}:</span>
+                                        <span class="text-gray-700">${value}</span>
+                                    </div>`
+                                ).join('')}
+                            </div>
+                        </div>
+                        
+                        <!-- Operational Costs -->
+                        <div class="bg-white p-4 rounded-lg border border-gray-200 mb-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">💸 OPERATIONAL COSTS</h3>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                ${Object.entries(currentData.costData).map(([key, value]) => 
+                                    `<div class="flex justify-between">
+                                        <span class="font-medium">${key}:</span>
+                                        <span class="text-gray-700">${value}</span>
+                                    </div>`
+                                ).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Page 2: Detailed Breakdowns -->
+                    <div class="border border-gray-200 rounded-lg p-6 bg-gray-50">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6">📋 DETAILED BREAKDOWN</h3>
+                        
+                        <!-- Key Input Parameters -->
+                        <div class="bg-white p-4 rounded-lg border border-gray-200 mb-6">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-3">⚙️ KEY INPUT PARAMETERS</h4>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                ${Object.entries(currentData.inputData).map(([key, value]) => 
+                                    `<div class="flex justify-between">
+                                        <span class="font-medium">${key}:</span>
+                                        <span class="text-gray-700">${value}</span>
+                                    </div>`
+                                ).join('')}
+                            </div>
+                        </div>
+                        
+                        <!-- Fixed Costs Breakdown -->
+                        <div class="bg-white p-4 rounded-lg border border-gray-200 mb-6">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-3">🏢 FIXED COSTS BREAKDOWN</h4>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                ${Object.entries(currentData.fixedCostData).map(([key, value]) => 
+                                    `<div class="flex justify-between">
+                                        <span class="font-medium">${key}:</span>
+                                        <span class="text-gray-700">${value}</span>
+                                    </div>`
+                                ).join('')}
+                            </div>
+                        </div>
+                        
+                        <!-- Variable Costs Breakdown -->
+                        <div class="bg-white p-4 rounded-lg border border-gray-200 mb-6">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-3">📈 VARIABLE COSTS BREAKDOWN</h4>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                ${Object.entries(currentData.variableCostData).map(([key, value]) => 
+                                    `<div class="flex justify-between">
+                                        <span class="font-medium">${key}:</span>
+                                        <span class="text-gray-700">${value}</span>
+                                    </div>`
+                                ).join('')}
+                            </div>
+                        </div>
+                        
+                        <!-- Events Impact -->
+                        <div class="bg-white p-4 rounded-lg border border-gray-200 mb-6">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-3">🎉 ANNUAL EVENTS IMPACT</h4>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                ${Object.entries(currentData.eventsData).map(([key, value]) => 
+                                    `<div class="flex justify-between">
+                                        <span class="font-medium">${key}:</span>
+                                        <span class="text-gray-700">${value}</span>
+                                    </div>`
+                                ).join('')}
+                            </div>
+                        </div>
+                        
+                        <!-- Instructor Details -->
+                        <div class="bg-white p-4 rounded-lg border border-gray-200 mb-6">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-3">👥 INSTRUCTOR DETAILS</h4>
+                            <div class="space-y-3">
+                                ${currentData.instructorData.map(instructor => `
+                                    <div class="border border-gray-200 rounded p-3 bg-gray-50">
+                                        <div class="font-medium text-gray-800 mb-2">${instructor.name}</div>
+                                        <div class="grid grid-cols-3 gap-4 text-sm">
+                                            <div>Lessons/Week: <span class="font-semibold">${instructor.lessonsPerWeek}</span></div>
+                                            <div>Rate: <span class="font-semibold">$${instructor.baselineRate}</span></div>
+                                            <div>Monthly Pay: <span class="font-semibold">$${instructor.monthlyPay.toLocaleString()}</span></div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <!-- Summary & Recommendations -->
+                        <div class="bg-white p-4 rounded-lg border border-gray-200">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-3">💡 SUMMARY & RECOMMENDATIONS</h4>
+                            <div class="space-y-2 text-sm">
+                                ${generateRecommendations(calc)}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            previewContent.innerHTML = html;
+        }
+        
+        function getAllCurrentData(calc) {
+            // Get all current form values and calculations
+            const pricePerLesson = parseFloat(document.getElementById('pricePerLesson')?.value) || 0;
+            const phase1Lessons = parseFloat(document.getElementById('phase1Lessons')?.value) || 0;
+            const phase2Lessons = parseFloat(document.getElementById('phase2Lessons')?.value) || 0;
+            const phase3Lessons = parseFloat(document.getElementById('phase3Lessons')?.value) || 0;
+            const phase4Lessons = parseFloat(document.getElementById('phase4Lessons')?.value) || 0;
+            const initialInvestment = parseFloat(document.getElementById('initialInvestment')?.value) || 0;
+            const monthlyAdSpend = parseFloat(document.getElementById('monthlyAdSpend')?.value) || 0;
+            const leadConversionRate = parseFloat(document.getElementById('leadConversionRate')?.value) || 0;
+            
+            // Fixed costs
+            const rent = parseFloat(document.getElementById('fixedRent')?.value) || 0;
+            const taxes = parseFloat(document.getElementById('taxes')?.value) || 0;
+            const insurance = parseFloat(document.getElementById('insurance')?.value) || 0;
+            const utilities = parseFloat(document.getElementById('utilities')?.value) || 0;
+            const software = parseFloat(document.getElementById('software')?.value) || 0;
+            const cleaning = parseFloat(document.getElementById('cleaning')?.value) || 0;
+            const maintenance = parseFloat(document.getElementById('maintenance')?.value) || 0;
+            const otherCosts = parseFloat(document.getElementById('otherCostValue')?.value) || 0;
+            
+            // Events data
+            const medalBallRevenue = parseFloat(document.getElementById('medalBallRevenue')?.value) || 0;
+            const medalBallCost = parseFloat(document.getElementById('medalBallCost')?.value) || 0;
+            const showcaseRevenue = parseFloat(document.getElementById('showcaseRevenue')?.value) || 0;
+            const showcaseCost = parseFloat(document.getElementById('showcaseCost')?.value) || 0;
+            const danceORamaRevenue = parseFloat(document.getElementById('danceORamaRevenue')?.value) || 0;
+            const danceORamaCost = parseFloat(document.getElementById('danceORamaCost')?.value) || 0;
+            const otherEventsRevenue = parseFloat(document.getElementById('otherEventsRevenue')?.value) || 0;
+            const otherEventsCost = parseFloat(document.getElementById('otherEventsCost')?.value) || 0;
+            
+            // Calculate totals
+            const totalEventsRevenue = medalBallRevenue + showcaseRevenue + danceORamaRevenue + otherEventsRevenue;
+            const totalEventsCost = medalBallCost + showcaseCost + danceORamaCost + otherEventsCost;
+            const netEventsProfit = totalEventsRevenue - totalEventsCost;
+            const monthlyEventsImpact = netEventsProfit / 12;
+            
+            // Get instructor data
+            const instructors = getInstructorsData();
+            
+            return {
+                revenueData: {
+                    'Gross Revenue (Monthly)': `$${calc.totalMonthlyRevenue ? calc.totalMonthlyRevenue.toLocaleString() : '0'}`,
+                    'Net Income (Monthly)': `$${calc.netMonthlyIncome ? calc.netMonthlyIncome.toLocaleString() : '0'}`,
+                    'Profit Per Lesson': `$${calc.profitPerLessonMonthly ? calc.profitPerLessonMonthly.toFixed(2) : '0.00'}`,
+                    'Customer Acquisition Cost': `$${calc.cac ? calc.cac.toFixed(0) : '0'}`,
+                    'Break-Even Point': `${calc.breakEvenMonth ? calc.breakEvenMonth : '0'} months`,
+                    'Net Profit Margin': `${calc.totalMonthlyRevenue && calc.netMonthlyIncome ? ((calc.netMonthlyIncome / calc.totalMonthlyRevenue) * 100).toFixed(1) : '0'}%`
+                },
+                costData: {
+                    'Total Monthly Expenses': `$${calc.totalExpenses ? calc.totalExpenses.toLocaleString() : '0'}`,
+                    'Total Fixed Costs': `$${calc.totalFixedCosts ? calc.totalFixedCosts.toLocaleString() : '0'}`,
+                    'Total Variable Costs': `$${calc.totalVariableCosts ? calc.totalVariableCosts.toLocaleString() : '0'}`,
+                    'Total Payroll Cost': `$${calc.totalPayrollCost ? calc.totalPayrollCost.toLocaleString() : '0'}`,
+                    'Payroll % of Revenue': `${calc.totalMonthlyRevenue && calc.totalPayrollCost ? ((calc.totalPayrollCost / calc.totalMonthlyRevenue) * 100).toFixed(1) : '0'}%`
+                },
+                inputData: {
+                    'Price Per Lesson': `$${pricePerLesson}`,
+                    'Phase 1 Lessons/Week': `${phase1Lessons}`,
+                    'Phase 2 Lessons/Week': `${phase2Lessons}`,
+                    'Phase 3 Lessons/Week': `${phase3Lessons}`,
+                    'Phase 4 Lessons/Week': `${phase4Lessons}`,
+                    'Initial Investment': `$${initialInvestment.toLocaleString()}`,
+                    'Monthly Ad Spend': `$${monthlyAdSpend.toLocaleString()}`,
+                    'Lead Conversion Rate': `${leadConversionRate}%`
+                },
+                fixedCostData: {
+                    'Rent/Mortgage': `$${rent.toLocaleString()}`,
+                    'Taxes': `$${taxes.toLocaleString()}`,
+                    'Insurance': `$${insurance.toLocaleString()}`,
+                    'Utilities': `$${utilities.toLocaleString()}`,
+                    'Software': `$${software.toLocaleString()}`,
+                    'Cleaning': `$${cleaning.toLocaleString()}`,
+                    'Maintenance': `$${maintenance.toLocaleString()}`,
+                    'Other Costs': `$${otherCosts.toLocaleString()}`
+                },
+                variableCostData: {
+                    'Total Payroll': `$${calc.totalPayrollCost ? calc.totalPayrollCost.toLocaleString() : '0'}`,
+                    'Royalty Fee': `$${calc.royaltyFee ? calc.royaltyFee.toLocaleString() : '0'}`,
+                    'Credit Card Processing': `$${calc.creditCardFee ? calc.creditCardFee.toLocaleString() : '0'}`,
+                    'Marketing/Advertising': `$${monthlyAdSpend.toLocaleString()}`
+                },
+                eventsData: {
+                    'Total Events Revenue': `$${totalEventsRevenue.toLocaleString()}`,
+                    'Total Events Cost': `$${totalEventsCost.toLocaleString()}`,
+                    'Net Events Profit': `$${netEventsProfit.toLocaleString()}`,
+                    'Monthly Events Impact': `$${monthlyEventsImpact.toLocaleString()}`
+                },
+                instructorData: instructors
+            };
+        }
+        
+        function generateRecommendations(calc) {
+            const isProfitable = calc.netMonthlyIncome > 0;
+            const profitMargin = calc.totalMonthlyRevenue > 0 ? (calc.netMonthlyIncome / calc.totalMonthlyRevenue) * 100 : 0;
+            
+            let recommendations = [];
+            
+            recommendations.push(`<div class="font-semibold ${isProfitable ? 'text-green-600' : 'text-red-600'}">Overall Profitability: ${isProfitable ? 'PROFITABLE' : 'NOT PROFITABLE'}</div>`);
+            
+            if (calc.breakEvenMonth > 0 && calc.breakEvenMonth <= 24) {
+                recommendations.push('<div class="text-green-600">✓ Break-even achieved within reasonable timeframe</div>');
+            } else if (calc.breakEvenMonth > 24) {
+                recommendations.push('<div class="text-orange-600">⚠ Consider reducing costs or increasing revenue</div>');
+            }
+            
+            if (profitMargin >= 15) {
+                recommendations.push('<div class="text-green-600">✓ Strong profit margin indicates good business model</div>');
+            } else if (profitMargin >= 5) {
+                recommendations.push('<div class="text-orange-600">⚠ Moderate profit margin - consider optimization</div>');
+            } else {
+                recommendations.push('<div class="text-red-600">⚠ Low profit margin - review pricing and costs</div>');
+            }
+            
+            return recommendations.join('');
+        }
+        
+        async function downloadPdf() {
             try {
                 const { jsPDF } = window.jspdf;
                 if (!jsPDF) {
@@ -4062,136 +4513,12 @@
                     return;
                 }
                 
-                // Create PDF
+                // Create PDF with the same data structure as preview
                 const pdf = new jsPDF('p', 'mm', 'a4');
-                let yPos = 20;
-                const margin = 15;
-                const pageWidth = 210 - (2 * margin);
+                const currentData = getAllCurrentData(calc);
                 
-                // Helper function to add text safely
-                const addText = (text, fontSize = 12, isBold = false) => {
-                    if (yPos > 280) return false;
-                    
-                    pdf.setFontSize(fontSize);
-                    pdf.setFont(undefined, isBold ? 'bold' : 'normal');
-                    
-                    const lines = pdf.splitTextToSize(text, pageWidth);
-                    pdf.text(lines, margin, yPos);
-                    yPos += (lines.length * fontSize * 0.4) + 2;
-                    return true;
-                };
-                
-                // Helper function to add section
-                const addSection = (title, data) => {
-                    addText('', 12, false);
-                    addText(title, 14, true);
-                    addText('', 12, false);
-                    
-                    Object.entries(data).forEach(([key, value]) => {
-                        addText(`${key}: ${value}`, 10, false);
-                    });
-                };
-                
-                // Title
-                addText('DANCE STUDIO FINANCIAL ANALYSIS REPORT', 16, true);
-                addText(`Generated: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, 10, false);
-                addText('', 12, false);
-                
-                // Revenue & Profitability
-                const revenueData = {
-                    'Gross Revenue (Monthly)': `$${calc.totalMonthlyRevenue ? calc.totalMonthlyRevenue.toLocaleString() : '0'}`,
-                    'Net Income (Monthly)': `$${calc.netMonthlyIncome ? calc.netMonthlyIncome.toLocaleString() : '0'}`,
-                    'Profit Per Lesson': `$${calc.profitPerLessonMonthly ? calc.profitPerLessonMonthly.toFixed(2) : '0.00'}`,
-                    'Customer Acquisition Cost': `$${calc.cac ? calc.cac.toFixed(0) : '0'}`,
-                    'Break-Even Point': `${calc.breakEvenMonth ? calc.breakEvenMonth : '0'} months`,
-                    'Net Profit Margin': `${calc.totalMonthlyRevenue && calc.netMonthlyIncome ? ((calc.netMonthlyIncome / calc.totalMonthlyRevenue) * 100).toFixed(1) : '0'}%`
-                };
-                addSection('REVENUE & PROFITABILITY', revenueData);
-                
-                // Operational Costs
-                const costData = {
-                    'Total Monthly Expenses': `$${calc.totalExpenses ? calc.totalExpenses.toLocaleString() : '0'}`,
-                    'Total Fixed Costs': `$${calc.totalFixedCosts ? calc.totalFixedCosts.toLocaleString() : '0'}`,
-                    'Total Variable Costs': `$${calc.totalVariableCosts ? calc.totalVariableCosts.toLocaleString() : '0'}`,
-                    'Total Payroll Cost': `$${calc.totalPayrollCost ? calc.totalPayrollCost.toLocaleString() : '0'}`,
-                    'Payroll % of Revenue': `${calc.totalMonthlyRevenue && calc.totalPayrollCost ? ((calc.totalPayrollCost / calc.totalMonthlyRevenue) * 100).toFixed(1) : '0'}%`
-                };
-                addSection('OPERATIONAL COSTS', costData);
-                
-                // Key Input Parameters
-                const inputData = {
-                    'Price Per Lesson': `$${parseFloat(document.getElementById('pricePerLesson')?.value) || 0}`,
-                    'Phase 1 Lessons/Week': `${parseFloat(document.getElementById('phase1Lessons')?.value) || 0}`,
-                    'Phase 2 Lessons/Week': `${parseFloat(document.getElementById('phase2Lessons')?.value) || 0}`,
-                    'Phase 3 Lessons/Week': `${parseFloat(document.getElementById('phase3Lessons')?.value) || 0}`,
-                    'Phase 4 Lessons/Week': `${parseFloat(document.getElementById('phase4Lessons')?.value) || 0}`,
-                    'Initial Investment': `$${(parseFloat(document.getElementById('initialInvestment')?.value) || 0).toLocaleString()}`,
-                    'Monthly Ad Spend': `$${(parseFloat(document.getElementById('monthlyAdSpend')?.value) || 0).toLocaleString()}`,
-                    'Lead Conversion Rate': `${parseFloat(document.getElementById('leadConversionRate')?.value) || 0}%`
-                };
-                addSection('KEY INPUT PARAMETERS', inputData);
-                
-                // Fixed Costs Breakdown
-                const fixedCostData = {
-                    'Rent/Mortgage': `$${(parseFloat(document.getElementById('fixedRent')?.value) || 0).toLocaleString()}`,
-                    'Taxes': `$${(parseFloat(document.getElementById('taxes')?.value) || 0).toLocaleString()}`,
-                    'Insurance': `$${(parseFloat(document.getElementById('insurance')?.value) || 0).toLocaleString()}`,
-                    'Utilities': `$${(parseFloat(document.getElementById('utilities')?.value) || 0).toLocaleString()}`,
-                    'Software': `$${(parseFloat(document.getElementById('software')?.value) || 0).toLocaleString()}`,
-                    'Cleaning': `$${(parseFloat(document.getElementById('cleaning')?.value) || 0).toLocaleString()}`,
-                    'Maintenance': `$${(parseFloat(document.getElementById('maintenance')?.value) || 0).toLocaleString()}`,
-                    'Other Costs': `$${(parseFloat(document.getElementById('otherCostValue')?.value) || 0).toLocaleString()}`
-                };
-                addSection('FIXED COSTS BREAKDOWN', fixedCostData);
-                
-                // Variable Costs Breakdown
-                const variableCostData = {
-                    'Total Payroll': `$${calc.totalPayrollCost ? calc.totalPayrollCost.toLocaleString() : '0'}`,
-                    'Royalty Fee': `$${calc.royaltyFee ? calc.royaltyFee.toLocaleString() : '0'}`,
-                    'Credit Card Processing': `$${calc.creditCardFee ? calc.creditCardFee.toLocaleString() : '0'}`,
-                    'Marketing/Advertising': `$${calc.monthlyAdSpend ? calc.monthlyAdSpend.toLocaleString() : '0'}`
-                };
-                addSection('VARIABLE COSTS BREAKDOWN', variableCostData);
-                
-                // Events Impact
-                const eventsData = {
-                    'Total Events Revenue': `$${(parseFloat(document.getElementById('medalBallRevenue')?.value) || 0 + parseFloat(document.getElementById('showcaseRevenue')?.value) || 0 + parseFloat(document.getElementById('danceORamaRevenue')?.value) || 0 + parseFloat(document.getElementById('otherEventsRevenue')?.value) || 0).toLocaleString()}`,
-                    'Total Events Cost': `$${(parseFloat(document.getElementById('medalBallCost')?.value) || 0 + parseFloat(document.getElementById('showcaseCost')?.value) || 0 + parseFloat(document.getElementById('danceORamaCost')?.value) || 0 + parseFloat(document.getElementById('otherEventsCost')?.value) || 0).toLocaleString()}`,
-                    'Net Events Profit': `$${((parseFloat(document.getElementById('medalBallRevenue')?.value) || 0 + parseFloat(document.getElementById('showcaseRevenue')?.value) || 0 + parseFloat(document.getElementById('danceORamaRevenue')?.value) || 0 + parseFloat(document.getElementById('otherEventsRevenue')?.value) || 0) - (parseFloat(document.getElementById('medalBallCost')?.value) || 0 + parseFloat(document.getElementById('showcaseCost')?.value) || 0 + parseFloat(document.getElementById('danceORamaCost')?.value) || 0 + parseFloat(document.getElementById('otherEventsCost')?.value) || 0)).toLocaleString()}`,
-                    'Monthly Events Impact': `$${(((parseFloat(document.getElementById('medalBallRevenue')?.value) || 0 + parseFloat(document.getElementById('showcaseRevenue')?.value) || 0 + parseFloat(document.getElementById('danceORamaRevenue')?.value) || 0 + parseFloat(document.getElementById('otherEventsRevenue')?.value) || 0) - (parseFloat(document.getElementById('medalBallCost')?.value) || 0 + parseFloat(document.getElementById('showcaseCost')?.value) || 0 + parseFloat(document.getElementById('danceORamaCost')?.value) || 0 + parseFloat(document.getElementById('otherEventsCost')?.value) || 0)) / 12).toLocaleString()}`
-                };
-                addSection('ANNUAL EVENTS IMPACT', eventsData);
-                
-                // Summary
-                addText('', 12, false);
-                addText('SUMMARY & RECOMMENDATIONS', 14, true);
-                addText('', 12, false);
-                
-                const isProfitable = calc.netMonthlyIncome > 0;
-                const profitMargin = calc.totalMonthlyRevenue > 0 ? (calc.netMonthlyIncome / calc.totalMonthlyRevenue) * 100 : 0;
-                
-                addText(`Overall Profitability: ${isProfitable ? 'PROFITABLE' : 'NOT PROFITABLE'}`, 12, true);
-                addText(`Monthly Net Income: $${calc.netMonthlyIncome ? calc.netMonthlyIncome.toLocaleString() : '0'}`, 10, false);
-                addText(`Profit Margin: ${profitMargin.toFixed(1)}%`, 10, false);
-                addText(`Break-Even: ${calc.breakEvenMonth ? calc.breakEvenMonth : '0'} months`, 10, false);
-                
-                if (calc.breakEvenMonth > 0 && calc.breakEvenMonth <= 24) {
-                    addText('✓ Break-even achieved within reasonable timeframe', 10, false);
-                } else if (calc.breakEvenMonth > 24) {
-                    addText('⚠ Consider reducing costs or increasing revenue', 10, false);
-                }
-                
-                if (profitMargin >= 15) {
-                    addText('✓ Strong profit margin indicates good business model', 10, false);
-                } else if (profitMargin >= 5) {
-                    addText('⚠ Moderate profit margin - consider optimization', 10, false);
-                } else {
-                    addText('⚠ Low profit margin - review pricing and costs', 10, false);
-                }
-                
-                // Footer
-                addText('', 12, false);
-                addText('Generated by Dance Studio Financial Calculator - Created by Daniel Almond', 8, false);
+                // Generate PDF content (2 pages maximum)
+                generatePdfContent(pdf, currentData);
                 
                 // Save the PDF
                 pdf.save('dance-studio-financial-analysis.pdf');
@@ -4200,6 +4527,122 @@
                 console.error('Error generating PDF:', error);
                 alert('Error generating PDF: ' + error.message + '. Please try again.');
             }
+        }
+        
+        function generatePdfContent(pdf, data) {
+            let yPos = 20;
+            const margin = 15;
+            const pageWidth = 210 - (2 * margin);
+            let currentPage = 1;
+            
+            // Helper function to add text safely
+            const addText = (text, fontSize = 12, isBold = false) => {
+                if (yPos > 280) {
+                    // Add new page
+                    pdf.addPage();
+                    currentPage++;
+                    yPos = 20;
+                    
+                    if (currentPage > 2) return false; // Maximum 2 pages
+                }
+                
+                pdf.setFontSize(fontSize);
+                pdf.setFont(undefined, isBold ? 'bold' : 'normal');
+                
+                const lines = pdf.splitTextToSize(text, pageWidth);
+                pdf.text(lines, margin, yPos);
+                yPos += (lines.length * fontSize * 0.4) + 2;
+                return true;
+            };
+            
+            // Helper function to add section
+            const addSection = (title, dataObj) => {
+                addText('', 12, false);
+                addText(title, 14, true);
+                addText('', 12, false);
+                
+                Object.entries(dataObj).forEach(([key, value]) => {
+                    addText(`${key}: ${value}`, 10, false);
+                });
+            };
+            
+            // Page 1: Title and Executive Summary
+            addText('DANCE STUDIO FINANCIAL ANALYSIS REPORT', 16, true);
+            addText(`Generated: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, 10, false);
+            addText('', 12, false);
+            
+            addText('EXECUTIVE SUMMARY', 14, true);
+            addText('', 12, false);
+            
+            // Key metrics in a compact format
+            const keyMetrics = [
+                `Monthly Revenue: $${data.revenueData['Gross Revenue (Monthly)'].replace('$', '')}`,
+                `Monthly Net Income: $${data.revenueData['Net Income (Monthly)'].replace('$', '')}`,
+                `Profit Per Lesson: $${data.revenueData['Profit Per Lesson'].replace('$', '')}`,
+                `Break-Even Point: ${data.revenueData['Break-Even Point']}`,
+                `Profit Margin: ${data.revenueData['Net Profit Margin']}`,
+                `Customer Acquisition Cost: $${data.revenueData['Customer Acquisition Cost'].replace('$', '')}`
+            ];
+            
+            keyMetrics.forEach(metric => addText(metric, 10, false));
+            
+            // Revenue & Profitability
+            addSection('REVENUE & PROFITABILITY', data.revenueData);
+            
+            // Operational Costs
+            addSection('OPERATIONAL COSTS', data.costData);
+            
+            // Key Input Parameters
+            addSection('KEY INPUT PARAMETERS', data.inputData);
+            
+            // Page 2: Detailed Breakdowns
+            if (currentPage === 1) {
+                addText('', 12, false);
+                addText('DETAILED BREAKDOWN', 14, true);
+                addText('', 12, false);
+            }
+            
+            // Fixed Costs Breakdown
+            addSection('FIXED COSTS BREAKDOWN', data.fixedCostData);
+            
+            // Variable Costs Breakdown
+            addSection('VARIABLE COSTS BREAKDOWN', data.variableCostData);
+            
+            // Events Impact
+            addSection('ANNUAL EVENTS IMPACT', data.eventsData);
+            
+            // Instructor Details (compact format)
+            if (data.instructorData.length > 0) {
+                addText('', 12, false);
+                addText('INSTRUCTOR DETAILS', 14, true);
+                addText('', 12, false);
+                
+                data.instructorData.forEach(instructor => {
+                    addText(`${instructor.name}: ${instructor.lessonsPerWeek} lessons/wk, $${instructor.baselineRate}/hr, $${instructor.monthlyPay.toLocaleString()}/mo`, 10, false);
+                });
+            }
+            
+            // Summary & Recommendations
+            addText('', 12, false);
+            addText('SUMMARY & RECOMMENDATIONS', 14, true);
+            addText('', 12, false);
+            
+            const isProfitable = data.revenueData['Net Income (Monthly)'].includes('-') === false;
+            const profitMargin = parseFloat(data.revenueData['Net Profit Margin'].replace('%', ''));
+            
+            addText(`Overall Profitability: ${isProfitable ? 'PROFITABLE' : 'NOT PROFITABLE'}`, 12, true);
+            
+            if (profitMargin >= 15) {
+                addText('✓ Strong profit margin indicates good business model', 10, false);
+            } else if (profitMargin >= 5) {
+                addText('⚠ Moderate profit margin - consider optimization', 10, false);
+            } else {
+                addText('⚠ Low profit margin - review pricing and costs', 10, false);
+            }
+            
+            // Footer
+            addText('', 12, false);
+            addText('Generated by Dance Studio Financial Calculator - Created by Daniel Almond', 8, false);
         }
 
         function checkGrowthAlignmentWarning() {
