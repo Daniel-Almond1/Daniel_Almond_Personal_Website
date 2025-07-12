@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Daniel Almond</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo-text">Daniel Almond</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="projects.html" class="nav-link">Projects</a>
+                <a href="education.html" class="nav-link">Education</a>
+                <a href="certifications.html" class="nav-link">Certifications</a>
+                <a href="resume.html" class="nav-link">Resume</a>
+                <a href="contact.html" class="nav-link active">Contact</a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Page Title -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        <span class="title-line-1">Contact Me</span>
+                    </h1>
+                    <p class="hero-subtitle">Let's connect and discuss opportunities</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact-section">
+            <div class="container">
+                <div class="contact-content">
+                    <!-- Form Section -->
+                    <div class="contact-form-section">
+                        <h3>Share Your Information</h3>
+                        <form action="https://api.web3forms.com/submit" method="POST" class="contact-form">
+                            <input type="hidden" name="access_key" value="b363044f-4298-4813-b4b8-6fa4697e44ef">
+                            <input type="hidden" name="subject" value="New Contact Form Submission">
+                            
+                            <div class="form-group">
+                                <input type="text" name="name" placeholder="Your Name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <input type="email" name="email" placeholder="Your Email" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+                            </div>
+                            
+                            <!-- Spam Protection -->
+                            <input type="checkbox" name="botcheck" style="display: none;">
+                            
+                            <button type="submit" class="submit-btn">Submit</button>
+                        </form>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="contact-info-section">
+                        <div class="contact-info">
+                            <h3>My Contact Information</h3>
+                            <div class="contact-details">
+                                <div class="contact-item">
+                                    <span class="contact-label">Phone:</span>
+                                    <a href="tel:+17074922611">+1 (707)-492-2611</a>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Email:</span>
+                                    <a href="mailto:daalmond@calpoly.edu">daalmond@calpoly.edu</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="social-links">
+                            <h3>My Social Links</h3>
+                            <div class="social-icons">
+                                <a href="https://www.linkedin.com/in/danielalmond101atgmail/" target="_blank" class="social-link linkedin">
+                                    LinkedIn
+                                </a>
+                                <a href="https://github.com/Daniel-Almond1" target="_blank" class="social-link github">
+                                    GitHub
+                                </a>
+                                <a href="https://www.instagram.com/daniel.almond/" target="_blank" class="social-link instagram">
+                                    Instagram
+                                </a>
+                                <!-- Inactive links commented out
+                                <a href="#" class="social-link facebook">Facebook</a>
+                                <a href="#" class="social-link twitter">Twitter</a>
+                                -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Daniel's Personal | All Rights Reserved | Thanks for visiting</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html> 

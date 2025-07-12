@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daniel Almond | Dance</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    .language-switch {
+      position: relative;
+      margin: 32px auto 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 12px 16px;
+      border-radius: 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Roboto', sans-serif;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      width: fit-content;
+    }
+    
+    .language-switch:hover {
+      box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+      transform: translateY(-2px);
+    }
+    
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 30px;
+    }
+    
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #e0e0e0;
+      transition: .4s ease;
+      border-radius: 30px;
+      border: 2px solid transparent;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .4s ease;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    
+    input:checked + .slider {
+      background-color: #2c3e50;
+      border-color: #34495e;
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(30px);
+    }
+    
+    .language-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #2c3e50;
+      min-width: 60px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .ai-warning-below {
+      display: block;
+      margin: 6px auto 0 auto;
+      font-size: 12px;
+      color: #888;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 400;
+      background: none;
+      border: none;
+      padding: 0;
+      text-align: center;
+      max-width: 420px;
+      transition: opacity 0.3s;
+    }
+    
+    body.translated {
+      margin-top: 60px;
+    }
+    
+    .content-transition {
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    
+    .content-transition.fade-out {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    
+    .content-transition.fade-in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    @media (max-width: 768px) {
+      .language-switch {
+        margin-top: 16px;
+        padding: 10px 12px;
+        gap: 8px;
+      }
+      
+      .language-label {
+        font-size: 12px;
+        min-width: 50px;
+      }
+      
+      .switch {
+        width: 50px;
+        height: 25px;
+      }
+      
+      .slider:before {
+        height: 17px;
+        width: 17px;
+      }
+      
+      input:checked + .slider:before {
+        transform: translateX(25px);
+      }
+    }
+  </style>
+  <style>
+    /* Override old gallery styles for dance page to match project galleries */
+    .gallery-section .graphs-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+      background: none;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
+    }
+    
+    .gallery-section .clickable-graph {
+      width: 100%;
+      max-width: 320px;
+      height: auto;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      object-fit: contain;
+      box-shadow: 0 2px 8px rgba(42,77,122,0.1);
+      background: none;
+      margin-bottom: 0;
+      aspect-ratio: auto;
+    }
+    
+    .gallery-section .clickable-graph:hover:not(.enlarged) {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(42,77,122,0.2);
+    }
+    
+    @media (max-width: 768px) {
+      .gallery-section .graphs-container {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        padding: 1rem;
+      }
+      
+      .gallery-section .clickable-graph {
+        max-width: 100%;
+      }
+    }
+  </style>
+  <style>
+    /* Container adjustments for wider usage */
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    /* Gallery Styles - Updated for exact 3/5 column layout */
+    .project-gallery {
+        padding: 2rem 0;
+    }
+
+    .project-gallery h3 {
+        margin-bottom: 1.5rem;
+        color: #333;
+        font-size: 1.5rem;
+    }
+
+    .graphs-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .clickable-graph {
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .clickable-graph:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 90vw;
+        max-height: 90vh;
+        border-radius: 12px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-content img {
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+        display: block;
+    }
+
+    .close {
+        position: absolute;
+        top: -40px;
+        right: 0;
+        color: white;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s ease;
+    }
+
+    .close:hover {
+        background: rgba(0, 0, 0, 0.7);
+    }
+
+    /* Responsive adjustments */
+    @media (min-width: 1600px) {
+        .graphs-container {
+            grid-template-columns: repeat(5, 1fr);
+        }
+    }
+
+    @media (max-width: 1200px) {
+        .graphs-container {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .graphs-container {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .clickable-graph {
+            height: 220px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .graphs-container {
+            grid-template-columns: 1fr;
+        }
+        
+        .clickable-graph {
+            height: 200px;
+        }
+    }
+  </style>
+  <style>
+    /* Preserve line breaks in the dance journey text */
+    .about-description {
+        white-space: pre-line;
+        line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html" class="logo-text">Daniel Almond</a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="projects.html" class="nav-link">Projects</a>
+                <a href="education.html" class="nav-link">Education</a>
+                <a href="certifications.html" class="nav-link">Certifications</a>
+                <a href="resume.html" class="nav-link">Resume</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </div>
+        </div>
+    </nav>
+    <div class="language-switch">
+      <span class="language-label" id="currentLanguage">English</span>
+      <label class="switch">
+        <input type="checkbox" id="languageToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="ai-warning-below" id="aiWarningBelow" style="display:none;">⚠️ Questa pagina è stata tradotta utilizzando l'intelligenza artificiale. La traduzione potrebbe non essere perfetta.</div>
+  <main class="content-transition">
+    <section class="hero-dance-section">
+      <div class="container">
+        <h2 class="section-title" data-en="Dance Portfolio" data-it="Portfolio di Ballo">Dance Portfolio</h2>
+        <div class="hero-grid-row" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem;">
+          <div class="hero-img-col"><img src="Assets/Dance Page Assets/7th_Grade_Hour_Nordquist.JPG" alt="Daniel dancing in a vertical shot 1" class="hero-dance-img"></div>
+          <div class="hero-img-col"><img src="Assets/Dance Page Assets/Illuminate_Stage_Photo.jpeg" alt="Daniel dancing in a vertical shot 2" class="hero-dance-img"></div>
+          <div class="hero-img-col"><img src="Assets/Dance Page Assets/Tessa_Daniel_Stanford_2024_comp.JPG" alt="Daniel dancing in a vertical shot 3" class="hero-dance-img"></div>
+        </div>
+        <div class="hero-headline-block" style="text-align:center; margin-bottom:2rem;">
+          <h2 class="section-title" data-en="Over a Decade of Ballroom Passion, Performance, and Teaching" data-it="Oltre un Decennio di Passione, Esibizione e Insegnamento del Ballo da Sala">Over a Decade of Ballroom Passion, Performance, and Teaching</h2>
+          <p class="hero-description" data-en="From competitive stages to teaching in studios, here's my journey in ballroom." data-it="Dai palchi delle competizioni all'insegnamento nelle scuole di ballo, ecco il mio percorso nel ballo da sala.">From competitive stages to teaching in studios, here's my journey in ballroom.</p>
+        </div>
+      </div>
+    </section>
+    <section class="professional-highlights">
+      <div class="container">
+        <h3 class="section-title" style="font-size:2rem;" data-en="Professional Highlights" data-it="Punti Salienti della Carriera">Professional Highlights</h3>
+        <div class="white-box">
+          <ul class="highlights-list">
+            <li data-en="Years of Experience: 15+ years experience with over 35 Dances, specializing in American Style." data-it="Anni di Esperienza: Oltre 15 anni di esperienza con più di 35 balli, specializzato nello Stile Americano.">Years of Experience: 15+ years experience with over 35 Dances, specializing in American Style.</li>
+            <li data-en="Competitions & Rankings: Future Champions Finalist, Collegiate Rhythm Champion, Future Champion Smooth Finalist and many more." data-it="Competizioni e Classifiche: Finalista 'Future Champions', Campione 'Collegiate Rhythm', Finalista 'Future Champion Smooth' e molti altri.">Competitions & Rankings: Future Champions Finalist, Collegiate Rhythm Champion, Future Champion Smooth Finalist and many more.</li>
+            <li data-en="Styles: American Smooth (Waltz, Tango, Foxtrot, Viennese Waltz), American Rhythm (Cha Cha, Rumba, East Coast Swing, Bolero, Mambo), West Coast Swing, Salsa, Bachata, and more." data-it="Stili: American Smooth (Valzer, Tango, Foxtrot, Valzer Viennese), American Rhythm (Cha Cha, Rumba, East Coast Swing, Bolero, Mambo), West Coast Swing, Salsa, Bachata e altri ancora.">Styles: American Smooth (Waltz, Tango, Foxtrot, Viennese Waltz), American Rhythm (Cha Cha, Rumba, East Coast Swing, Bolero, Mambo), West Coast Swing, Salsa, Bachata, and more.</li>
+            <li data-en="Certifications: Arthur Murray Certified (Full Bronze American Style - Smooth & Rhythm and Specialty)." data-it="Certificazioni: Certificato Arthur Murray (Livello Bronzo Completo Stile Americano - Smooth & Rhythm e Specialità).">Certifications: Arthur Murray Certified (Full Bronze American Style - Smooth & Rhythm and Specialty).</li>
+            <li data-en="Teaching Experience: I have 4 years teaching middle schoolers, 3 years teaching all ages at Arthur Murray, and 2 years teaching college students at Cal Poly. I also take on individual teaching gigs." data-it="Esperienza di Insegnamento: Ho 4 anni di insegnamento a studenti delle scuole medie, 3 anni di insegnamento a tutte le età presso Arthur Murray e 2 anni di insegnamento a studenti universitari al Cal Poly. Accetto anche incarichi di insegnamento individuali.">Teaching Experience: I have 4 years teaching middle schoolers, 3 years teaching all ages at Arthur Murray, and 2 years teaching college students at Cal Poly. I also take on individual teaching gigs.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section class="dance-journey">
+      <div class="container">
+        <h3 class="section-title" style="font-size:2rem;" data-en="My Dance Journey" data-it="Il Mio Percorso nel Ballo">My Dance Journey</h3>
+        <div class="white-box">
+          <p class="about-description" data-en="I started dancing at a large studio in Santa Rosa, California, called Nordquist. As a 7th grader, I would dress up in a suit and tie for my lessons on Tuesday nights. The classes had 200–300 kids in one large hall, so there were plenty of junior instructors to help teach. Mr. Nordquist would teach us a new step every Tuesday, and at Nordquist I learned the box step (Rumba), Cha Cha, East Coast Swing, Night Club Two-Step, and others.
+
+After two years in Mr. Nordquist's classes, I tried out to become a junior dance instructor. Junior dance instructors started in 7th grade in Mr. Nordquist's class, and after completing the second-year course, you could apply to become one. The small group of junior instructors helped teach the other two classes—7th graders and 8th graders—every Tuesday. We also performed 5–7 routines together during both the spring dance and the graduation dance! This experience impacted not only my dance knowledge but also my etiquette on the dance floor. Mr. Nordquist made a habit of teaching proper etiquette to young students, like how to help a lady with her coat or seat her properly.
+
+After graduating high school, I applied to use my dance knowledge at a local Arthur Murray studio. While I was unfamiliar with the full scope of the Arthur Murray program, the idea of being paid to teach was very attractive to me. Once I joined the staff, I quickly realized ballroom dancing was much more vast than I had ever imagined. I began studying syllabi and learning dances I had never heard of before, expanding my skills in areas like teaching methods, choreography, and private lesson handling. Arthur Murray provided me with valuable access to professionals in the ballroom dance world, allowing me to receive personal coaching and advice. I became a top teacher and competitor in my district in the 'Future Champions' category and became certified twice at the full Bronze level in their syllabus.
+
+In 2022, I left Arthur Murray to finish my degree in Business Administration and Computer Science. I chose Cal Poly for my undergraduate studies, and as soon as I arrived on campus, I found the ballroom club and began attending club meetings regularly. With the experience I carried from Arthur Murray, they asked if I could teach some classes, and I started teaching for Cal Poly Ballroom.
+
+During my second year at Cal Poly, I connected with a local studio that used the DVIDA (Dance Vision International Dance Association) syllabus, which is known for its structured curriculum in ballroom dance. They asked if I would like to teach some lessons, and I soon realized I was one of only three teachers who knew how to teach a private lesson. I asked the studio owner if she had ever run a teacher training program, and she hadn't. Together, we created a teacher training platform and implemented it. We worked really hard on this, and it gave me real insight into what running a studio is actually like.
+
+Today, I hope to continue teaching and working in the dance space—maybe one day even open a studio of my own." data-it="Ho iniziato a ballare in una grande scuola a Santa Rosa, in California, chiamata Nordquist. Da studente di seconda media, mi vestivo in giacca e cravatta per le mie lezioni del martedì sera. Le lezioni contavano dai 200 ai 300 ragazzi in un'unica grande sala, quindi c'erano molti istruttori junior per aiutare a insegnare. Il signor Nordquist ci insegnava un nuovo passo ogni martedì, e da Nordquist ho imparato il passo base quadrato (Rumba), il Cha Cha, l'East Coast Swing, il Night Club Two-Step e altri.
+
+Dopo due anni di lezioni dal signor Nordquist, ho fatto un provino per diventare un istruttore di ballo junior. Gli istruttori di ballo junior iniziavano in seconda media nella classe del signor Nordquist e, dopo aver completato il corso del secondo anno, potevi fare domanda per diventarlo. Il piccolo gruppo di istruttori junior aiutava a insegnare alle altre due classi — gli studenti di seconda e terza media — ogni martedì. Eseguivamo anche dalle 5 alle 7 coreografie insieme sia durante il ballo di primavera che a quello di diploma! Questa esperienza ha influenzato non solo la mia conoscenza del ballo ma anche il mio galateo sulla pista da ballo. Il signor Nordquist aveva l'abitudine di insegnare il galateo corretto ai giovani studenti, come aiutare una signora con il cappotto o a sedersi correttamente.
+
+Dopo il diploma di scuola superiore, ho fatto domanda per utilizzare la mia conoscenza del ballo in una scuola locale Arthur Murray. Sebbene non conoscessi appieno il programma Arthur Murray, l'idea di essere pagato per insegnare era molto allettante per me. Una volta entrato a far parte dello staff, ho capito subito che il ballo da sala era molto più vasto di quanto avessi mai immaginato. Ho iniziato a studiare i programmi e a imparare balli di cui non avevo mai sentito parlare, ampliando le mie competenze in aree come i metodi di insegnamento, la coreografia e la gestione delle lezioni private. Arthur Murray mi ha fornito un prezioso accesso ai professionisti del mondo del ballo da sala, permettendomi di ricevere lezioni e consigli personalizzati. Sono diventato un insegnante e un competitore di spicco nel mio distretto nella categoria 'Future Champions' e ho ottenuto due volte la certificazione di livello Bronzo completo nel loro programma.
+
+Nel 2022, ho lasciato Arthur Murray per completare la mia laurea in Amministrazione Aziendale e Informatica. Ho scelto il Cal Poly per i miei studi universitari e, non appena sono arrivato al campus, ho trovato il club di ballo da sala e ho iniziato a frequentare regolarmente le riunioni. Con l'esperienza che portavo da Arthur Murray, mi hanno chiesto se potessi insegnare in alcune lezioni e ho iniziato a insegnare per il Cal Poly Ballroom.
+
+Durante il mio secondo anno al Cal Poly, sono entrato in contatto con una scuola locale che utilizzava il programma DVIDA (Dance Vision International Dance Association), noto per il suo curriculum strutturato nel ballo da sala. Mi hanno chiesto se volessi tenere qualche lezione e presto mi sono reso conto di essere uno dei soli tre insegnanti che sapevano come tenere una lezione privata. Ho chiesto alla proprietaria della scuola se avesse mai gestito un programma di formazione per insegnanti e lei non lo aveva mai fatto. Insieme, abbiamo creato una piattaforma di formazione per insegnanti e l'abbiamo implementata. Abbiamo lavorato molto duramente su questo progetto, e mi ha dato una visione reale di cosa significhi gestire una scuola di ballo.
+
+Oggi spero di continuare a insegnare e a lavorare nel mondo della danza — forse un giorno anche di aprire una scuola tutta mia.">
+  I started dancing at a large studio in Santa Rosa, California, called Nordquist. As a 7th grader, I would dress up in a suit and tie for my lessons on Tuesday nights. The classes had 200–300 kids in one large hall, so there were plenty of junior instructors to help teach. Mr. Nordquist would teach us a new step every Tuesday, and at Nordquist I learned the box step (Rumba), Cha Cha, East Coast Swing, Night Club Two-Step, and others.
+
+  After two years in Mr. Nordquist's classes, I tried out to become a junior dance instructor. Junior dance instructors started in 7th grade in Mr. Nordquist's class, and after completing the second-year course, you could apply to become one. The small group of junior instructors helped teach the other two classes—7th graders and 8th graders—every Tuesday. We also performed 5–7 routines together during both the spring dance and the graduation dance! This experience impacted not only my dance knowledge but also my etiquette on the dance floor. Mr. Nordquist made a habit of teaching proper etiquette to young students, like how to help a lady with her coat or seat her properly.
+
+  After graduating high school, I applied to use my dance knowledge at a local Arthur Murray studio. While I was unfamiliar with the full scope of the Arthur Murray program, the idea of being paid to teach was very attractive to me. Once I joined the staff, I quickly realized ballroom dancing was much more vast than I had ever imagined. I began studying syllabi and learning dances I had never heard of before, expanding my skills in areas like teaching methods, choreography, and private lesson handling. Arthur Murray provided me with valuable access to professionals in the ballroom dance world, allowing me to receive personal coaching and advice. I became a top teacher and competitor in my district in the "Future Champions" category and became certified twice at the full Bronze level in their syllabus.
+
+  In 2022, I left Arthur Murray to finish my degree in Business Administration and Computer Science. I chose Cal Poly for my undergraduate studies, and as soon as I arrived on campus, I found the ballroom club and began attending club meetings regularly. With the experience I carried from Arthur Murray, they asked if I could teach some classes, and I started teaching for Cal Poly Ballroom.
+
+  During my second year at Cal Poly, I connected with a local studio that used the DVIDA (Dance Vision International Dance Association) syllabus, which is known for its structured curriculum in ballroom dance. They asked if I would like to teach some lessons, and I soon realized I was one of only three teachers who knew how to teach a private lesson. I asked the studio owner if she had ever run a teacher training program, and she hadn't. Together, we created a teacher training platform and implemented it. We worked really hard on this, and it gave me real insight into what running a studio is actually like.
+
+  Today, I hope to continue teaching and working in the dance space—maybe one day even open a studio of my own.
+</p>
+        </div>
+      </div>
+    </section>
+    <section class="gallery-section">
+      <div class="container">
+        <div class="white-box">
+          <h3 class="section-title" data-en="Photos & Video Gallery" data-it="Galleria Foto e Video"><strong>Photos & Video Gallery</strong></h3>
+          <div class="graphs-container">
+            <img src="Assets/Dance Page Assets/Clare_Daniel_Showcase2.jpeg" alt="Clare and Daniel Superama 2021" class="clickable-graph">
+            <img src="Assets/Dance Page Assets/Nordquist-09380.jpeg" alt="Nordquist Graduation Dance" class="clickable-graph">
+            <img src="Assets/Dance Page Assets/Daniel Liliian.JPG" alt="Studio Teaching Moment" class="clickable-graph">
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="page-bottom-separator"></div>
+  </main>
+  <footer>
+    <div class="footer-content">
+      <p data-en="© 2025 Daniel's Personal | All Rights Reserved | Thanks for visiting" data-it="© 2025 Personale di Daniel | Tutti i Diritti Riservati | Grazie per la visita">© 2025 Daniel's Personal | All Rights Reserved | Thanks for visiting</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const languageToggle = document.getElementById('languageToggle');
+      const aiWarningBelow = document.getElementById('aiWarningBelow');
+      const currentLanguage = document.getElementById('currentLanguage');
+      const mainContent = document.querySelector('main');
+      
+      function updateLanguageDisplay(isItalian) {
+        currentLanguage.textContent = isItalian ? 'Italiano' : 'English';
+      }
+      
+      function translatePage(isItalian) {
+        // Add fade out effect
+        mainContent.classList.add('fade-out');
+        
+        setTimeout(() => {
+          const elements = document.querySelectorAll('[data-en][data-it]');
+          
+          elements.forEach(element => {
+            if (isItalian) {
+              element.textContent = element.getAttribute('data-it');
+            } else {
+              element.textContent = element.getAttribute('data-en');
+            }
+          });
+          
+          // Show/hide below AI warning
+          if (isItalian) {
+            aiWarningBelow.style.display = 'block';
+            document.body.classList.add('translated');
+          } else {
+            aiWarningBelow.style.display = 'none';
+            document.body.classList.remove('translated');
+          }
+          
+          // Update language display
+          updateLanguageDisplay(isItalian);
+          
+          // Add fade in effect
+          setTimeout(() => {
+            mainContent.classList.remove('fade-out');
+            mainContent.classList.add('fade-in');
+            
+            setTimeout(() => {
+              mainContent.classList.remove('fade-in');
+            }, 500);
+          }, 100);
+        }, 250);
+      }
+      
+      languageToggle.addEventListener('change', function() {
+        const isItalian = this.checked;
+        translatePage(isItalian);
+      });
+      
+      // Initialize language display
+      updateLanguageDisplay(false);
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html> 
