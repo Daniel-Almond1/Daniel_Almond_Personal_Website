@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Almond Family Media Server</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for media server page */
+        .media-server-container {
+            max-width: 1400px !important; /* Increased width with !important to override conflicts */
+            width: 95vw !important; /* Use viewport width to take up more screen space */
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .media-server-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+                 .media-server-header h1 {
+             font-family: 'Playfair Display', serif;
+             font-size: 3.2rem;
+             font-weight: 700;
+             color: #2a4d7a;
+             margin-bottom: 1rem;
+         }
+
+        .media-server-header p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .media-server-section {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(42,77,122,0.1);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            width: 100%; /* Ensure section fills container width */
+            box-sizing: border-box;
+        }
+
+        .media-server-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(42,77,122,0.15);
+        }
+
+                 .media-server-section h2 {
+             font-family: 'Playfair Display', serif;
+             font-size: 2.2rem;
+             font-weight: 700;
+             color: #2a4d7a;
+             margin-bottom: 1.5rem;
+             text-align: center;
+         }
+
+        .media-server-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, #00A4DC, #7B3FE4, #C86DD7);
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 164, 220, 0.18);
+            margin: 0 auto;
+            display: block;
+            width: fit-content;
+        }
+
+        .media-server-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .media-server-btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-icon {
+            font-size: 1.2rem;
+        }
+
+        .request-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .request-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .request-input:focus {
+            outline: none;
+            border-color: #2a4d7a;
+            box-shadow: 0 0 0 3px rgba(42,77,122,0.1);
+        }
+
+        .request-input::placeholder {
+            color: #999;
+        }
+
+        .media-type-dropdown {
+            flex: 0 0 120px;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .media-type-dropdown:focus {
+            outline: none;
+            border-color: #2a4d7a;
+            box-shadow: 0 0 0 3px rgba(42,77,122,0.1);
+        }
+
+        .submit-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #2a4d7a, #1b2c3a);
+            color: white;
+            border: none;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            flex: 0 0 auto;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(42,77,122,0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .expand-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #7B3FE4, #C86DD7);
+            color: white;
+            border: none;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            flex: 0 0 auto;
+        }
+
+        .expand-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(123, 63, 228, 0.3);
+        }
+
+        .expanded-form {
+            background: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .expanded-form h3 {
+            color: #2a4d7a;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .request-textarea {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+            resize: vertical;
+        }
+
+        .request-textarea:focus {
+            outline: none;
+            border-color: #2a4d7a;
+            box-shadow: 0 0 0 3px rgba(42,77,122,0.1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Search Styles */
+        .search-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .server-search-input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: white;
+            box-sizing: border-box;
+        }
+
+        .server-search-input:focus {
+            outline: none;
+            border-color: #2a4d7a;
+            box-shadow: 0 0 0 3px rgba(42,77,122,0.1);
+            transform: translateY(-2px);
+        }
+
+        .server-search-input::placeholder {
+            color: #999;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: #666;
+            pointer-events: none;
+        }
+
+        .search-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Search highlight styles */
+        .search-highlight {
+            background: linear-gradient(135deg, #00A4DC, #7B3FE4, #C86DD7);
+            color: white;
+            font-weight: bold;
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+        }
+
+        .status-message {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            text-align: center;
+            min-height: 1.5rem;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+                 .requests-list {
+             list-style: none;
+             height: 540px; /* Fixed height to prevent size changes - increased for 9 items */
+             overflow: hidden;
+             border: 1px solid #e1e5e9;
+             border-radius: 8px;
+             background: #f8f9fa;
+             position: relative;
+             display: flex;
+             flex-direction: column;
+         }
+
+                 .requests-list li {
+             padding: 0.875rem 1rem;
+             border-bottom: 1px solid #e9ecef;
+             font-weight: 500;
+             color: #333;
+             transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+             transform: translateY(0);
+             opacity: 1;
+             position: relative;
+             flex-shrink: 0; /* Prevent items from shrinking */
+             height: 60px; /* Fixed height for each item */
+             display: flex;
+             align-items: center;
+             box-sizing: border-box;
+         }
+
+        .requests-list li:last-child {
+            border-bottom: none;
+        }
+
+                 .requests-list li:hover {
+             background-color: #e9ecef;
+             transform: translateX(5px);
+         }
+
+         .requests-list li {
+             transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+             transform: translateY(0);
+             opacity: 1;
+         }
+
+         .requests-list li.sliding-down {
+             transform: translateY(100%);
+             opacity: 0;
+             height: 0;
+             padding: 0;
+             margin: 0;
+             border: none;
+         }
+
+         .requests-list li.sliding-up {
+             transform: translateY(-100%);
+             opacity: 0;
+             height: 0;
+             padding: 0;
+             margin: 0;
+             border: none;
+         }
+
+         .requests-list li.new-item {
+             animation: slideInFromTop 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+             height: 60px;
+             padding: 0.875rem 1rem;
+         }
+
+         @keyframes slideInFromTop {
+             0% {
+                 transform: translateY(-100%);
+                 opacity: 0;
+                 height: 0;
+                 padding: 0;
+                 margin: 0;
+             }
+             100% {
+                 transform: translateY(0);
+                 opacity: 1;
+                 height: 60px;
+                 padding: 0.875rem 1rem;
+             }
+         }
+
+         @keyframes slideOutToBottom {
+             0% {
+                 transform: translateY(0);
+                 opacity: 1;
+                 height: 60px;
+                 padding: 0.875rem 1rem;
+             }
+             100% {
+                 transform: translateY(100%);
+                 opacity: 0;
+                 height: 0;
+                 padding: 0;
+                 margin: 0;
+             }
+         }
+
+        .requests-list li:first-child {
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .requests-list li:last-child {
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .loading-message,
+        .empty-message {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-style: italic;
+            background: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 300px;
+        }
+
+        /* Scrollbar styling */
+        .requests-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .requests-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .requests-list::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .requests-list::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* Responsive design */
+        @media (max-width: 1600px) {
+            .media-server-container {
+                max-width: 98vw;
+            }
+        }
+        @media (max-width: 900px) {
+            .media-server-container {
+                max-width: 100vw;
+                padding: 1.2rem 0.2rem;
+            }
+            .media-server-section {
+                padding: 1.2rem 0.5rem;
+            }
+        }
+        @media (max-width: 768px) {
+            .media-server-container {
+                padding: 1rem;
+            }
+            
+                         .media-server-header h1 {
+                 font-size: 2.6rem;
+             }
+            
+            .request-form {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .request-input {
+                min-width: auto;
+            }
+            
+            .media-type-dropdown {
+                flex: none;
+                width: 100%;
+            }
+            
+            .submit-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .media-server-section {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+                         .media-server-header h1 {
+                 font-size: 2.2rem;
+             }
+            
+            .media-server-btn {
+                padding: 0.875rem 1.5rem;
+                font-size: 1rem;
+            }
+            
+            .btn-icon {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="media-server-container">
+        <header class="media-server-header">
+            <h1>Almond Family Media Server</h1>
+            <p>Welcome to the family media portal. Access our shared media collection and request new content.</p>
+        </header>
+
+        <main>
+            <!-- Media Server Access Section -->
+            <section class="media-server-section">
+                <h2>Access Media Server</h2>
+                <a href="#" class="media-server-btn" id="mediaServerBtn">
+                    <span class="btn-icon">🎬</span>
+                    <span>Connect to Media Server</span>
+                </a>
+                <p style="text-align: center; margin-top: 1rem; color: #666; font-size: 0.9rem;">
+                    Click to access the family media collection
+                </p>
+            </section>
+
+            <!-- See What's on the Server Section -->
+            <section class="media-server-section">
+                <h2>See What's on the Server</h2>
+                
+                <!-- Search Area -->
+                <div class="search-container">
+                    <div class="search-input-wrapper">
+                        <input 
+                            type="text" 
+                            id="serverSearchInput" 
+                            class="server-search-input"
+                            placeholder="Search movies and TV shows..."
+                            autocomplete="off"
+                        >
+                        <div class="search-icon">🔍</div>
+                    </div>
+
+                </div>
+                
+                <div style="text-align: center; margin: 1rem 0; color: #666; font-size: 0.9rem;">
+                    <span id="serverMovieCount">🎬 Movies: 0</span> | 
+                    <span id="serverTVShowCount">📺 TV Shows: 0</span> | 
+                    <span id="serverRotationIndex">Index: 0</span>
+                    <span id="searchResultsCount" style="margin-left: 1rem; display: none;"> | 
+                        <span id="searchResultsText">Search Results: 0</span>
+                    </span>
+                </div>
+                
+                <div id="serverMediaContainer" style="height: 540px; position: relative;">
+                    <ul id="serverMediaList" class="requests-list">
+                        <!-- Dynamically populated by JavaScript -->
+                    </ul>
+                    <div id="serverLoadingMessage" class="loading-message">Loading server content...</div>
+                    <div id="serverEmptyMessage" class="empty-message" style="display: none;">
+                        No content available on server!
+                    </div>
+                    <div id="searchNoResultsMessage" class="empty-message" style="display: none;">
+                        No results found for "<span id="searchTerm"></span>"
+                    </div>
+                </div>
+            </section>
+
+            <!-- Request Form Section -->
+            <section class="media-server-section">
+                <h2>Request New Media</h2>
+                <form id="requestForm" class="request-form">
+                    <div class="form-row">
+                        <select id="mediaTypeDropdown" class="media-type-dropdown">
+                            <option value="movie">Movie</option>
+                            <option value="tv_show">TV Show</option>
+                        </select>
+                        <input 
+                            type="text" 
+                            id="mediaInput" 
+                            class="request-input"
+                            placeholder="Enter movie or TV show title..."
+                            required
+                            autocomplete="off"
+                        >
+                    </div>
+                    
+                    <div class="form-row">
+                        <input 
+                            type="text" 
+                            id="requesterName" 
+                            class="request-input"
+                            placeholder="Your name..."
+                            required
+                        >
+                        <input 
+                            type="number" 
+                            id="releaseYear" 
+                            class="request-input"
+                            placeholder="Release year (optional)"
+                            min="1900"
+                            max="2030"
+                        >
+                    </div>
+                    
+                    <div class="form-row">
+                        <button type="submit" class="submit-btn" id="submitBtn">
+                            <span class="btn-icon">📝</span>
+                            Submit Request
+                        </button>
+                        <button type="button" class="expand-btn" id="expandBtn">
+                            <span class="btn-icon">➕</span>
+                            Add More Details
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Expanded Form (Hidden by default) -->
+                <div id="expandedForm" class="expanded-form" style="display: none;">
+                    <h3>Additional Details</h3>
+                    <div class="form-row">
+                        <input 
+                            type="text" 
+                            id="director" 
+                            class="request-input"
+                            placeholder="Director/Showrunner"
+                        >
+                        <input 
+                            type="text" 
+                            id="genre" 
+                            class="request-input"
+                            placeholder="Genre"
+                        >
+                    </div>
+                    <div class="form-row">
+                        <textarea 
+                            id="description" 
+                            class="request-textarea"
+                            placeholder="Brief description or why you want to watch this..."
+                            rows="3"
+                        ></textarea>
+                    </div>
+                    <div class="form-row">
+                        <input 
+                            type="email" 
+                            id="email" 
+                            class="request-input"
+                            placeholder="Your email (optional, for updates)"
+                        >
+                        <input 
+                            type="text" 
+                            id="priority" 
+                            class="request-input"
+                            placeholder="Priority (High/Medium/Low)"
+                        >
+                    </div>
+                </div>
+                
+                <div id="statusMessage" class="status-message"></div>
+            </section>
+        </main>
+
+        <footer style="text-align: center; margin-top: 2rem; padding: 1rem; color: #666; font-size: 0.9rem;">
+            <p>&copy; 2024 Almond Family Media Portal</p>
+        </footer>
+    </div>
+
+    <script>
+        // Media server URL - replace with your actual media server link
+        const MEDIA_SERVER_URL = "https://your-media-server-url.com"; // TODO: Replace with actual URL
+
+        // Email service configuration (using EmailJS as an example)
+        const EMAIL_SERVICE_ID = "your_email_service_id"; // Replace with your EmailJS service ID
+        const EMAIL_TEMPLATE_ID = "your_email_template_id"; // Replace with your EmailJS template ID
+        const EMAIL_USER_ID = "your_email_user_id"; // Replace with your EmailJS user ID
+
+        // DOM elements
+        const mediaServerBtn = document.getElementById('mediaServerBtn');
+        const requestForm = document.getElementById('requestForm');
+        const mediaInput = document.getElementById('mediaInput');
+        const mediaTypeDropdown = document.getElementById('mediaTypeDropdown');
+        const requesterName = document.getElementById('requesterName');
+        const releaseYear = document.getElementById('releaseYear');
+        const submitBtn = document.getElementById('submitBtn');
+        const expandBtn = document.getElementById('expandBtn');
+        const expandedForm = document.getElementById('expandedForm');
+        const statusMessage = document.getElementById('statusMessage');
+        
+        // Server content elements
+        const serverMediaList = document.getElementById('serverMediaList');
+        const serverLoadingMessage = document.getElementById('serverLoadingMessage');
+        const serverEmptyMessage = document.getElementById('serverEmptyMessage');
+        const serverMovieCount = document.getElementById('serverMovieCount');
+        const serverTVShowCount = document.getElementById('serverTVShowCount');
+        const serverRotationIndex = document.getElementById('serverRotationIndex');
+        
+        // Search elements
+        const serverSearchInput = document.getElementById('serverSearchInput');
+        const searchResultsCount = document.getElementById('searchResultsCount');
+        const searchResultsText = document.getElementById('searchResultsText');
+        const searchNoResultsMessage = document.getElementById('searchNoResultsMessage');
+        const searchTerm = document.getElementById('searchTerm');
+
+                  // Server content data
+          let serverContent = [];
+          let filteredContent = [];
+          let currentRotationIndex = 0;
+          let serverRotationInterval = null;
+          let searchTimeout = null;
+          let usedMovies = new Set(); // Track movies that have been shown in current session
+          let usedTVShows = new Set(); // Track TV shows that have been shown in current session
+          let availableMovies = []; // Movies available for rotation
+          let availableTVShows = []; // TV shows available for rotation
+          let nextShouldBeMovie = true; // Track whether next item should be a movie
+          const ROTATION_DELAY = 4000; // 4 seconds
+          const SEARCH_DELAY = 300; // 300ms delay for search
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Set up media server button
+            mediaServerBtn.href = MEDIA_SERVER_URL;
+            
+            // Load server content from JSON file
+            await loadServerContent();
+            
+            // Set up form submission
+            requestForm.addEventListener('submit', handleFormSubmission);
+            
+            // Set up expand button
+            expandBtn.addEventListener('click', toggleExpandedForm);
+            
+            // Set up search functionality
+            setupSearchFunctionality();
+        });
+
+        // Handle form submission
+        async function handleFormSubmission(e) {
+            e.preventDefault();
+            
+            const title = mediaInput.value.trim();
+            const mediaType = mediaTypeDropdown.value;
+            const name = requesterName.value.trim();
+            const year = releaseYear.value.trim();
+            
+            if (!title || !name) {
+                showStatus('Please enter both title and your name', 'error');
+                return;
+            }
+
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="btn-icon">⏳</span> Sending...';
+
+            try {
+                // Collect form data
+                const formData = {
+                    title: title,
+                    type: mediaType,
+                    requesterName: name,
+                    releaseYear: year,
+                    timestamp: new Date().toISOString()
+                };
+
+                // Get additional details if expanded form is visible
+                if (expandedForm.style.display !== 'none') {
+                    const director = document.getElementById('director').value.trim();
+                    const genre = document.getElementById('genre').value.trim();
+                    const description = document.getElementById('description').value.trim();
+                    const email = document.getElementById('email').value.trim();
+                    const priority = document.getElementById('priority').value.trim();
+                    
+                    formData.director = director;
+                    formData.genre = genre;
+                    formData.description = description;
+                    formData.email = email;
+                    formData.priority = priority;
+                }
+
+                // Send email notification (simulated for now)
+                await sendEmailNotification(formData);
+                
+                // Clear form
+                requestForm.reset();
+                expandedForm.style.display = 'none';
+                expandBtn.innerHTML = '<span class="btn-icon">➕</span> Add More Details';
+                
+                showStatus('Request sent successfully! You will receive a confirmation email.', 'success');
+                
+            } catch (error) {
+                console.error('Error submitting request:', error);
+                showStatus('Error sending request. Please try again.', 'error');
+            } finally {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span class="btn-icon">📝</span> Submit Request';
+            }
+        }
+
+        // Toggle expanded form
+        function toggleExpandedForm() {
+            if (expandedForm.style.display === 'none') {
+                expandedForm.style.display = 'block';
+                expandBtn.innerHTML = '<span class="btn-icon">➖</span> Hide Details';
+            } else {
+                expandedForm.style.display = 'none';
+                expandBtn.innerHTML = '<span class="btn-icon">➕</span> Add More Details';
+            }
+        }
+
+        // Send email notification (simulated)
+        async function sendEmailNotification(formData) {
+            // This is a simulation - in a real implementation, you would use EmailJS or similar
+            console.log('📧 Sending email notification:', formData);
+            
+            // Simulate email sending delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // For now, just log the data that would be sent
+            const emailContent = `
+                New Media Request:
+                
+                Title: ${formData.title}
+                Type: ${formData.type === 'movie' ? 'Movie' : 'TV Show'}
+                Requester: ${formData.requesterName}
+                Release Year: ${formData.releaseYear || 'Not specified'}
+                ${formData.director ? `Director/Showrunner: ${formData.director}` : ''}
+                ${formData.genre ? `Genre: ${formData.genre}` : ''}
+                ${formData.description ? `Description: ${formData.description}` : ''}
+                ${formData.email ? `Email: ${formData.email}` : ''}
+                ${formData.priority ? `Priority: ${formData.priority}` : ''}
+                
+                Submitted: ${new Date().toLocaleString()}
+            `;
+            
+            console.log('Email content:', emailContent);
+            
+            // In a real implementation, you would use EmailJS like this:
+            /*
+            emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, {
+                to_email: "your-email@example.com",
+                subject: "New Media Request",
+                message: emailContent
+            }, EMAIL_USER_ID);
+            */
+        }
+
+        // Normalize title for duplicate checking
+        function normalizeTitle(title) {
+            return title.toLowerCase()
+                .replace(/[^\w\s]/g, '') // Remove special characters
+                .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+                .trim();
+        }
+
+        // Format title for display
+        function formatTitle(title) {
+            return title.split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(' ');
+        }
+
+        // Show status message
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message ${type}`;
+            
+            // Clear message after 5 seconds
+            setTimeout(() => {
+                statusMessage.textContent = '';
+                statusMessage.className = 'status-message';
+            }, 5000);
+        }
+
+         // Load server content
+         async function loadServerContent() {
+             try {
+                 serverLoadingMessage.style.display = 'block';
+                 serverMediaList.style.display = 'none';
+                 serverEmptyMessage.style.display = 'none';
+                 searchNoResultsMessage.style.display = 'none';
+
+                 // Load content from JSON file
+                 serverContent = await loadMediaContent();
+                 filteredContent = [...serverContent]; // Initialize filtered content
+                 
+                                   // Initialize random rotation system
+                  initializeRandomRotation();
+                  
+                  console.log('Loaded server content:', serverContent.length, 'items');
+                  const movies = serverContent.filter(item => item.type === 'movie');
+                  const tvshows = serverContent.filter(item => item.type === 'tvshow');
+                  console.log('Movies:', movies.length, 'TV Shows:', tvshows.length);
+                 
+                 // Display server content
+                 if (serverContent.length > 0) {
+                     displayServerContent();
+                     if (serverContent.length >= 3) {
+                         startServerRotation();
+                     }
+                     serverLoadingMessage.style.display = 'none';
+                     serverMediaList.style.display = 'block';
+                 } else {
+                     serverLoadingMessage.style.display = 'none';
+                     serverEmptyMessage.style.display = 'block';
+                 }
+                 
+                 // Update counts
+                 updateServerCounts();
+                 
+             } catch (error) {
+                 console.error('Error loading server content:', error);
+                 serverLoadingMessage.style.display = 'none';
+                 serverEmptyMessage.style.display = 'block';
+             }
+         }
+
+         // Setup search functionality
+         function setupSearchFunctionality() {
+             // Search input event listener
+             serverSearchInput.addEventListener('input', handleSearchInput);
+             
+             // Also monitor for changes in real-time
+             serverSearchInput.addEventListener('keyup', handleSearchInput);
+             serverSearchInput.addEventListener('change', handleSearchInput);
+             
+             // Initial setup - ensure rotation is running
+             setTimeout(() => {
+                 if (!serverSearchInput.value.trim()) {
+                     showAllContent();
+                 }
+             }, 100);
+         }
+
+         // Handle search input
+         function handleSearchInput(e) {
+             const searchTerm = e.target.value.trim().toLowerCase();
+             
+             // Clear previous timeout
+             if (searchTimeout) {
+                 clearTimeout(searchTimeout);
+             }
+             
+             // Set new timeout for debounced search
+             searchTimeout = setTimeout(() => {
+                 performSearch(searchTerm);
+             }, SEARCH_DELAY);
+         }
+
+         // Perform search
+         function performSearch(searchTerm) {
+             console.log('Performing search for:', searchTerm);
+             
+             if (!searchTerm) {
+                 showAllContent();
+                 return;
+             }
+             
+             // Filter content based on search term
+             filteredContent = serverContent.filter(item => 
+                 item.title.toLowerCase().includes(searchTerm)
+             );
+             
+             // Update display
+             updateSearchDisplay(searchTerm);
+         }
+
+         // Show all content (return to rotation mode)
+         function showAllContent() {
+             console.log('Showing all content - returning to rotation mode');
+             filteredContent = [...serverContent];
+             
+             // Clear the list first to reset rotation state
+             serverMediaList.innerHTML = '';
+             
+             // Display all content with rotation
+             displayServerContent();
+             
+             // Start rotation
+             if (serverContent.length >= 3) {
+                 startServerRotation();
+                 console.log('Started server rotation');
+             }
+             
+             // Show content
+             serverMediaList.style.display = 'block';
+             serverEmptyMessage.style.display = 'none';
+             searchNoResultsMessage.style.display = 'none';
+             
+             // Hide search controls
+             searchResultsCount.style.display = 'none';
+             
+             // Update counts
+             updateServerCounts();
+         }
+
+         // Update search display
+         function updateSearchDisplay(searchTerm) {
+             console.log('Updating search display. Search term:', searchTerm, 'Filtered content length:', filteredContent.length);
+             
+             // Show/hide search controls
+             searchResultsCount.style.display = searchTerm ? 'inline' : 'none';
+             
+             // Update search results count
+             searchResultsText.textContent = `Search Results: ${filteredContent.length}`;
+             
+             if (searchTerm) {
+                 // SEARCH MODE: Stop rotation and show only search results
+                 console.log('Entering SEARCH MODE');
+                 if (serverRotationInterval) {
+                     clearInterval(serverRotationInterval);
+                     serverRotationInterval = null;
+                     console.log('Stopped server rotation');
+                 }
+                 
+                 // Display search results
+                 if (filteredContent.length > 0) {
+                     currentRotationIndex = 0;
+                     displaySearchResults();
+                     
+                     serverMediaList.style.display = 'block';
+                     serverEmptyMessage.style.display = 'none';
+                     searchNoResultsMessage.style.display = 'none';
+                 } else {
+                     // Show no results message
+                     serverMediaList.style.display = 'none';
+                     serverEmptyMessage.style.display = 'none';
+                     searchNoResultsMessage.style.display = 'block';
+                     searchNoResultsMessage.textContent = `No results found for "${searchTerm}"`;
+                 }
+             } else {
+                 // NORMAL MODE: Return to rotating display
+                 console.log('Entering NORMAL MODE - returning to rotation');
+                 filteredContent = [...serverContent];
+                 
+                 // Clear the list first to reset rotation state
+                 serverMediaList.innerHTML = '';
+                 
+                 // Display all content with rotation
+                 displayServerContent();
+                 
+                 // Start rotation
+                 if (serverContent.length >= 3) {
+                     startServerRotation();
+                     console.log('Started server rotation');
+                 }
+                 
+                 // Show content
+                 serverMediaList.style.display = 'block';
+                 serverEmptyMessage.style.display = 'none';
+                 searchNoResultsMessage.style.display = 'none';
+             }
+             
+             // Update counts
+             updateServerCounts();
+         }
+
+
+
+                           // Initialize random rotation system
+          function initializeRandomRotation() {
+              // Reset used items for new session
+              usedMovies.clear();
+              usedTVShows.clear();
+              
+              // Separate movies and TV shows
+              const movies = serverContent.filter(item => item.type === 'movie');
+              const tvshows = serverContent.filter(item => item.type === 'tvshow');
+              
+              availableMovies = [...movies];
+              availableTVShows = [...tvshows];
+              
+              // Shuffle both arrays
+              shuffleArray(availableMovies);
+              shuffleArray(availableTVShows);
+              
+              // Reset alternating pattern
+              nextShouldBeMovie = true;
+              
+              console.log('Random rotation initialized with', availableMovies.length, 'movies and', availableTVShows.length, 'TV shows');
+          }
+         
+         // Shuffle array using Fisher-Yates algorithm
+         function shuffleArray(array) {
+             for (let i = array.length - 1; i > 0; i--) {
+                 const j = Math.floor(Math.random() * (i + 1));
+                 [array[i], array[j]] = [array[j], array[i]];
+             }
+         }
+         
+                   // Get next alternating item for rotation
+          function getNextAlternatingItem() {
+              let nextItem = null;
+              
+              if (nextShouldBeMovie) {
+                  // Try to get a movie
+                  if (availableMovies.length === 0) {
+                      // If no movies available, reset movies
+                      const movies = serverContent.filter(item => item.type === 'movie');
+                      availableMovies = [...movies];
+                      shuffleArray(availableMovies);
+                      usedMovies.clear();
+                  }
+                  
+                  if (availableMovies.length > 0) {
+                      nextItem = availableMovies.shift();
+                      usedMovies.add(nextItem.title);
+                      console.log('Next movie:', nextItem.title, 'Remaining movies:', availableMovies.length);
+                  } else {
+                      // Fallback to TV show if no movies available
+                      nextShouldBeMovie = false;
+                      return getNextAlternatingItem();
+                  }
+              } else {
+                  // Try to get a TV show
+                  if (availableTVShows.length === 0) {
+                      // If no TV shows available, reset TV shows
+                      const tvshows = serverContent.filter(item => item.type === 'tvshow');
+                      availableTVShows = [...tvshows];
+                      shuffleArray(availableTVShows);
+                      usedTVShows.clear();
+                  }
+                  
+                  if (availableTVShows.length > 0) {
+                      nextItem = availableTVShows.shift();
+                      usedTVShows.add(nextItem.title);
+                      console.log('Next TV show:', nextItem.title, 'Remaining TV shows:', availableTVShows.length);
+                  } else {
+                      // Fallback to movie if no TV shows available
+                      nextShouldBeMovie = true;
+                      return getNextAlternatingItem();
+                  }
+              }
+              
+              // Toggle for next iteration
+              nextShouldBeMovie = !nextShouldBeMovie;
+              
+              return nextItem;
+          }
+         
+         // Load media content from JSON file
+        async function loadMediaContent() {
+            try {
+                const response = await fetch('Assets/media-list.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                
+                // Filter out null entries and convert to the expected format
+                const mediaContent = data
+                    .filter(item => item.title !== null && item.type !== null)
+                    .map(item => ({
+                        title: item.title,
+                        type: item.type,
+                        year: item.year ? item.year.toString() : null,
+                        seasons: item.type === 'tvshow' && item.seasons ? item.seasons : null,
+                        notes: item.type === 'tvshow' && item.notes ? item.notes : null
+                    }));
+                
+                return mediaContent;
+            } catch (error) {
+                console.error('Error loading media content:', error);
+                // Fallback to sample content if JSON loading fails
+                return getSampleServerContent();
+            }
+        }
+
+        // Get sample server content (fallback)
+        function getSampleServerContent() {
+            return [
+                { title: "The Shawshank Redemption", type: "movie", year: "1994" },
+                { title: "Breaking Bad", type: "tvshow", year: "2008", seasons: "Full Show" },
+                { title: "Inception", type: "movie", year: "2010" },
+                { title: "Game of Thrones", type: "tvshow", year: "2011", seasons: "Season 1-7" },
+                { title: "The Matrix", type: "movie", year: "1999" },
+                { title: "Stranger Things", type: "tvshow", year: "2016", seasons: "Season 1-4" },
+                { title: "Interstellar", type: "movie", year: "2014" },
+                { title: "The Office", type: "tvshow", year: "2005", seasons: "Season 1-9" },
+                { title: "Pulp Fiction", type: "movie", year: "1994" },
+                { title: "Friends", type: "tvshow", year: "1994", seasons: "Full Show" },
+                { title: "The Godfather", type: "movie", year: "1972" },
+                { title: "The Wire", type: "tvshow", year: "2002", seasons: "Season 1-5" },
+                { title: "Fight Club", type: "movie", year: "1999" },
+                { title: "The Crown", type: "tvshow", year: "2016", seasons: "Season 1-6" },
+                { title: "Forrest Gump", type: "movie", year: "1994" },
+                { title: "The Dark Knight", type: "movie", year: "2008" },
+                { title: "The Mandalorian", type: "tvshow", year: "2019", seasons: "Season 1-3" },
+                { title: "Goodfellas", type: "movie", year: "1990" },
+                { title: "The Witcher", type: "tvshow", year: "2019", seasons: "Season 1-2" },
+                { title: "The Silence of the Lambs", type: "movie", year: "1991" },
+                { title: "Ozark", type: "tvshow", year: "2017", seasons: "Full Show" },
+                { title: "The Green Mile", type: "movie", year: "1999" },
+                { title: "Better Call Saul", type: "tvshow", year: "2015", seasons: "Season 1-6" },
+                { title: "Schindler's List", type: "movie", year: "1993" },
+                { title: "The Queen's Gambit", type: "tvshow", year: "2020", seasons: "Full Show" },
+                { title: "The Departed", type: "movie", year: "2006" },
+                { title: "Bridgerton", type: "tvshow", year: "2020", seasons: "Season 1-2" },
+                { title: "Gladiator", type: "movie", year: "2000" },
+                { title: "Wednesday", type: "tvshow", year: "2022", seasons: "Season 1" },
+                { title: "The Lion King", type: "movie", year: "1994" },
+                { title: "The Boys", type: "tvshow", year: "2019", seasons: "Season 1-4" },
+                { title: "Titanic", type: "movie", year: "1997" },
+                { title: "House of the Dragon", type: "tvshow", year: "2022", seasons: "Season 1" },
+                { title: "The Lord of the Rings", type: "movie", year: "2001" },
+                { title: "The Last of Us", type: "tvshow", year: "2023", seasons: "Season 1" },
+                { title: "Avatar", type: "movie", year: "2009" },
+                { title: "Succession", type: "tvshow", year: "2018", seasons: "Full Show" },
+                { title: "Jurassic Park", type: "movie", year: "1993" },
+                { title: "Ted Lasso", type: "tvshow", year: "2020", seasons: "Season 1-3" },
+                { title: "The Terminator", type: "movie", year: "1984" },
+                { title: "Severance", type: "tvshow", year: "2022", seasons: "Season 1" }
+            ];
+        }
+
+         // Display server content with continuous scrolling
+         function displayServerContent() {
+             if (filteredContent.length === 0) {
+                 serverMediaList.innerHTML = '<li>No content available</li>';
+                 return;
+             }
+             
+             const maxDisplayItems = 9;
+             const searchTerm = serverSearchInput.value.trim().toLowerCase();
+             
+                           // If this is the first load, populate the list with alternating items
+              if (serverMediaList.children.length === 0) {
+                  for (let i = 0; i < maxDisplayItems && i < filteredContent.length; i++) {
+                      const item = getNextAlternatingItem();
+                      
+                      const li = document.createElement('li');
+                      li.innerHTML = `
+                          <span style="margin-right: 8px;">${item.type === 'movie' ? '🎬' : '📺'}</span>
+                          <strong>${highlightSearchTerm(item.title, searchTerm)}</strong>
+                          ${item.year ? `<span style="color: #999; font-size: 0.8rem; margin-left: 8px;">(${item.year})</span>` : ''}
+                          ${item.seasons && item.notes !== 'Full Show' ? `<span style="color: #7B3FE4; font-size: 0.8rem; margin-left: 8px; font-weight: 500;">[${item.seasons}]</span>` : ''}
+                          ${item.notes ? `<span style="color: #2a4d7a; font-size: 0.8rem; margin-left: 8px; font-weight: 500;">(${item.notes})</span>` : ''}
+                      `;
+                      serverMediaList.appendChild(li);
+                  }
+                  return;
+              }
+             
+             // For rotation: only animate the bottom item out and add new random item at top
+             const existingItems = serverMediaList.querySelectorAll('li');
+             
+             // Remove the bottom item with slide-down animation
+             if (existingItems.length > 0) {
+                 const bottomItem = existingItems[existingItems.length - 1];
+                 bottomItem.classList.add('sliding-down');
+                 
+                 setTimeout(() => {
+                     bottomItem.remove();
+                 }, 800);
+             }
+             
+                           // Get next alternating item
+              const newItem = getNextAlternatingItem();
+             
+             const newLi = document.createElement('li');
+             newLi.innerHTML = `
+                 <span style="margin-right: 8px;">${newItem.type === 'movie' ? '🎬' : '📺'}</span>
+                 <strong>${highlightSearchTerm(newItem.title, searchTerm)}</strong>
+                 ${newItem.year ? `<span style="color: #999; font-size: 0.8rem; margin-left: 8px;">(${newItem.year})</span>` : ''}
+                 ${newItem.seasons && newItem.notes !== 'Full Show' ? `<span style="color: #7B3FE4; font-size: 0.8rem; margin-left: 8px; font-weight: 500;">[${newItem.seasons}]</span>` : ''}
+                 ${newItem.notes ? `<span style="color: #2a4d7a; font-size: 0.8rem; margin-left: 8px; font-weight: 500;">(${newItem.notes})</span>` : ''}
+             `;
+             newLi.classList.add('new-item');
+             
+             // Insert at the beginning
+             serverMediaList.insertBefore(newLi, serverMediaList.firstChild);
+             
+             // Remove animation class after animation completes
+             setTimeout(() => {
+                 newLi.classList.remove('new-item');
+             }, 800);
+         }
+
+         // Display search results (no rotation, all results visible)
+         function displaySearchResults() {
+             if (filteredContent.length === 0) {
+                 serverMediaList.innerHTML = '<li>No results found</li>';
+                 return;
+             }
+             
+             const searchTerm = serverSearchInput.value.trim().toLowerCase();
+             
+             // Clear the list
+             serverMediaList.innerHTML = '';
+             
+             // Show all search results (up to 20 to prevent overwhelming the display)
+             const maxResults = Math.min(filteredContent.length, 20);
+             
+             for (let i = 0; i < maxResults; i++) {
+                 const item = filteredContent[i];
+                 
+                 const li = document.createElement('li');
+                 li.innerHTML = `
+                     <span style="margin-right: 8px;">${item.type === 'movie' ? '🎬' : '📺'}</span>
+                     <strong>${highlightSearchTerm(item.title, searchTerm)}</strong>
+                     <span style="color: #666; font-size: 0.9rem; margin-left: 8px;">(${item.type === 'movie' ? 'Movie' : 'TV Show'})</span>
+                     ${item.year ? `<span style="color: #999; font-size: 0.8rem; margin-left: 8px;">(${item.year})</span>` : ''}
+                     ${item.seasons && item.notes !== 'Full Show' ? `<span style="color: #7B3FE4; font-size: 0.8rem; margin-left: 8px; font-weight: 500;">[${item.seasons}]</span>` : ''}
+                     ${item.notes ? `<span style="color: #2a4d7a; font-size: 0.8rem; margin-left: 8px; font-weight: 500;">(${item.notes})</span>` : ''}
+                 `;
+                 serverMediaList.appendChild(li);
+             }
+             
+             // If there are more results, show a message
+             if (filteredContent.length > maxResults) {
+                 const moreLi = document.createElement('li');
+                 moreLi.innerHTML = `
+                     <span style="color: #666; font-style: italic;">
+                         ... and ${filteredContent.length - maxResults} more results
+                     </span>
+                 `;
+                 serverMediaList.appendChild(moreLi);
+             }
+         }
+
+         // Highlight search term in text
+         function highlightSearchTerm(text, searchTerm) {
+             if (!searchTerm) return text;
+             
+             const regex = new RegExp(`(${searchTerm})`, 'gi');
+             return text.replace(regex, '<span class="search-highlight">$1</span>');
+         }
+
+         // Update server counts
+         function updateServerCounts() {
+             const movies = serverContent.filter(item => item.type === 'movie');
+             const tvshows = serverContent.filter(item => item.type === 'tvshow');
+             
+             if (serverMovieCount) serverMovieCount.textContent = `🎬 Movies: ${movies.length}`;
+             if (serverTVShowCount) serverTVShowCount.textContent = `📺 TV Shows: ${tvshows.length}`;
+             if (serverRotationIndex) serverRotationIndex.textContent = `Index: ${currentRotationIndex}`;
+
+         }
+
+         // Start server rotation
+         function startServerRotation() {
+             if (serverRotationInterval) {
+                 clearInterval(serverRotationInterval);
+             }
+             
+             serverRotationInterval = setInterval(() => {
+                 rotateServerContent();
+             }, ROTATION_DELAY);
+         }
+
+         // Rotate server content display
+         function rotateServerContent() {
+             if (filteredContent.length < 3) return;
+             
+             console.log(`Rotating server content. Total items: ${filteredContent.length}`);
+             
+             displayServerContent();
+             updateServerCounts();
+         }
+
+        // Add some animation effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate sections on load
+            const sections = document.querySelectorAll('.media-server-section');
+            sections.forEach((section, index) => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    section.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }, 200 * index);
+            });
+        });
+    </script>
+</body>
+</html> </html> 
