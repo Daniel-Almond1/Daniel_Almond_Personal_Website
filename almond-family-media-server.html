@@ -705,7 +705,7 @@
                 <form id="hiddenForm" action="https://formsubmit.co/7f92164fabc54daf18505d263880ab64" method="POST" style="display:none;">
                     <input type="text" name="name" id="hiddenName">
                     <input type="email" name="email" id="hiddenEmail">
-                    <textarea name="notes" id="hiddenNotes"></textarea>
+                    <textarea name="message" id="hiddenMessage"></textarea>
                 </form>
                 <div id="statusMessage" class="status-message"></div>
             </section>
@@ -1422,6 +1422,37 @@
                     section.style.transform = 'translateY(0)';
                 }, 200 * index);
             });
+        });
+
+        // Custom form submission for FormSubmit
+        document.getElementById('requestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Gather all form data
+            const name = document.getElementById('requesterName').value.trim();
+            const type = document.getElementById('mediaTypeDropdown').value;
+            const title = document.getElementById('mediaInput').value.trim();
+            const releaseYear = document.getElementById('releaseYear').value.trim();
+            const director = document.getElementById('director').value.trim();
+            const genre = document.getElementById('genre').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const priority = document.getElementById('priority').value.trim();
+            // Compose message string
+            let message = `[MOVIE_REQUEST]\n`;
+            message += `Type: ${type === 'movie' ? 'Movie' : 'TV Show'}\n`;
+            message += `Title: ${title}\n`;
+            if (releaseYear) message += `Release Year: ${releaseYear}\n`;
+            if (director) message += `Director/Showrunner: ${director}\n`;
+            if (genre) message += `Genre: ${genre}\n`;
+            if (description) message += `Description: ${description}\n`;
+            if (priority) message += `Priority: ${priority}\n`;
+            // Set hidden form values
+            document.getElementById('hiddenName').value = name;
+            document.getElementById('hiddenEmail').value = '';
+            document.getElementById('hiddenMessage').value = message;
+            // Submit hidden form
+            document.getElementById('hiddenForm').submit();
+            // Show only 'Submission successful' message
+            document.getElementById('statusMessage').textContent = 'Submission successful';
         });
     </script>
 </body>
