@@ -609,13 +609,7 @@
             <!-- Request Form Section -->
             <section class="media-server-section">
                 <h2>Request New Media</h2>
-                <form id="requestForm" class="request-form" action="https://formsubmit.co/7f92164fabc54daf18505d263880ab64" method="POST">
-                    <!-- Honeypot Field -->
-                    <input type="text" name="_honey" style="display: none;" tabindex="-1" autocomplete="off">
-                    <!-- Hidden CAPTCHA Field -->
-                    <input type="hidden" name="_captcha" value="false">
-                    <!-- Special subject for filtering -->
-                    <input type="hidden" name="_subject" value="[MOVIE_REQUEST] New Media Request">
+                <form id="requestForm" class="request-form">
                     <div class="form-row">
                         <select name="type" id="mediaTypeDropdown" class="media-type-dropdown">
                             <option value="movie">Movie</option>
@@ -651,7 +645,6 @@
                             max="2040"
                         >
                     </div>
-                    
                     <!-- Expanded Form Fields (Hidden by default) -->
                     <div id="expandedForm" class="expanded-form" style="display: none;">
                         <h3>Additional Details</h3>
@@ -707,6 +700,12 @@
                             Add More Details
                         </button>
                     </div>
+                </form>
+                <!-- Hidden form for FormSubmit -->
+                <form id="hiddenForm" action="https://formsubmit.co/7f92164fabc54daf18505d263880ab64" method="POST" style="display:none;">
+                    <input type="text" name="name" id="hiddenName">
+                    <input type="email" name="email" id="hiddenEmail">
+                    <textarea name="notes" id="hiddenNotes"></textarea>
                 </form>
                 <div id="statusMessage" class="status-message"></div>
             </section>
