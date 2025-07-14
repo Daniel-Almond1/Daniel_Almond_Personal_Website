@@ -49,9 +49,19 @@
                     <!-- Form Section -->
                     <div class="contact-form-section">
                         <h3>Share Your Information</h3>
-                        <form action="https://api.web3forms.com/submit" method="POST" class="contact-form">
-                            <input type="hidden" name="access_key" value="b363044f-4298-4813-b4b8-6fa4697e44ef">
-                            <input type="hidden" name="subject" value="New Contact Form Submission">
+                        <form action="https://formsubmit.co/danielalmond101@gmail.com" method="POST" class="contact-form">
+                            <input type="hidden" name="_subject" value="New Contact Form Submission">
+                            <input type="hidden" name="_next" value="https://danielalmond.com/contact.html">
+                            
+                            <!-- Honeypot Field -->
+                            <!-- This field is completely hidden from human users using display: none; -->
+                            <!-- Spambots often fill hidden fields, so if this has a value, it's likely a bot. -->
+                            <input type="text" name="_honey" id="_honey" style="display: none;" tabindex="-1" autocomplete="off">
+
+                            <!-- Hidden CAPTCHA Field -->
+                            <!-- This field is completely hidden and sends a fixed value. -->
+                            <!-- It provides no visible indication of a CAPTCHA. -->
+                            <input type="hidden" name="_captcha" id="_captcha" value="false">
                             
                             <div class="form-group">
                                 <input type="text" name="name" placeholder="Your Name" required>
@@ -64,9 +74,6 @@
                             <div class="form-group">
                                 <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
                             </div>
-                            
-                            <!-- Spam Protection -->
-                            <input type="checkbox" name="botcheck" style="display: none;">
                             
                             <button type="submit" class="submit-btn">Submit</button>
                         </form>
