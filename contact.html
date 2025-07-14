@@ -50,18 +50,11 @@
                     <div class="contact-form-section">
                         <h3>Share Your Information</h3>
                         <form action="https://formsubmit.co/danielalmond101@gmail.com" method="POST" class="contact-form">
-                            <input type="hidden" name="_subject" value="New Contact Form Submission">
-                            <input type="hidden" name="_next" value="https://danielalmond.com/contact.html">
-                            
                             <!-- Honeypot Field -->
-                            <!-- This field is completely hidden from human users using display: none; -->
-                            <!-- Spambots often fill hidden fields, so if this has a value, it's likely a bot. -->
-                            <input type="text" name="_honey" id="_honey" style="display: none;" tabindex="-1" autocomplete="off">
+                            <input type="text" name="_honey" style="display: none;" tabindex="-1" autocomplete="off">
 
                             <!-- Hidden CAPTCHA Field -->
-                            <!-- This field is completely hidden and sends a fixed value. -->
-                            <!-- It provides no visible indication of a CAPTCHA. -->
-                            <input type="hidden" name="_captcha" id="_captcha" value="false">
+                            <input type="hidden" name="_captcha" value="false">
                             
                             <div class="form-group">
                                 <input type="text" name="name" placeholder="Your Name" required>
