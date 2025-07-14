@@ -609,14 +609,21 @@
             <!-- Request Form Section -->
             <section class="media-server-section">
                 <h2>Request New Media</h2>
-                <form id="requestForm" class="request-form">
+                <form id="requestForm" class="request-form" action="https://formsubmit.co/7f92164fabc54daf18505d263880ab64" method="POST">
+                    <!-- Honeypot Field -->
+                    <input type="text" name="_honey" style="display: none;" tabindex="-1" autocomplete="off">
+                    <!-- Hidden CAPTCHA Field -->
+                    <input type="hidden" name="_captcha" value="false">
+                    <!-- Special subject for filtering -->
+                    <input type="hidden" name="_subject" value="[MOVIE_REQUEST] New Media Request">
                     <div class="form-row">
-                        <select id="mediaTypeDropdown" class="media-type-dropdown">
+                        <select name="type" id="mediaTypeDropdown" class="media-type-dropdown">
                             <option value="movie">Movie</option>
                             <option value="tv_show">TV Show</option>
                         </select>
                         <input 
                             type="text" 
+                            name="title"
                             id="mediaInput" 
                             class="request-input"
                             placeholder="Enter movie or TV show title..."
@@ -628,6 +635,7 @@
                     <div class="form-row">
                         <input 
                             type="text" 
+                            name="requesterName"
                             id="requesterName" 
                             class="request-input"
                             placeholder="Your name..."
@@ -635,6 +643,7 @@
                         >
                         <input 
                             type="number" 
+                            name="releaseYear"
                             id="releaseYear" 
                             class="request-input"
                             placeholder="Release year (optional)"
@@ -648,7 +657,7 @@
                             <span class="btn-icon">📝</span>
                             Submit Request
                         </button>
-                        <button type="button" class="expand-btn" id="expandBtn">
+                        <button type="button" class="expand-btn" id="expandBtn" onclick="toggleExpandedForm()">
                             <span class="btn-icon">➕</span>
                             Add More Details
                         </button>
@@ -658,44 +667,50 @@
                 <!-- Expanded Form (Hidden by default) -->
                 <div id="expandedForm" class="expanded-form" style="display: none;">
                     <h3>Additional Details</h3>
-                    <div class="form-row">
-                        <input 
-                            type="text" 
-                            id="director" 
-                            class="request-input"
-                            placeholder="Director/Showrunner"
-                        >
-                        <input 
-                            type="text" 
-                            id="genre" 
-                            class="request-input"
-                            placeholder="Genre"
-                        >
-                    </div>
-                    <div class="form-row">
-                        <textarea 
-                            id="description" 
-                            class="request-textarea"
-                            placeholder="Brief description or why you want to watch this..."
-                            rows="3"
-                        ></textarea>
-                    </div>
-                    <div class="form-row">
-                        <input 
-                            type="email" 
-                            id="email" 
-                            class="request-input"
-                            placeholder="Your email (optional, for updates)"
-                        >
-                        <input 
-                            type="text" 
-                            id="priority" 
-                            class="request-input"
-                            placeholder="Priority (High/Medium/Low)"
-                        >
-                    </div>
+                    <form id="expandedRequestForm">
+                        <div class="form-row">
+                            <input 
+                                type="text" 
+                                name="director"
+                                id="director" 
+                                class="request-input"
+                                placeholder="Director/Showrunner"
+                            >
+                            <input 
+                                type="text" 
+                                name="genre"
+                                id="genre" 
+                                class="request-input"
+                                placeholder="Genre"
+                            >
+                        </div>
+                        <div class="form-row">
+                            <textarea 
+                                name="description"
+                                id="description" 
+                                class="request-textarea"
+                                placeholder="Brief description or why you want to watch this..."
+                                rows="3"
+                            ></textarea>
+                        </div>
+                        <div class="form-row">
+                            <input 
+                                type="email" 
+                                name="email"
+                                id="email" 
+                                class="request-input"
+                                placeholder="Your email (optional, for updates)"
+                            >
+                            <input 
+                                type="text" 
+                                name="priority"
+                                id="priority" 
+                                class="request-input"
+                                placeholder="Priority (High/Medium/Low)"
+                            >
+                        </div>
+                    </form>
                 </div>
-                
                 <div id="statusMessage" class="status-message"></div>
             </section>
         </main>
@@ -1414,4 +1429,4 @@
         });
     </script>
 </body>
-</html> </html> 
+</html> 
