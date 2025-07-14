@@ -648,26 +648,13 @@
                             class="request-input"
                             placeholder="Release year (optional)"
                             min="1900"
-                            max="2030"
+                            max="2040"
                         >
                     </div>
                     
-                    <div class="form-row">
-                        <button type="submit" class="submit-btn" id="submitBtn">
-                            <span class="btn-icon">📝</span>
-                            Submit Request
-                        </button>
-                        <button type="button" class="expand-btn" id="expandBtn" onclick="toggleExpandedForm()">
-                            <span class="btn-icon">➕</span>
-                            Add More Details
-                        </button>
-                    </div>
-                </form>
-                
-                <!-- Expanded Form (Hidden by default) -->
-                <div id="expandedForm" class="expanded-form" style="display: none;">
-                    <h3>Additional Details</h3>
-                    <form id="expandedRequestForm">
+                    <!-- Expanded Form Fields (Hidden by default) -->
+                    <div id="expandedForm" class="expanded-form" style="display: none;">
+                        <h3>Additional Details</h3>
                         <div class="form-row">
                             <input 
                                 type="text" 
@@ -709,8 +696,18 @@
                                 placeholder="Priority (High/Medium/Low)"
                             >
                         </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="form-row">
+                        <button type="submit" class="submit-btn" id="submitBtn">
+                            <span class="btn-icon">📝</span>
+                            Submit Request
+                        </button>
+                        <button type="button" class="expand-btn" id="expandBtn" onclick="toggleExpandedForm()">
+                            <span class="btn-icon">➕</span>
+                            Add More Details
+                        </button>
+                    </div>
+                </form>
                 <div id="statusMessage" class="status-message"></div>
             </section>
         </main>
