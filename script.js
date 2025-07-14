@@ -184,59 +184,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
             const submitBtn = document.getElementById('submitBtn');
-            const successMessage = document.getElementById('successMessage');
-            const formData = new FormData(this);
             
             // Show loading state
             submitBtn.classList.add('loading');
             submitBtn.textContent = 'Sending...';
             submitBtn.disabled = true;
             
-            // Submit form to FormSubmit
-            fetch(this.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Show success message
-                    successMessage.style.display = 'block';
-                    
-                    // Reset form
-                    this.reset();
-                    
-                    // Reset button
-                    submitBtn.classList.remove('loading');
-                    submitBtn.textContent = 'Submit';
-                    submitBtn.disabled = false;
-                    
-                    // Hide success message after 5 seconds
-                    setTimeout(() => {
-                        successMessage.style.display = 'none';
-                    }, 5000);
-                } else {
-                    throw new Error('Form submission failed');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                
-                // Reset button
-                submitBtn.classList.remove('loading');
-                submitBtn.textContent = 'Submit';
-                submitBtn.disabled = false;
-                
-                // Show error message
-                alert('Sorry, there was an error sending your message. Please try again or contact me directly at danielalmond101@gmail.com');
-            });
+            // Let the form submit naturally to FormSubmit
+            // FormSubmit will redirect to a success page or back to the form
         });
     }
+
+
 
     // Clickable graphs functionality
     const clickableGraphs = document.querySelectorAll('.clickable-graph');
