@@ -88,19 +88,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000 + (index * 150));
     });
 
-    // Animate professional card
-    const card = document.querySelector('.professional-card');
-    if (card) {
-        card.style.opacity = '0';
-        card.style.transform = 'translateX(50px) scale(0.95)';
-        
-        setTimeout(() => {
-            card.style.transition = 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-            card.style.opacity = '1';
-            card.style.transform = 'translateX(0) scale(1)';
-        }, 1000);
-    }
-
     // Animate work items on scroll
     const workItems = document.querySelectorAll('.work-item');
     const projectItems = document.querySelectorAll('.project-item');
