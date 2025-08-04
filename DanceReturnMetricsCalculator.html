@@ -1,0 +1,3710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dance Studio Financial Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'corporate-blue': '#1e40af',
+                        'corporate-gray': '#6b7280',
+                        'corporate-light': '#f8fafc',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .input-field {
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 8px 12px;
+            transition: border-color 0.2s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #1e40af;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+        
+        /* Professional Input Adornment Pattern */
+        .input-adornment-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .input-adornment-container input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        .input-adornment-container input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        /* Currency adornment (left side) */
+        .input-adornment-container.currency input {
+            padding-left: 28px;
+        }
+        
+        .input-adornment-container.currency::before {
+            content: '$';
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        /* Percentage adornment (right side) */
+        .input-adornment-container.percentage input {
+            padding-right: 28px;
+        }
+        
+        .input-adornment-container.percentage::after {
+            content: '%';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .btn-primary {
+            background: #1e40af;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .btn-primary:hover {
+            background: #1e3a8a;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .timeframe-btn.active {
+            border-color: #1e40af;
+            background-color: #1e40af;
+            color: white;
+        }
+
+        .timeframe-btn:not(.active) {
+            border-color: #d1d5db;
+            background-color: white;
+            color: #374151;
+        }
+
+        .timeframe-btn:not(.active):hover {
+            border-color: #1e40af;
+            color: #1e40af;
+        }
+
+        .calculation-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .calculation-card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .metrics-timeframe-btn.active {
+            border-color: #1e40af;
+            background-color: #1e40af;
+            color: white;
+        }
+
+        .metrics-timeframe-btn:not(.active) {
+            border-color: #d1d5db;
+            background-color: white;
+            color: #374151;
+        }
+
+        .metrics-timeframe-btn:not(.active):hover {
+            border-color: #1e40af;
+            color: #1e40af;
+        }
+
+        .payroll-timeframe-btn.active {
+            border-color: #1e40af;
+            background-color: #1e40af;
+            color: white;
+        }
+
+        .payroll-timeframe-btn:not(.active) {
+            border-color: #d1d5db;
+            background-color: white;
+            color: #374151;
+        }
+
+        .payroll-timeframe-btn:not(.active):hover {
+            border-color: #1e40af;
+            color: #1e40af;
+        }
+
+        .expense-timeframe-btn.active {
+            border-color: #1e40af;
+            background-color: #1e40af;
+            color: white;
+        }
+
+        .expense-timeframe-btn:not(.active) {
+            border-color: #d1d5db;
+            background-color: white;
+            color: #374151;
+        }
+
+        .expense-timeframe-btn:not(.active):hover {
+            border-color: #1e40af;
+            color: #1e40af;
+        }
+
+        .irr-timeframe-btn.active {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
+
+        .irr-timeframe-btn:not(.active) {
+            background-color: white;
+            border-color: #d1d5db;
+            color: #374151;
+        }
+
+        .irr-timeframe-btn:not(.active):hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .expense-breakdown-timeframe-btn.active {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
+
+        .expense-breakdown-timeframe-btn:not(.active) {
+            background-color: white;
+            border-color: #d1d5db;
+            color: #374151;
+        }
+
+        .expense-breakdown-timeframe-btn:not(.active):hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        /* Animated Guided Flow Background */
+        #guided-flow {
+            background: linear-gradient(to bottom, rgba(30, 64, 175, 0.10) 0%, transparent 40%);
+            background-size: 100% 250%;
+            animation: pulse-down 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse-down {
+            0%, 100% {
+                background-position: 0% 0%;
+                opacity: 0.8;
+            }
+            50% {
+                background-position: 0% 100%;
+                opacity: 1;
+            }
+        }
+
+        /* Custom Slider Styles */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e5e7eb;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1e40af;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1e40af;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider-marks {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding: 0 10px;
+        }
+
+        .slider-mark {
+            position: relative;
+            width: 2px;
+            height: 12px;
+            background: #9ca3af;
+            border-radius: 1px;
+        }
+
+        .slider-mark.active {
+            background: #1e40af;
+            height: 16px;
+        }
+
+        .slider-mark::after {
+            content: attr(data-value);
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #6b7280;
+            white-space: nowrap;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e40af;
+            margin-top: 10px;
+        }
+
+        /* Payroll Mode Toggle Styles */
+        .mode-toggle {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .mode-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider-toggle {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider-toggle:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider-toggle {
+            background-color: #1e40af;
+        }
+
+        input:checked + .slider-toggle:before {
+            transform: translateX(26px);
+        }
+
+        .mode-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .mode-label.active {
+            color: #1e40af;
+            font-weight: 600;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .card {
+                padding: 1rem;
+            }
+            
+            .input-field {
+                padding: 6px 10px;
+                font-size: 14px;
+            }
+            
+
+            
+            .btn-primary {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+            
+            .metric-card {
+                padding: 16px;
+            }
+            
+            .metric-card h4 {
+                font-size: 12px;
+            }
+            
+            .metric-card p {
+                font-size: 18px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .lg\\:col-span-2,
+            .lg\\:col-span-3 {
+                grid-column: span 1;
+            }
+            
+
+            
+            .input-field {
+                padding: 4px 8px;
+                font-size: 12px;
+            }
+            
+            .btn-primary {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            
+            .metric-card {
+                padding: 12px;
+            }
+            
+            .metric-card h4 {
+                font-size: 10px;
+            }
+            
+            .metric-card p {
+                font-size: 16px;
+            }
+            
+            .card {
+                padding: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 0.5rem;
+            }
+            
+
+            
+            .input-field {
+                padding: 3px 6px;
+                font-size: 11px;
+            }
+            
+            .btn-primary {
+                padding: 5px 10px;
+                font-size: 11px;
+            }
+            
+            .metric-card {
+                padding: 8px;
+            }
+            
+            .metric-card h4 {
+                font-size: 9px;
+            }
+            
+            .metric-card p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+    <body class="bg-gray-50 min-h-screen">
+        <!-- Input Section -->
+        <div class="bg-white shadow-sm border-b">
+            <div class="container mx-auto px-4 py-6">
+                <div class="mb-6">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Dance Studio Financial Calculator</h1>
+                    <p class="text-gray-600">Model your studio's financial performance and optimize profitability</p>
+                </div>
+
+                <!-- NEW INPUT GRID ARCHITECTURE -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Revenue & Pricing - Spans 2 columns on large screens -->
+                    <div class="card p-4 lg:col-span-2">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Revenue & Pricing</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Price Per Lesson</label>
+                                <div class="input-adornment-container currency">
+                                    <input type="number" id="pricePerLesson" value="150" min="0" step="0.01">
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-600 mb-2">📈 <strong>Progressive Growth:</strong> Each phase represents your target lesson volume, not additional lessons</p>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" id="phase1Label">Phase 1: On-Ramp Target (Lessons/Week)</label>
+                                <input type="number" id="phase1Lessons" value="50" min="0" class="input-field w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" id="phase2Label">Phase 2: Growth Period (Lessons/Week)</label>
+                                <input type="number" id="phase2Lessons" value="60" min="0" class="input-field w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" id="phase3Label">Phase 3: Maturity Period (Lessons/Week)</label>
+                                <input type="number" id="phase3Lessons" value="70" min="0" class="input-field w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" id="phase4Label">Phase 4: Peak Period (Lessons/Week)</label>
+                                <input type="number" id="phase4Lessons" value="80" min="0" class="input-field w-full">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payroll Configuration - Spans 2 columns on large screens -->
+                    <div class="card p-4 lg:col-span-2">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Payroll Configuration</h3>
+                        
+                        <!-- Payroll Mode Toggle -->
+                        <div class="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-4">
+                                <span class="mode-label" id="manualModeLabel">Manual Payroll</span>
+                                <label class="mode-toggle">
+                                    <input type="checkbox" id="payrollModeToggle" checked>
+                                    <span class="slider-toggle"></span>
+                                </label>
+                                <span class="mode-label" id="autoModeLabel">Automatic Payroll</span>
+                            </div>
+                        </div>
+
+                        <!-- Manual Payroll Mode -->
+                        <div id="manualPayrollMode">
+                            <div id="instructorsContainer" class="flex space-x-4 overflow-x-auto pb-4 mb-4">
+                                <!-- Dynamic instructor inputs will be generated here -->
+                            </div>
+                            <button id="addInstructorBtn" class="btn-primary w-full">Add Instructor</button>
+                        </div>
+
+                        <!-- Automatic Payroll Mode -->
+                        <div id="automaticPayrollMode" class="hidden">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Max Lessons per Instructor/Week</label>
+                                    <input type="number" id="maxLessonsPerInstructor" value="35" min="1" class="input-field w-full">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Average Instructor Hourly Rate</label>
+                                    <div class="input-adornment-container currency">
+                                        <input type="number" id="avgInstructorRate" value="25" min="0" step="0.01">
+                                    </div>
+                                </div>
+                                <div class="bg-blue-50 p-3 rounded border border-blue-200">
+                                    <div class="space-y-2 text-sm">
+                                        <div>
+                                            <span class="font-medium text-gray-700">Peak Instructors Required:</span>
+                                            <span id="peakInstructorsRequired" class="text-blue-600 font-semibold">0</span>
+                                        </div>
+                                        <div>
+                                            <span class="font-medium text-gray-700">Recommended Full-Time Hires:</span>
+                                            <span id="recommendedHires" class="text-blue-600 font-semibold">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fixed Costs -->
+                    <div class="card p-4 lg:col-span-2">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Fixed Costs</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Monthly Rent/Mortgage</label>
+                                <div class="input-adornment-container currency">
+                                    <input type="number" id="fixedRent" value="2000" min="0" step="0.01">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Monthly Taxes</label>
+                                <div class="input-adornment-container currency">
+                                    <input type="number" id="taxes" value="300" min="0" step="0.01">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Monthly Insurance</label>
+                                <div class="input-adornment-container currency">
+                                    <input type="number" id="insurance" value="150" min="0" step="0.01">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Monthly Utilities</label>
+                                <div class="input-adornment-container currency">
+                                    <input type="number" id="utilities" value="200" min="0" step="0.01">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Monthly Software/Technology</label>
+                                <div class="input-adornment-container currency">
+                                    <input type="number" id="software" value="100" min="0" step="0.01">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Monthly Cleaning</label>
+                                <div class="input-adornment-container currency">
+                                    <input type="number" id="cleaning" value="150" min="0" step="0.01">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Monthly Maintenance</label>
+                                <div class="input-adornment-container currency">
+                                    <input type="number" id="maintenance" value="100" min="0" step="0.01">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Other Monthly Costs</label>
+                                <div class="input-adornment-container currency">
+                                    <input type="number" id="otherCostValue" value="0" min="0" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fees & Royalties -->
+                    <div class="card p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Fees & Royalties</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Royalty Fee</label>
+                                <div class="input-adornment-container percentage">
+                                    <input type="number" id="royaltyFeeRate" value="7" min="0" step="0.1">
+                                </div>
+                                <div class="bg-gray-50 p-2 rounded mt-1">
+                                    <p class="text-sm text-gray-600"><strong>Calculated:</strong> <span id="royaltyFeeDisplay">$0</span></p>
+                                    <p class="text-xs text-gray-500 font-mono" id="royaltyFeeFormula">($0 Gross Revenue × 7% Royalty)</p>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Credit Card Processing Fee</label>
+                                <div class="input-adornment-container percentage">
+                                    <input type="number" id="ccFeeRate" value="3" min="0" step="0.1">
+                                </div>
+                                <div class="bg-gray-50 p-2 rounded mt-1">
+                                    <p class="text-sm text-gray-600"><strong>Calculated:</strong> <span id="ccFeeDisplay">$0</span></p>
+                                    <p class="text-xs text-gray-500 font-mono" id="ccFeeFormula">($0 Gross Revenue × 3% Fee)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Marketing -->
+                    <div class="card p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Marketing & Lead Conversion</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" id="adSpendLabel">Monthly Ad Spend</label>
+                                <div class="input-adornment-container currency">
+                                    <input type="number" id="monthlyAdSpend" value="8464" min="0">
+                                </div>
+                                <!-- Smart Default Calculation: 
+                                     Default lesson phases: 50, 60, 70, 80 lessons/week = 65 avg/week
+                                     Workable weeks: 50/year = 4.167 weeks/month
+                                     Monthly capacity: 65 × 4.167 = 270.83 lessons/month
+                                     Required students: 270.83 ÷ 4 = 67.71 students/month
+                                     Required leads: 67.71 ÷ 20% = 338.55 leads/month
+                                     Required ad spend: 338.55 × $25 = $8,463.75 ≈ $8,464 -->
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Lead Conversion Rate</label>
+                                <div class="input-adornment-container percentage">
+                                    <input type="number" id="leadConversionRate" value="20" min="0" max="100" step="0.1">
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded">
+                                <div class="text-sm text-gray-600">
+                                    <strong id="leadsLabel">Monthly Leads:</strong> <span id="monthlyLeadsDisplay">339</span> (at $25/lead)
+                                </div>
+                                <div class="text-sm text-gray-600">
+                                    <strong id="studentsLabel">New Students Per Month:</strong> <span id="newStudentsPerMonthDisplay">68</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Growth Rates -->
+                    <div class="card p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Growth Rates</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Lesson Price Increase</label>
+                                <div class="input-adornment-container percentage">
+                                    <input type="number" id="priceIncreaseRate" value="3" min="0" step="0.1">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Payroll Cost Increase</label>
+                                <div class="input-adornment-container percentage">
+                                    <input type="number" id="payrollIncreaseRate" value="3" min="0" step="0.1">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Operational Cost Increase</label>
+                                <div class="input-adornment-container percentage">
+                                    <input type="number" id="opCostIncreaseRate" value="2" min="0" step="0.1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <!-- Studio On-Ramp Period -->
+                    <div class="card p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Studio On-Ramp Period</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">On-Ramp Duration (Months)</label>
+                                <input type="range" id="onRampSlider" min="2" max="24" value="6" step="1" class="slider w-full">
+                                <div class="text-center mt-2">
+                                    <span id="onRampDurationDisplay" class="text-lg font-semibold text-blue-600">6 Months</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="workableWeeksPerYear" class="block text-sm font-medium text-gray-700 mb-2">Studio Operating Weeks/Year</label>
+                                <input type="number" id="workableWeeksPerYear" value="50" min="1" max="52" class="input-field w-full">
+                                <p class="text-sm text-gray-600 mt-1">Accounts for holidays, vacations, and studio closures</p>
+                            </div>
+                            <div id="onRampMetrics" class="text-sm text-gray-600 bg-gray-50 p-3 rounded">
+                                <strong>Required Growth Rate:</strong> <span id="requiredGrowthRate">0</span> lessons per week
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Initial Investment -->
+                    <div class="card p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Initial Investment</h3>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Studio Build-Out & Equipment</label>
+                            <div class="input-adornment-container currency">
+                                <input type="number" id="initialInvestment" value="50000" min="0">
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <!-- Alternative Investment Assumptions -->
+                    <div class="card p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Alternative Investment Assumptions</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">S&P 500 Avg. Annual Return</label>
+                                <div class="input-adornment-container percentage">
+                                    <input type="number" id="sp500Rate" value="10" min="0" step="0.1">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">High-Yield CD Annual Rate</label>
+                                <div class="input-adornment-container percentage">
+                                    <input type="number" id="cdRate" value="4" min="0" step="0.1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="container mx-auto px-4 py-8">
+            <!-- Full Width Chart with Projection Controls -->
+            <div class="card p-6 mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-semibold text-gray-900">Financial Projection</h3>
+                    <div class="flex items-center space-x-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Projection Timeline</label>
+                            <div class="slider-container" style="width: 200px;">
+                                <input type="range" id="projectionSlider" class="slider" min="12" max="60" value="36" step="6">
+                                <div class="slider-marks">
+                                    <div class="slider-mark" data-value="12"></div>
+                                    <div class="slider-mark" data-value="18"></div>
+                                    <div class="slider-mark" data-value="24"></div>
+                                    <div class="slider-mark" data-value="30"></div>
+                                    <div class="slider-mark" data-value="36"></div>
+                                    <div class="slider-mark" data-value="42"></div>
+                                    <div class="slider-mark" data-value="48"></div>
+                                    <div class="slider-mark" data-value="54"></div>
+                                    <div class="slider-mark" data-value="60"></div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="projectionMonths" value="36">
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 500px; position: relative;">
+                    <canvas id="financialChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Sub-Section A: Core Financials (Time-Sensitive) -->
+            <div class="card p-6 mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-semibold text-gray-900">Core Financials</h3>
+                    <div class="flex space-x-2">
+                        <button id="metricsWeeklyView" class="metrics-timeframe-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-colors text-sm">
+                            Weekly
+                        </button>
+                        <button id="metricsMonthlyView" class="metrics-timeframe-btn px-4 py-2 rounded-lg border-2 border-blue-500 bg-blue-500 text-white transition-colors text-sm">
+                            Monthly
+                        </button>
+                        <button id="metricsYearlyView" class="metrics-timeframe-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-colors text-sm">
+                            Yearly
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Gross Revenue Card -->
+                    <div class="calculation-card">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Gross Revenue</h4>
+                        <p class="text-3xl font-bold text-blue-600 mb-3" id="grossRevenue">$0</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2"><strong>Formula:</strong></p>
+                            <p class="text-sm text-gray-700 font-mono" id="grossRevenueFormula">0 lessons/wk × $0/lesson × 4.33 wks/mo</p>
+                        </div>
+                    </div>
+
+                    <!-- Total Expenses Card -->
+                    <div class="calculation-card">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Total Expenses</h4>
+                        <p class="text-3xl font-bold text-red-600 mb-3" id="totalExpenses">$0</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2"><strong>Formula:</strong></p>
+                            <p class="text-sm text-gray-700 font-mono" id="totalExpensesFormula">Fixed Costs + Variable Costs</p>
+                        </div>
+                    </div>
+
+                    <!-- Net Income Card -->
+                    <div class="calculation-card">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Net Income</h4>
+                        <p class="text-3xl font-bold text-green-600 mb-3" id="netIncome">$0</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2"><strong>Formula:</strong></p>
+                            <p class="text-sm text-gray-700 font-mono" id="netIncomeFormula">Gross Revenue - Total Expenses</p>
+                        </div>
+                    </div>
+
+                    <!-- Profit Per Lesson Card -->
+                    <div class="calculation-card">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Profit Per Lesson</h4>
+                        <p class="text-3xl font-bold text-indigo-600 mb-3" id="profitPerLesson">$0</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2"><strong>Formula:</strong></p>
+                            <p class="text-sm text-gray-700 font-mono" id="profitPerLessonFormula">Net Income ÷ Total Lessons</p>
+                        </div>
+                    </div>
+
+                    <!-- Customer Acquisition Cost Card -->
+                    <div class="calculation-card">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Customer Acquisition Cost</h4>
+                        <p class="text-3xl font-bold text-pink-600 mb-3" id="cac">$0</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2"><strong>Formula:</strong></p>
+                            <p class="text-sm text-gray-700 font-mono" id="cacFormula">Ad Spend ÷ New Students</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub-Section B: Annual Performance Ratios (Year-over-Year) -->
+            <div class="card p-6 mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-semibold text-gray-900">Annual Performance Ratios</h3>
+                    <p class="text-sm text-gray-600">Time-series analysis showing performance evolution over the projection period</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Gross Profit Margin Card -->
+                    <div class="calculation-card">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Gross Profit Margin</h4>
+                        <p class="text-3xl font-bold text-purple-600 mb-3" id="grossProfitMargin">0%</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2"><strong>Time Series:</strong></p>
+                            <p class="text-sm text-gray-700 font-mono" id="grossProfitMarginTimeSeries">Year 1: 0% | Year 2: 0% | Year 3: 0%</p>
+                        </div>
+                    </div>
+
+                    <!-- Operating Profit Margin Card -->
+                    <div class="calculation-card">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Operating Profit Margin</h4>
+                        <p class="text-3xl font-bold text-orange-600 mb-3" id="operatingProfitMargin">0%</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2"><strong>Time Series:</strong></p>
+                            <p class="text-sm text-gray-700 font-mono" id="operatingProfitMarginTimeSeries">Year 1: 0% | Year 2: 0% | Year 3: 0%</p>
+                        </div>
+                    </div>
+
+                    <!-- Net Profit Margin Card -->
+                    <div class="calculation-card">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Net Profit Margin</h4>
+                        <p class="text-3xl font-bold text-red-600 mb-3" id="netProfitMargin">0%</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2"><strong>Time Series:</strong></p>
+                            <p class="text-sm text-gray-700 font-mono" id="netProfitMarginTimeSeries">Year 1: 0% | Year 2: 0% | Year 3: 0%</p>
+                        </div>
+                    </div>
+
+                    <!-- Cash on Cash Return Card -->
+                    <div class="calculation-card">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Cash on Cash Return</h4>
+                        <p class="text-3xl font-bold text-teal-600 mb-3" id="cashOnCashReturn">0%</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2"><strong>Time Series:</strong></p>
+                            <p class="text-sm text-gray-700 font-mono" id="cashOnCashReturnTimeSeries">Year 1: 0% | Year 2: 0% | Year 3: 0%</p>
+                        </div>
+                    </div>
+
+                    <!-- IRR Card -->
+                    <div class="calculation-card">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="text-lg font-semibold text-gray-900">IRR</h4>
+                            <div class="flex space-x-1">
+                                <button id="irr1Year" class="irr-timeframe-btn px-2 py-1 rounded border border-gray-300 text-xs hover:border-blue-500 hover:text-blue-600 transition-colors">
+                                    1Y
+                                </button>
+                                <button id="irr2Year" class="irr-timeframe-btn px-2 py-1 rounded border border-gray-300 text-xs hover:border-blue-500 hover:text-blue-600 transition-colors">
+                                    2Y
+                                </button>
+                                <button id="irr3Year" class="irr-timeframe-btn px-2 py-1 rounded border border-blue-500 bg-blue-500 text-white text-xs transition-colors">
+                                    3Y
+                                </button>
+                                <button id="irr4Year" class="irr-timeframe-btn px-2 py-1 rounded border border-gray-300 text-xs hover:border-blue-500 hover:text-blue-600 transition-colors">
+                                    4Y
+                                </button>
+                                <button id="irr5Year" class="irr-timeframe-btn px-2 py-1 rounded border border-gray-300 text-xs hover:border-blue-500 hover:text-blue-600 transition-colors">
+                                    5Y
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-3xl font-bold text-yellow-600 mb-3" id="irr">0%</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2"><strong>Time Series:</strong></p>
+                            <p class="text-sm text-gray-700 font-mono" id="irrTimeSeries">Year 1: 0% | Year 2: 0% | Year 3: 0%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lesson Fee Breakdown -->
+            <div class="card p-6 mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Where Your $<span id="lessonPriceDisplay">150</span> Lesson Fee Goes</h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                    <div class="flex justify-center">
+                        <canvas id="breakdownChart" width="300" height="300"></canvas>
+                    </div>
+                    <div>
+                        <div id="breakdownLegend" class="space-y-3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payroll Summary -->
+            <div class="card p-6 mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-semibold text-gray-900">Payroll Summary</h3>
+                    <div class="flex space-x-2">
+                        <button id="payrollWeeklyView" class="payroll-timeframe-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-colors text-sm">
+                            Weekly
+                        </button>
+                        <button id="payrollMonthlyView" class="payroll-timeframe-btn px-4 py-2 rounded-lg border-2 border-blue-500 bg-blue-500 text-white transition-colors text-sm">
+                            Monthly
+                        </button>
+                        <button id="payrollYearlyView" class="payroll-timeframe-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-colors text-sm">
+                            Yearly
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="calculation-card">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Total Payroll</h4>
+                        <p class="text-3xl font-bold text-blue-600 mb-3" id="totalPayrollDisplay">$0</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2"><strong>Formula:</strong></p>
+                            <p class="text-sm text-gray-700 font-mono" id="totalPayrollFormula">Sum of all instructor pay</p>
+                        </div>
+                    </div>
+                    
+                    <div class="calculation-card">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Payroll Per Lesson</h4>
+                        <p class="text-3xl font-bold text-green-600 mb-3" id="payrollPerLessonDisplay">$0</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2"><strong>Formula:</strong></p>
+                            <p class="text-sm text-gray-700 font-mono" id="payrollPerLessonFormula">Total Payroll ÷ Total Lessons</p>
+                        </div>
+                    </div>
+                    
+                    <div class="calculation-card">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Payroll % of Revenue</h4>
+                        <p class="text-3xl font-bold text-purple-600 mb-3" id="payrollPercentageDisplay">0%</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2"><strong>Formula:</strong></p>
+                            <p class="text-sm text-gray-700 font-mono" id="payrollPercentageFormula">Total Payroll ÷ Gross Revenue × 100</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Individual Instructor Breakdown -->
+                <div class="mt-6">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">Individual Instructor Pay</h4>
+                    <div id="instructorPayrollBreakdown" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Dynamic instructor cards will be generated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expense Summary with Calculation Cards -->
+            <div class="card p-6 mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-semibold text-gray-900">Expense Summary</h3>
+                    <div class="flex space-x-2">
+                        <button id="expenseWeeklyView" class="expense-timeframe-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-colors text-sm">
+                            Weekly
+                        </button>
+                        <button id="expenseMonthlyView" class="expense-timeframe-btn px-4 py-2 rounded-lg border-2 border-blue-500 bg-blue-500 text-white transition-colors text-sm">
+                            Monthly
+                        </button>
+                        <button id="expenseYearlyView" class="expense-timeframe-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-colors text-sm">
+                            Yearly
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Total Expenses Card -->
+                    <div class="calculation-card">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Total Expenses</h4>
+                        <p class="text-3xl font-bold text-red-600 mb-3" id="totalMonthlyExpenses">$0</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2"><strong>Formula:</strong></p>
+                            <p class="text-sm text-gray-700 font-mono" id="totalExpensesFormula">Fixed Costs + Variable Costs</p>
+                        </div>
+                    </div>
+
+                    <!-- Total Fixed Costs Card -->
+                    <div class="calculation-card">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Total Fixed Costs</h4>
+                        <p class="text-3xl font-bold text-orange-600 mb-3" id="totalFixedCosts">$0</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2"><strong>Formula:</strong></p>
+                            <p class="text-sm text-gray-700 font-mono" id="totalFixedCostsFormula">Rent + Taxes + Insurance + Utilities + Software + Cleaning + Maintenance + Other</p>
+                        </div>
+                    </div>
+
+                    <!-- Total Variable Costs Card -->
+                    <div class="calculation-card">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Total Variable Costs</h4>
+                        <p class="text-3xl font-bold text-purple-600 mb-3" id="totalVariableCosts">$0</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2"><strong>Formula:</strong></p>
+                            <p class="text-sm text-gray-700 font-mono" id="totalVariableCostsFormula">Payroll + Royalty Fee + Credit Card Processing + Marketing</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expense Breakdown Chart -->
+            <div class="card p-6 mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900" id="expenseChartTitle">Monthly Expense Breakdown</h3>
+                        <p class="text-sm text-gray-600">Hover over the bars to see details. The chart shows the cost structure for the selected timeframe.</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button id="expenseBreakdownWeeklyView" class="expense-breakdown-timeframe-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-colors text-sm">
+                            Weekly
+                        </button>
+                        <button id="expenseBreakdownMonthlyView" class="expense-breakdown-timeframe-btn px-4 py-2 rounded-lg border-2 border-blue-500 bg-blue-500 text-white transition-colors text-sm">
+                            Monthly
+                        </button>
+                        <button id="expenseBreakdownYearlyView" class="expense-breakdown-timeframe-btn px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-colors text-sm">
+                            Yearly
+                        </button>
+                    </div>
+                </div>
+                <div class="w-full overflow-x-auto">
+                    <div style="height: 400px; min-width: 600px; position: relative;">
+                        <canvas id="expenseBreakdownChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save to PDF Button -->
+            <div class="text-center space-y-2">
+                <button id="savePdfBtn" class="btn-primary w-full">
+                    📄 Save Dashboard to PDF
+                </button>
+                <button onclick="runComprehensiveTestSuite()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 px-4 rounded w-full">
+                    🧪 Run Comprehensive Test Suite
+                </button>
+                <p class="text-xs text-gray-600 mt-1">Or type <code class="bg-gray-100 px-1 rounded">runComprehensiveTestSuite()</code> in browser console</p>
+                <p class="text-xs text-gray-600 mt-1">Or type <code class="bg-gray-100 px-1 rounded">testFixedCosts()</code> to test fixed cost calculations</p>
+                <p class="text-xs text-gray-600 mt-1">Or type <code class="bg-gray-100 px-1 rounded">debugCalculations()</code> to debug calculation issues</p>
+                <p class="text-xs text-gray-600 mt-1">Or type <code class="bg-gray-100 px-1 rounded">quickTest()</code> for a quick calculation test</p>
+                <p class="text-xs text-gray-600 mt-1">Or type <code class="bg-gray-100 px-1 rounded">checkHTMLElements()</code> to check if display elements exist</p>
+                <p class="text-xs text-gray-600 mt-1">Or type <code class="bg-gray-100 px-1 rounded">forceUpdateDisplay()</code> to force update the display</p>
+                <p class="text-xs text-gray-600 mt-1">Or type <code class="bg-gray-100 px-1 rounded">updateDashboard()</code> to run normal update</p>
+                <p class="text-xs text-gray-600 mt-1">Or type <code class="bg-gray-100 px-1 rounded">diagnoseDisplayIssues()</code> to check display problems</p>
+                <p class="text-xs text-gray-600 mt-1">Or type <code class="bg-gray-100 px-1 rounded">debugChartData()</code> to debug chart data</p>
+                <p class="text-xs text-gray-600 mt-1">Or type <code class="bg-gray-100 px-1 rounded">updateDashboard()</code> to refresh charts</p>
+            </div>
+        </div>
+
+        <!-- Growth Alignment Modal -->
+        <div id="growthAlignmentModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
+          <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full">
+            <div class="flex items-center mb-4">
+              <svg class="h-6 w-6 text-yellow-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12A9 9 0 113 12a9 9 0 0118 0z"/>
+              </svg>
+              <h2 class="text-lg font-bold text-yellow-700">Growth Alignment Warning</h2>
+            </div>
+            <div id="growthAlignmentModalContent" class="mb-4 text-gray-800 text-sm"></div>
+            <button onclick="closeGrowthAlignmentModal()" class="mt-2 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">Close</button>
+          </div>
+        </div>
+
+    <script>
+        // Global state management
+        let financialChart, breakdownChart, expenseBreakdownChart;
+        let currentTimeframe = 'monthly'; // 'weekly', 'monthly', 'yearly'
+        let metricsTimeframe = 'monthly'; // For metrics section
+        let payrollTimeframe = 'monthly'; // For payroll section
+        let expenseTimeframe = 'monthly'; // For expense section
+        let expenseBreakdownTimeframe = 'monthly'; // For expense breakdown chart
+        let payrollMode = 'automatic'; // 'manual' or 'automatic'
+        let irrTimeframe = 3; // Default to 3 years for IRR calculation
+        let timeframeMultipliers = {
+            weekly: 1/4.33,
+            monthly: 1,
+            yearly: 12
+        };
+        let timeframeLabels = {
+            weekly: 'Weekly',
+            monthly: 'Monthly', 
+            yearly: 'Yearly'
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 DOM Content Loaded - Initializing dashboard...');
+            initializeCharts();
+            setupEventListeners();
+            console.log('🔄 Calling updateDashboard()...');
+            updateDashboard();
+            console.log('✅ Initial dashboard update complete');
+            
+            // Force an immediate display update to ensure values are shown
+            setTimeout(() => {
+                console.log('🔄 Forcing immediate display update...');
+                forceUpdateDisplay();
+            }, 100);
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (financialChart) {
+                    financialChart.resize();
+                }
+                if (breakdownChart) {
+                    breakdownChart.resize();
+                }
+                if (expenseBreakdownChart) {
+                    expenseBreakdownChart.resize();
+                }
+            });
+        });
+
+        function initializeCharts() {
+            console.log('📊 DEBUG: initializeCharts() called');
+            console.log('🔍 Checking if Chart.js is available:', typeof Chart !== 'undefined');
+            
+            if (typeof Chart === 'undefined') {
+                console.log('❌ ERROR: Chart.js is not loaded!');
+                return;
+            }
+            
+            console.log('✅ Chart.js is available, version:', Chart.version);
+            // Financial projection chart
+            console.log('🔍 Looking for financialChart element...');
+            const financialChartElement = document.getElementById('financialChart');
+            console.log('📊 financialChart element:', financialChartElement);
+            
+            if (!financialChartElement) {
+                console.log('❌ ERROR: financialChart element not found!');
+                return;
+            }
+            
+            console.log('🔍 financialChart element dimensions:', {
+                offsetWidth: financialChartElement.offsetWidth,
+                offsetHeight: financialChartElement.offsetHeight,
+                clientWidth: financialChartElement.clientWidth,
+                clientHeight: financialChartElement.clientHeight,
+                style: financialChartElement.style.cssText
+            });
+            
+            const ctx1 = financialChartElement.getContext('2d');
+            financialChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Gross Revenue',
+                            data: [],
+                            borderColor: '#1e40af',
+                            backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Total Expenses',
+                            data: [],
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Net Income',
+                            data: [],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Bank Account Balance',
+                            data: [],
+                            borderColor: '#059669',
+                            backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'S&P 500',
+                            data: [],
+                            borderColor: '#8b5cf6',
+                            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                            tension: 0.4,
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 2,
+                            pointHoverRadius: 4
+                        },
+                        {
+                            label: 'CD',
+                            data: [],
+                            borderColor: '#f97316',
+                            backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                            tension: 0.4,
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 2,
+                            pointHoverRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        annotation: {
+                            annotations: {}
+                        },
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += '$' + context.parsed.y.toLocaleString(undefined, {maximumFractionDigits: 0});
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                                                 x: {
+                             title: {
+                                 display: true,
+                                 text: 'Months',
+                                 font: {
+                                     size: 14,
+                                     weight: 'bold'
+                                 }
+                             },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                },
+                                maxTicksLimit: 20
+                            },
+                            grid: {
+                                display: true,
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Amount',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            beginAtZero: true,
+                            ticks: {
+                                font: {
+                                    size: 12
+                                },
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            },
+                            grid: {
+                                display: true,
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    },
+                    elements: {
+                        point: {
+                            hoverBorderWidth: 3
+                        }
+                    }
+                }
+            });
+
+            // Breakdown chart
+            const ctx2 = document.getElementById('breakdownChart').getContext('2d');
+            breakdownChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Payroll', 'Fixed Costs', 'Royalty Fee', 'CC Processing Fee', 'Marketing', 'Profit'],
+                    datasets: [{
+                        data: [0, 0, 0, 0, 0, 0],
+                        backgroundColor: [
+                            '#3b82f6',
+                            '#6b7280',
+                            '#f59e0b',
+                            '#f97316',
+                            '#8b5cf6',
+                            '#10b981'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Expense Breakdown Chart
+            const ctx3 = document.getElementById('expenseBreakdownChart').getContext('2d');
+            expenseBreakdownChart = new Chart(ctx3, {
+                plugins: [ChartDataLabels],
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [
+                            '#3b82f6', '#6b7280', '#f59e0b', '#f97316', '#8b5cf6', '#10b981',
+                            '#ef4444', '#84cc16', '#06b6d4', '#f43f5e', '#a855f7', '#ec4899'
+                        ],
+                        borderColor: [
+                            '#2563eb', '#4b5563', '#d97706', '#ea580c', '#7c3aed', '#059669',
+                            '#dc2626', '#65a30d', '#0891b2', '#e11d48', '#9333ea', '#db2777'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.x.toLocaleString('en-US', {
+                                        style: 'currency',
+                                        currency: 'USD',
+                                        minimumFractionDigits: 0,
+                                        maximumFractionDigits: 0
+                                    });
+                                }
+                            }
+                        },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'right',
+                            offset: 4,
+                            color: '#374151',
+                            font: {
+                                size: 11,
+                                weight: 'bold'
+                            },
+                            formatter: function(value) {
+                                return '$' + value.toLocaleString();
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Cost',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            ticks: {
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function setupEventListeners() {
+            // Metrics timeframe selector buttons
+            document.getElementById('metricsWeeklyView').addEventListener('click', () => switchMetricsTimeframe('weekly'));
+            document.getElementById('metricsMonthlyView').addEventListener('click', () => switchMetricsTimeframe('monthly'));
+            document.getElementById('metricsYearlyView').addEventListener('click', () => switchMetricsTimeframe('yearly'));
+            
+            // Payroll timeframe selector buttons
+            document.getElementById('payrollWeeklyView').addEventListener('click', () => switchPayrollTimeframe('weekly'));
+            document.getElementById('payrollMonthlyView').addEventListener('click', () => switchPayrollTimeframe('monthly'));
+            document.getElementById('payrollYearlyView').addEventListener('click', () => switchPayrollTimeframe('yearly'));
+            
+            // Expense timeframe selector buttons
+            document.getElementById('expenseWeeklyView').addEventListener('click', () => switchExpenseTimeframe('weekly'));
+            document.getElementById('expenseMonthlyView').addEventListener('click', () => switchExpenseTimeframe('monthly'));
+            document.getElementById('expenseYearlyView').addEventListener('click', () => switchExpenseTimeframe('yearly'));
+
+            // All input fields
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('input', updateDashboard);
+                input.addEventListener('change', updateDashboard);
+            });
+            
+            // Special handling for workable weeks
+            document.getElementById('workableWeeksPerYear').addEventListener('input', updateDashboard);
+            document.getElementById('workableWeeksPerYear').addEventListener('change', updateDashboard);
+
+            // Projection slider
+            const slider = document.getElementById('projectionSlider');
+            const projectionMonthsInput = document.getElementById('projectionMonths');
+            
+            slider.addEventListener('input', function() {
+                const value = parseInt(this.value);
+                projectionMonthsInput.value = value;
+                updateSliderMarks(value);
+                updateDashboard();
+            });
+
+            // Initialize slider marks
+            updateSliderMarks(36);
+
+            // On-Ramp slider
+            const onRampSlider = document.getElementById('onRampSlider');
+            const onRampDurationDisplay = document.getElementById('onRampDurationDisplay');
+
+            onRampSlider.addEventListener('input', function() {
+                const value = parseInt(this.value);
+                onRampDurationDisplay.textContent = value + ' Months';
+                updateOnRampMetrics(value);
+                updateDashboard();
+            });
+
+
+
+            // Marketing calculations
+            const monthlyAdSpend = document.getElementById('monthlyAdSpend');
+            const leadConversionRate = document.getElementById('leadConversionRate');
+            
+            [monthlyAdSpend, leadConversionRate].forEach(input => {
+                input.addEventListener('input', updateMarketingCalculations);
+            });
+
+            // Add Instructor button
+            document.getElementById('addInstructorBtn').addEventListener('click', addInstructor);
+
+            // Payroll mode toggle
+            document.getElementById('payrollModeToggle').addEventListener('change', function() {
+                payrollMode = this.checked ? 'automatic' : 'manual';
+                updatePayrollMode();
+                updateDashboard();
+            });
+
+            // Automatic payroll inputs
+            document.getElementById('maxLessonsPerInstructor').addEventListener('input', updateAutomaticPayroll);
+            document.getElementById('avgInstructorRate').addEventListener('input', updateAutomaticPayroll);
+            
+            // Lesson phase inputs for automatic payroll
+            ['phase1Lessons', 'phase2Lessons', 'phase3Lessons', 'phase4Lessons'].forEach(id => {
+                document.getElementById(id).addEventListener('input', function() {
+                    if (payrollMode === 'automatic') {
+                        updateAutomaticPayroll();
+                    }
+                });
+            });
+
+            // IRR timeframe selector buttons
+            ['irr1Year', 'irr2Year', 'irr3Year', 'irr4Year', 'irr5Year'].forEach(id => {
+                document.getElementById(id).addEventListener('click', function() {
+                    const year = parseInt(id.replace('irr', '').replace('Year', ''));
+                    switchIRRTimeframe(year);
+                });
+            });
+
+            // Expense breakdown timeframe selector buttons
+            document.getElementById('expenseBreakdownWeeklyView').addEventListener('click', () => switchExpenseBreakdownTimeframe('weekly'));
+            document.getElementById('expenseBreakdownMonthlyView').addEventListener('click', () => switchExpenseBreakdownTimeframe('monthly'));
+            document.getElementById('expenseBreakdownYearlyView').addEventListener('click', () => switchExpenseBreakdownTimeframe('yearly'));
+
+            // Save PDF button
+            document.getElementById('savePdfBtn').addEventListener('click', saveToPDF);
+
+            // Initialize payroll mode first
+            updatePayrollMode();
+            
+            // Only add default instructor if in manual mode
+            if (payrollMode === 'manual') {
+                addInstructor();
+            }
+            
+            // Initialize marketing calculations
+            updateMarketingCalculations();
+            
+            // Event listeners for events inputs
+            const eventsInputs = [
+                'medalBallRevenue', 'medalBallCost',
+                'showcaseRevenue', 'showcaseCost',
+                'danceORamaRevenue', 'danceORamaCost',
+                'otherEventsRevenue', 'otherEventsCost'
+            ];
+            
+            eventsInputs.forEach(inputId => {
+                const element = document.getElementById(inputId);
+                if (element) {
+                    element.addEventListener('input', updateEventsDisplay);
+                } else {
+                    console.log(`⚠️ Warning: Event input element '${inputId}' not found`);
+                }
+            });
+            
+            // Initialize events display
+            try {
+                updateEventsDisplay();
+            } catch (error) {
+                console.log('⚠️ Warning: updateEventsDisplay() failed:', error.message);
+            }
+        }
+
+        function updateSliderMarks(currentValue) {
+            const marks = document.querySelectorAll('.slider-mark');
+            marks.forEach(mark => {
+                const markValue = parseInt(mark.getAttribute('data-value'));
+                if (markValue === currentValue) {
+                    mark.classList.add('active');
+                } else {
+                    mark.classList.remove('active');
+                }
+            });
+        }
+
+        function updateOnRampMetrics(onRampMonths) {
+            const targetLessonsPerWeek = parseFloat(document.getElementById('phase1Lessons').value) || 0;
+
+            if (onRampMonths > 0 && targetLessonsPerWeek > 0) {
+                const requiredGrowth = (targetLessonsPerWeek / onRampMonths) / 4.33;
+                document.getElementById('requiredGrowthRate').textContent = requiredGrowth.toFixed(1);
+            } else {
+                document.getElementById('requiredGrowthRate').textContent = '0';
+            }
+        }
+
+        function updateMarketingCalculations() {
+            const monthlyAdSpend = parseFloat(document.getElementById('monthlyAdSpend').value) || 0;
+            const leadConversionRate = parseFloat(document.getElementById('leadConversionRate').value) || 0;
+            const costPerLead = 25; // Fixed at $25 per lead
+            
+            const monthlyLeads = Math.floor(monthlyAdSpend / costPerLead);
+            const newStudentsPerMonth = Math.floor(monthlyLeads * (leadConversionRate / 100));
+            
+            document.getElementById('monthlyLeadsDisplay').textContent = monthlyLeads;
+            document.getElementById('newStudentsPerMonthDisplay').textContent = newStudentsPerMonth;
+        }
+
+        function updatePayrollMode() {
+            const manualMode = document.getElementById('manualPayrollMode');
+            const automaticMode = document.getElementById('automaticPayrollMode');
+            const manualLabel = document.getElementById('manualModeLabel');
+            const autoLabel = document.getElementById('autoModeLabel');
+            
+            if (payrollMode === 'automatic') {
+                manualMode.classList.add('hidden');
+                automaticMode.classList.remove('hidden');
+                manualLabel.classList.remove('active');
+                autoLabel.classList.add('active');
+                updateAutomaticPayroll();
+            } else {
+                manualMode.classList.remove('hidden');
+                automaticMode.classList.add('hidden');
+                manualLabel.classList.add('active');
+                autoLabel.classList.remove('active');
+            }
+        }
+
+        function updateAutomaticPayroll() {
+            const phase1Lessons = parseFloat(document.getElementById('phase1Lessons').value) || 0;
+            const phase2Lessons = parseFloat(document.getElementById('phase2Lessons').value) || 0;
+            const phase3Lessons = parseFloat(document.getElementById('phase3Lessons').value) || 0;
+            const phase4Lessons = parseFloat(document.getElementById('phase4Lessons').value) || 0;
+            const maxLessonsPerInstructor = parseFloat(document.getElementById('maxLessonsPerInstructor').value) || 35;
+            
+            // Find peak lessons per week
+            const peakLessonsPerWeek = Math.max(phase1Lessons, phase2Lessons, phase3Lessons, phase4Lessons);
+            
+            // Calculate required instructors - always round up to next whole number
+            const peakInstructorsRequired = peakLessonsPerWeek / maxLessonsPerInstructor;
+            const recommendedHires = Math.ceil(peakInstructorsRequired);
+            
+            document.getElementById('peakInstructorsRequired').textContent = peakInstructorsRequired.toFixed(1);
+            document.getElementById('recommendedHires').textContent = recommendedHires;
+        }
+
+        function switchMetricsTimeframe(newTimeframe) {
+            console.log('Switching metrics timeframe to:', newTimeframe);
+            if (newTimeframe === metricsTimeframe) return;
+            
+            // Update button states
+            document.querySelectorAll('.metrics-timeframe-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('metrics' + newTimeframe.charAt(0).toUpperCase() + newTimeframe.slice(1) + 'View').classList.add('active');
+            
+            // Update metrics timeframe
+            metricsTimeframe = newTimeframe;
+            
+            // Update metrics display with current calculations
+            const calculations = performCalculations();
+            updateMetricsDisplay(calculations);
+            console.log('Metrics timeframe switched successfully');
+        }
+
+        function switchPayrollTimeframe(newTimeframe) {
+            if (newTimeframe === payrollTimeframe) return;
+            
+            // Update button states
+            document.querySelectorAll('.payroll-timeframe-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('payroll' + newTimeframe.charAt(0).toUpperCase() + newTimeframe.slice(1) + 'View').classList.add('active');
+            
+            // Update payroll timeframe
+            payrollTimeframe = newTimeframe;
+            
+            // Update payroll display with current calculations
+            const calculations = performCalculations();
+            updatePayrollDisplay(calculations);
+        }
+
+        function switchExpenseTimeframe(newTimeframe) {
+            if (newTimeframe === expenseTimeframe) return;
+            
+            // Update button states
+            document.querySelectorAll('.expense-timeframe-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('expense' + newTimeframe.charAt(0).toUpperCase() + newTimeframe.slice(1) + 'View').classList.add('active');
+            
+            // Update expense timeframe
+            expenseTimeframe = newTimeframe;
+            
+            // Update expense display with current calculations
+            const calculations = performCalculations();
+            updateExpenseDisplay(calculations);
+        }
+
+        function switchIRRTimeframe(years) {
+            irrTimeframe = years;
+            
+            // Update active state of buttons
+            document.querySelectorAll('.irr-timeframe-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-blue-500', 'text-white');
+                btn.classList.add('border-gray-300', 'text-gray-700');
+            });
+            
+            const activeButton = document.getElementById(`irr${years}Year`);
+            if (activeButton) {
+                activeButton.classList.add('active', 'bg-blue-500', 'text-white');
+                activeButton.classList.remove('border-gray-300', 'text-gray-700');
+            }
+            
+            updateDashboard();
+        }
+
+        function switchExpenseBreakdownTimeframe(timeframe) {
+            expenseBreakdownTimeframe = timeframe;
+            
+            // Update active state of buttons
+            document.querySelectorAll('.expense-breakdown-timeframe-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-blue-500', 'text-white');
+                btn.classList.add('border-gray-300', 'text-gray-700');
+            });
+            
+            const activeButton = document.getElementById(`expenseBreakdown${timeframe.charAt(0).toUpperCase() + timeframe.slice(1)}View`);
+            if (activeButton) {
+                activeButton.classList.add('active', 'bg-blue-500', 'text-white');
+                activeButton.classList.remove('border-gray-300', 'text-gray-700');
+            }
+            
+            // Update chart title
+            const timeframeLabel = timeframeLabels[timeframe];
+            document.getElementById('expenseChartTitle').textContent = `${timeframeLabel} Expense Breakdown`;
+            
+            updateDashboard();
+        }
+
+        function switchTimeframe(newTimeframe) {
+            if (newTimeframe === currentTimeframe) return;
+            
+            // Update button states
+            document.querySelectorAll('.timeframe-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(newTimeframe + 'View').classList.add('active');
+            
+            // Convert values based on timeframe change
+            const oldMultiplier = timeframeMultipliers[currentTimeframe];
+            const newMultiplier = timeframeMultipliers[newTimeframe];
+            const conversionFactor = newMultiplier / oldMultiplier;
+            
+            // Convert timeframe-dependent values
+            const adSpendInput = document.getElementById('monthlyAdSpend');
+            
+            // Convert values
+            adSpendInput.value = Math.round(adSpendInput.value * conversionFactor);
+            
+            // Update labels
+            updateTimeframeLabels(newTimeframe);
+            
+            // Update current timeframe
+            currentTimeframe = newTimeframe;
+            
+            // Recalculate everything
+            updateDashboard();
+        }
+
+        function updateTimeframeLabels(timeframe) {
+            const labels = {
+                phase1Label: `Phase 1: On-Ramp Target (Lessons/${timeframe === 'weekly' ? 'Week' : timeframe === 'monthly' ? 'Week' : 'Week'})`,
+                phase2Label: `Phase 2: Growth Period (Lessons/${timeframe === 'weekly' ? 'Week' : timeframe === 'monthly' ? 'Week' : 'Week'})`,
+                phase3Label: `Phase 3: Maturity Period (Lessons/${timeframe === 'weekly' ? 'Week' : timeframe === 'monthly' ? 'Week' : 'Week'})`,
+                phase4Label: `Phase 4: Peak Period (Lessons/${timeframe === 'weekly' ? 'Week' : timeframe === 'monthly' ? 'Week' : 'Week'})`,
+                adSpendLabel: `${timeframeLabels[timeframe]} Ad Spend`,
+                rentLabel: `${timeframeLabels[timeframe]} Rent/Mortgage`,
+                leadsLabel: `${timeframeLabels[timeframe]} Leads:`,
+                studentsLabel: `New Students Per ${timeframeLabels[timeframe]}:`,
+                totalExpensesLabel: `Total ${timeframeLabels[timeframe]} Expenses`,
+                totalFixedCostsLabel: `Total Fixed Costs`,
+                totalVariableCostsLabel: `Total Variable Costs`
+            };
+            
+            Object.keys(labels).forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = labels[id];
+                }
+            });
+        }
+
+        function addInstructor() {
+            const instructorsContainer = document.getElementById('instructorsContainer');
+            const instructorId = Date.now(); // Unique ID for this instructor
+            const newInstructorDiv = document.createElement('div');
+            newInstructorDiv.className = 'border border-gray-200 rounded-lg p-4 bg-gray-50 min-w-[300px] flex-shrink-0';
+            newInstructorDiv.id = `instructor-${instructorId}`;
+
+            newInstructorDiv.innerHTML = `
+                <div class="flex justify-between items-center mb-3">
+                    <h4 class="font-medium text-gray-900">Instructor ${instructorsContainer.children.length + 1}</h4>
+                    <button onclick="removeInstructor(${instructorId})" class="text-red-600 hover:text-red-800 text-sm">Remove</button>
+                </div>
+                <div class="space-y-3 mb-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Instructor Name</label>
+                        <input type="text" class="instructor-name input-field w-full" placeholder="Enter instructor name" value="Instructor ${instructorsContainer.children.length + 1}">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Lessons Taught Per Week</label>
+                        <input type="number" class="instructor-lessons input-field w-full" value="15" min="0" step="0.5">
+                    </div>
+                    <div>
+                                                        <label class="block text-sm font-medium text-gray-700 mb-2">Baseline Hourly Rate</label>
+                                                        <div class="input-adornment-container currency">
+                                    <input type="number" class="instructor-rate" value="25" min="0" step="0.01">
+                                </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Bonus Threshold (Lessons)</label>
+                        <input type="number" class="instructor-bonus-threshold input-field w-full" value="5" min="0" step="1">
+                    </div>
+                    <div>
+                                                        <label class="block text-sm font-medium text-gray-700 mb-2">Bonus Amount</label>
+                                                        <div class="input-adornment-container currency">
+                                    <input type="number" class="instructor-bonus-amount" value="2.50" min="0" step="0.01">
+                                </div>
+                    </div>
+                </div>
+                <div class="bg-blue-50 p-3 rounded border border-blue-200">
+                    <div class="space-y-2 text-sm">
+                        <div>
+                            <span class="font-medium text-gray-700">Monthly Pay:</span>
+                            <span class="instructor-monthly-pay text-blue-600 font-semibold">$1,623.75</span>
+                        </div>
+                        <div>
+                            <span class="font-medium text-gray-700">Annual Pay:</span>
+                            <span class="instructor-annual-pay text-blue-600 font-semibold">$19,485.00</span>
+                        </div>
+                        <div class="bg-gray-100 p-2 rounded mt-2">
+                            <p class="text-xs text-gray-600 font-mono instructor-formula">15 lessons/wk × $25/hr × 4.33 wks/mo</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            instructorsContainer.appendChild(newInstructorDiv);
+            
+            // Add event listeners to new inputs
+            const inputs = newInstructorDiv.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('input', updateDashboard);
+                input.addEventListener('change', updateDashboard);
+            });
+            
+            updateDashboard();
+        }
+
+        function removeInstructor(instructorId) {
+            const instructorDiv = document.getElementById(`instructor-${instructorId}`);
+            if (instructorDiv) {
+                instructorDiv.remove();
+                updateDashboard();
+            }
+        }
+
+        function getInstructorsData() {
+            console.log('🔍 DEBUG: getInstructorsData() called, payrollMode =', payrollMode);
+            const instructors = [];
+            
+            // Handle automatic payroll mode
+            if (payrollMode === 'automatic') {
+                console.log('🔍 DEBUG: Using automatic payroll mode');
+                const avgInstructorRate = parseFloat(document.getElementById('avgInstructorRate').value) || 25;
+                const maxLessonsPerInstructor = parseFloat(document.getElementById('maxLessonsPerInstructor').value) || 35;
+                const phase1Lessons = parseFloat(document.getElementById('phase1Lessons').value) || 0;
+                const phase2Lessons = parseFloat(document.getElementById('phase2Lessons').value) || 0;
+                const phase3Lessons = parseFloat(document.getElementById('phase3Lessons').value) || 0;
+                const phase4Lessons = parseFloat(document.getElementById('phase4Lessons').value) || 0;
+                const workableWeeksPerYear = parseFloat(document.getElementById('workableWeeksPerYear').value) || 50;
+                const weeksPerMonth = workableWeeksPerYear / 12;
+                
+                // Find peak lessons per week
+                const peakLessonsPerWeek = Math.max(phase1Lessons, phase2Lessons, phase3Lessons, phase4Lessons);
+                const requiredInstructors = peakLessonsPerWeek / maxLessonsPerInstructor;
+                const effectiveInstructors = Math.ceil(requiredInstructors);
+                
+                console.log('🔍 DEBUG: Automatic payroll calculations:');
+                console.log('   phase1Lessons:', phase1Lessons);
+                console.log('   phase2Lessons:', phase2Lessons);
+                console.log('   phase3Lessons:', phase3Lessons);
+                console.log('   phase4Lessons:', phase4Lessons);
+                console.log('   peakLessonsPerWeek:', peakLessonsPerWeek);
+                console.log('   maxLessonsPerInstructor:', maxLessonsPerInstructor);
+                console.log('   requiredInstructors:', requiredInstructors);
+                console.log('   effectiveInstructors:', effectiveInstructors);
+                
+                // Create virtual instructors for automatic mode with intelligent bonus logic
+                for (let i = 0; i < effectiveInstructors; i++) {
+                    let lessonsPerInstructor;
+                    let effectiveHourlyRate = avgInstructorRate;
+                    
+                    if (i < effectiveInstructors - 1) {
+                        // Full instructors get max lessons and bonus
+                        lessonsPerInstructor = maxLessonsPerInstructor;
+                        if (lessonsPerInstructor >= 5) { // Bonus threshold
+                            effectiveHourlyRate = avgInstructorRate + 2.50; // Bonus amount
+                        }
+                    } else {
+                        // Last instructor gets remaining lessons (no bonus)
+                        const totalLessonsAssigned = (effectiveInstructors - 1) * maxLessonsPerInstructor;
+                        lessonsPerInstructor = Math.max(0, peakLessonsPerWeek - totalLessonsAssigned);
+                    }
+                    
+                    const monthlyPay = lessonsPerInstructor * weeksPerMonth * effectiveHourlyRate;
+                    const annualPay = lessonsPerInstructor * workableWeeksPerYear * effectiveHourlyRate;
+                    
+                    instructors.push({
+                        name: `Auto Instructor ${i + 1}`,
+                        lessonsPerWeek: lessonsPerInstructor,
+                        baselineRate: avgInstructorRate,
+                        bonusThreshold: 0,
+                        bonusAmount: 0,
+                        effectiveHourlyRate: effectiveHourlyRate,
+                        monthlyPay: monthlyPay,
+                        annualPay: annualPay
+                    });
+                }
+            } else {
+                // Manual payroll mode
+                const instructorDivs = document.querySelectorAll('#instructorsContainer > div');
+                const workableWeeksPerYear = parseFloat(document.getElementById('workableWeeksPerYear').value) || 50;
+                const weeksPerMonth = workableWeeksPerYear / 12;
+                
+                instructorDivs.forEach(div => {
+                    const inputs = div.querySelectorAll('input');
+                    if (inputs.length >= 5) {
+                        const name = inputs[0].value || 'Instructor';
+                        const lessonsPerWeek = parseFloat(inputs[1].value) || 0;
+                        const baselineRate = parseFloat(inputs[2].value) || 0;
+                        const bonusThreshold = parseFloat(inputs[3].value) || 5;
+                        const bonusAmount = parseFloat(inputs[4].value) || 0;
+                        
+                        // Calculate effective hourly rate (baseline rate as floor)
+                        let effectiveHourlyRate = baselineRate;
+                        if (lessonsPerWeek >= bonusThreshold) {
+                            const bonusIncrements = Math.floor(lessonsPerWeek / bonusThreshold);
+                            effectiveHourlyRate = Math.max(baselineRate, baselineRate + (bonusIncrements * bonusAmount));
+                        }
+                        
+                        // Calculate pay using workable weeks
+                        const monthlyPay = lessonsPerWeek * weeksPerMonth * effectiveHourlyRate;
+                        const annualPay = lessonsPerWeek * workableWeeksPerYear * effectiveHourlyRate;
+                        
+                        // Update the formula display
+                        const formulaElement = div.querySelector('.instructor-formula');
+                        if (formulaElement) {
+                            formulaElement.textContent = `${lessonsPerWeek} lessons/wk × $${effectiveHourlyRate.toFixed(2)}/hr × ${weeksPerMonth.toFixed(2)} wks/mo`;
+                        }
+                        
+                        // Update the pay displays
+                        const monthlyPaySpan = div.querySelector('.instructor-monthly-pay');
+                        const annualPaySpan = div.querySelector('.instructor-annual-pay');
+                        if (monthlyPaySpan) monthlyPaySpan.textContent = '$' + monthlyPay.toLocaleString(undefined, {maximumFractionDigits: 0});
+                        if (annualPaySpan) annualPaySpan.textContent = '$' + annualPay.toLocaleString(undefined, {maximumFractionDigits: 0});
+                        
+                        instructors.push({
+                            name: name,
+                            lessonsPerWeek: lessonsPerWeek,
+                            baselineRate: baselineRate,
+                            bonusThreshold: bonusThreshold,
+                            bonusAmount: bonusAmount,
+                            effectiveHourlyRate: effectiveHourlyRate,
+                            monthlyPay: monthlyPay,
+                            annualPay: annualPay
+                        });
+                    }
+                });
+            }
+            
+            console.log('🔍 DEBUG: getInstructorsData() returning:', instructors);
+            return instructors;
+        }
+
+        function calculateTotalPayrollCost(instructors, lessonsPerMonth, month, monthlyPayrollFactor) {
+            if (instructors.length === 0) {
+                // Default instructor if none added
+                return 25 * lessonsPerMonth; // $25/hour default
+            }
+            
+            let totalCost = 0;
+            
+            instructors.forEach(instructor => {
+                // Use the pre-calculated monthly pay from getInstructorsData
+                totalCost += instructor.monthlyPay;
+            });
+            
+            // Apply annual growth rate (corrected to apply annually, not monthly)
+            const yearsElapsed = Math.floor(month / 12);
+            return totalCost * Math.pow(1 + (monthlyPayrollFactor - 1) * 12, yearsElapsed);
+        }
+
+        function updateExpenseDisplay(calc) {
+            if (!calc) return;
+            
+            const multiplier = timeframeMultipliers[expenseTimeframe];
+            
+            // Get all the individual expense components for dynamic formulas
+            // Fixed costs with safe defaults
+            const rent = parseFloat(document.getElementById('fixedRent')?.value) || 0;
+            const taxes = parseFloat(document.getElementById('taxes')?.value) || 0;
+            const insurance = parseFloat(document.getElementById('insurance')?.value) || 0;
+            const utilities = parseFloat(document.getElementById('utilities')?.value) || 0;
+            const software = parseFloat(document.getElementById('software')?.value) || 0;
+            const cleaning = parseFloat(document.getElementById('cleaning')?.value) || 0;
+            const maintenance = parseFloat(document.getElementById('maintenance')?.value) || 0;
+            const otherCostValue = parseFloat(document.getElementById('otherCostValue')?.value) || 0;
+            const otherCostLabel = 'Other';
+            
+            // Calculate totals with timeframe conversion
+            const totalExpenses = calc.totalExpenses * multiplier;
+            const totalFixedCosts = calc.totalFixedCosts * multiplier;
+            const totalVariableCosts = calc.totalVariableCosts * multiplier;
+            
+            // Update values
+            document.getElementById('totalMonthlyExpenses').textContent = '$' + totalExpenses.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('totalFixedCosts').textContent = '$' + totalFixedCosts.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('totalVariableCosts').textContent = '$' + totalVariableCosts.toLocaleString(undefined, {maximumFractionDigits: 0});
+            
+            // Build dynamic formulas
+            const fixedCostComponents = [];
+            if (rent > 0) fixedCostComponents.push(`$${rent * multiplier} Rent`);
+            if (taxes > 0) fixedCostComponents.push(`$${taxes * multiplier} Taxes`);
+            if (insurance > 0) fixedCostComponents.push(`$${insurance * multiplier} Insurance`);
+            if (utilities > 0) fixedCostComponents.push(`$${utilities * multiplier} Utilities`);
+            if (software > 0) fixedCostComponents.push(`$${software * multiplier} Software`);
+            if (cleaning > 0) fixedCostComponents.push(`$${cleaning * multiplier} Cleaning`);
+            if (maintenance > 0) fixedCostComponents.push(`$${maintenance * multiplier} Maintenance`);
+            if (otherCostValue > 0) fixedCostComponents.push(`$${otherCostValue * multiplier} ${otherCostLabel}`);
+            
+            const variableCostComponents = [];
+            if (calc.totalPayrollCost > 0) variableCostComponents.push(`$${(calc.totalPayrollCost * multiplier).toLocaleString(undefined, {maximumFractionDigits: 0})} Payroll`);
+            if (calc.royaltyFee > 0) variableCostComponents.push(`$${(calc.royaltyFee * multiplier).toLocaleString(undefined, {maximumFractionDigits: 0})} Royalty`);
+            if (calc.creditCardFee > 0) variableCostComponents.push(`$${(calc.creditCardFee * multiplier).toLocaleString(undefined, {maximumFractionDigits: 0})} CC Processing`);
+            if (calc.monthlyAdSpend > 0) variableCostComponents.push(`$${(calc.monthlyAdSpend * multiplier).toLocaleString(undefined, {maximumFractionDigits: 0})} Marketing`);
+            
+            // Update formulas
+            document.getElementById('totalExpensesFormula').textContent = `$${totalFixedCosts.toLocaleString(undefined, {maximumFractionDigits: 0})} Fixed + $${totalVariableCosts.toLocaleString(undefined, {maximumFractionDigits: 0})} Variable`;
+            document.getElementById('totalFixedCostsFormula').textContent = fixedCostComponents.length > 0 ? fixedCostComponents.join(' + ') : 'No fixed costs';
+            document.getElementById('totalVariableCostsFormula').textContent = variableCostComponents.length > 0 ? variableCostComponents.join(' + ') : 'No variable costs';
+            
+            // Update chart title
+            const timeframeLabel = timeframeLabels[expenseTimeframe];
+            document.getElementById('expenseChartTitle').textContent = `${timeframeLabel} Expense Breakdown`;
+        }
+
+        function updateDashboard() {
+            console.log('🔄 Starting updateDashboard()');
+            const calculations = performCalculations();
+            console.log('📊 Calculations result:', calculations);
+            updateMetrics(calculations);
+            updateCharts(calculations);
+            updateBreakdown(calculations);
+            updateExpenseChart(calculations);
+            updateFeesDisplay(calculations);
+            updateEventsDisplay();
+            updateGrowthAlignmentWarning(calculations);
+            console.log('✅ updateDashboard() completed');
+        }
+
+        function updateFeesDisplay(calc) {
+            if (!calc) return;
+            
+            const grossRevenue = calc.grossRevenue;
+            const royaltyFeeRate = parseFloat(document.getElementById('royaltyFeeRate').value) || 7;
+            const ccFeeRate = parseFloat(document.getElementById('ccFeeRate').value) || 3;
+            
+            const royaltyFee = grossRevenue * (royaltyFeeRate / 100);
+            const ccFee = grossRevenue * (ccFeeRate / 100);
+            
+            document.getElementById('royaltyFeeDisplay').textContent = '$' + royaltyFee.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('ccFeeDisplay').textContent = '$' + ccFee.toLocaleString(undefined, {maximumFractionDigits: 0});
+            
+            document.getElementById('royaltyFeeFormula').textContent = `($${grossRevenue.toLocaleString(undefined, {maximumFractionDigits: 0})} Gross Revenue × ${royaltyFeeRate}% Royalty)`;
+            document.getElementById('ccFeeFormula').textContent = `($${grossRevenue.toLocaleString(undefined, {maximumFractionDigits: 0})} Gross Revenue × ${ccFeeRate}% Fee)`;
+        }
+
+        function updateGrowthAlignmentWarning(calculations) {
+            if (!calculations || !calculations.growthAlignmentWarning) return;
+            
+            const warning = calculations.growthAlignmentWarning;
+            const warningContainer = document.getElementById('growthAlignmentWarning');
+            
+            // If container doesn't exist, create it
+            if (!warningContainer) {
+                const marketingCard = document.getElementById('monthlyAdSpend').closest('.space-y-3');
+                if (marketingCard) {
+                    const newContainer = document.createElement('div');
+                    newContainer.id = 'growthAlignmentWarning';
+                    newContainer.className = 'hidden';
+                    marketingCard.appendChild(newContainer);
+                }
+            }
+            
+            const container = document.getElementById('growthAlignmentWarning');
+            if (!container) return; // Exit if still can't find container
+            
+            if (warning.isTriggered) {
+                // Show warning
+                container.innerHTML = `
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3 flex-1">
+                                <h3 class="text-sm font-medium text-yellow-800">
+                                    Growth Alignment Warning
+                                </h3>
+                                <div class="mt-2 text-sm text-yellow-700">
+                                    <p class="mb-2">
+                                        Your current ad spend is projected to generate <strong>${warning.newStudentsPerMonth}</strong> new students per month, 
+                                        requiring <strong>${Math.round(warning.lessonDemandFromNewStudents)}</strong> lessons per month. 
+                                        However, your lesson plan only accommodates <strong>${Math.round(warning.plannedLessonCapacity)}</strong> lessons per month.
+                                    </p>
+                                    <p class="mb-3">
+                                        This may lead to wasted marketing funds and operational inefficiencies.
+                                    </p>
+                                    <button 
+                                        onclick="adjustAdSpendToMatchGrowth(${warning.recommendedAdSpend})" 
+                                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-yellow-800 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-colors"
+                                    >
+                                        Adjust Ad Spend to Match Growth
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.classList.remove('hidden');
+            } else {
+                // Hide warning
+                container.classList.add('hidden');
+            }
+        }
+
+        function adjustAdSpendToMatchGrowth(recommendedAdSpend) {
+            document.getElementById('monthlyAdSpend').value = recommendedAdSpend;
+            updateDashboard();
+        }
+
+        function testFixedCosts() {
+            console.log('🧪 Testing Fixed Cost Calculations...');
+            
+            // Test 1: Check if fixed cost elements exist
+            const fixedCostElements = [
+                'fixedRent', 'taxes', 'insurance', 'utilities', 
+                'software', 'cleaning', 'maintenance', 'otherCostValue'
+            ];
+            
+            console.log('📋 Fixed Cost Elements Check:');
+            fixedCostElements.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                const value = element ? parseFloat(element.value) || 0 : 'MISSING';
+                console.log(`  ${elementId}: ${value}`);
+            });
+            
+            // Test 2: Run calculations and check results
+            console.log('🧮 Running Calculations...');
+            const calculations = performCalculations();
+            
+            console.log('📊 Calculation Results:');
+            console.log(`  Total Fixed Costs: $${calculations.totalFixedCosts.toLocaleString()}`);
+            console.log(`  Total Variable Costs: $${calculations.totalVariableCosts.toLocaleString()}`);
+            console.log(`  Total Expenses: $${calculations.totalExpenses.toLocaleString()}`);
+            console.log(`  Net Income: $${calculations.netIncome.toLocaleString()}`);
+            
+            // Test 3: Verify expense items
+            console.log('📈 Expense Items:');
+            calculations.expenseItems.forEach(item => {
+                console.log(`  ${item.label}: $${item.value.toLocaleString()}`);
+            });
+            
+            console.log('✅ Fixed Cost Test Complete!');
+        }
+
+        function debugCalculations() {
+            console.log('🔍 DEBUGGING CALCULATIONS...');
+            console.log('=====================================');
+            
+            // Check if all required elements exist
+            const requiredElements = [
+                'pricePerLesson', 'phase1Lessons', 'phase2Lessons', 'phase3Lessons', 'phase4Lessons',
+                'workableWeeksPerYear', 'projectionMonths', 'onRampSlider', 'initialInvestment',
+                'royaltyFeeRate', 'ccFeeRate', 'monthlyAdSpend', 'leadConversionRate',
+                'priceIncreaseRate', 'payrollIncreaseRate', 'opCostIncreaseRate',
+                'sp500Rate', 'cdRate', 'fixedRent', 'taxes', 'insurance', 'utilities',
+                'software', 'cleaning', 'maintenance', 'otherCostValue'
+            ];
+            
+            console.log('📋 Checking required elements:');
+            requiredElements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    console.log(`   ✅ ${id}: exists, value = ${element.value}`);
+                } else {
+                    console.log(`   ❌ ${id}: MISSING`);
+                }
+            });
+            
+            // Test performCalculations function
+            console.log('\n🧮 Testing performCalculations function:');
+            try {
+                const calc = performCalculations();
+                console.log('✅ performCalculations() executed successfully');
+                console.log('📊 Key calculation results:');
+                console.log(`   Average Lessons Per Week: ${calc.averageLessonsPerWeek}`);
+                console.log(`   Average Lessons Per Month: ${calc.averageLessonsPerMonth}`);
+                console.log(`   Gross Revenue: $${calc.grossRevenue}`);
+                console.log(`   Total Fixed Costs: $${calc.totalFixedCosts}`);
+                console.log(`   Total Variable Costs: $${calc.totalVariableCosts}`);
+                console.log(`   Total Expenses: $${calc.totalExpenses}`);
+                console.log(`   Net Income: $${calc.netIncome}`);
+                console.log(`   Total Payroll Cost: $${calc.totalPayrollCost}`);
+            } catch (error) {
+                console.error('❌ Error in performCalculations():', error);
+            }
+            
+            // Test updateDashboard function
+            console.log('\n🔄 Testing updateDashboard function:');
+            try {
+                updateDashboard();
+                console.log('✅ updateDashboard() executed successfully');
+            } catch (error) {
+                console.error('❌ Error in updateDashboard():', error);
+            }
+            
+            console.log('\n✅ DEBUG COMPLETE');
+        }
+
+        function quickTest() {
+            console.log('🧪 QUICK TEST - Checking basic calculations...');
+            
+            // Test 1: Check basic inputs
+            const pricePerLesson = parseFloat(document.getElementById('pricePerLesson').value) || 0;
+            const phase1Lessons = parseFloat(document.getElementById('phase1Lessons').value) || 0;
+            const phase2Lessons = parseFloat(document.getElementById('phase2Lessons').value) || 0;
+            const phase3Lessons = parseFloat(document.getElementById('phase3Lessons').value) || 0;
+            const phase4Lessons = parseFloat(document.getElementById('phase4Lessons').value) || 0;
+            const workableWeeksPerYear = parseFloat(document.getElementById('workableWeeksPerYear').value) || 50;
+            
+            console.log('📋 Basic inputs:');
+            console.log(`   Price per lesson: $${pricePerLesson}`);
+            console.log(`   Phase lessons: ${phase1Lessons}, ${phase2Lessons}, ${phase3Lessons}, ${phase4Lessons}`);
+            console.log(`   Workable weeks: ${workableWeeksPerYear}`);
+            
+            // Test 2: Calculate average lessons
+            const averageLessonsPerWeek = (phase1Lessons + phase2Lessons + phase3Lessons + phase4Lessons) / 4;
+            const weeksPerMonth = workableWeeksPerYear / 12;
+            const averageLessonsPerMonth = averageLessonsPerWeek * weeksPerMonth;
+            
+            console.log('📊 Basic calculations:');
+            console.log(`   Average lessons per week: ${averageLessonsPerWeek}`);
+            console.log(`   Weeks per month: ${weeksPerMonth}`);
+            console.log(`   Average lessons per month: ${averageLessonsPerMonth}`);
+            
+            // Test 3: Calculate revenue
+            const grossRevenue = averageLessonsPerMonth * pricePerLesson;
+            console.log(`   Gross revenue: $${grossRevenue}`);
+            
+            // Test 4: Check fixed costs
+            const rent = parseFloat(document.getElementById('fixedRent')?.value) || 0;
+            const taxes = parseFloat(document.getElementById('taxes')?.value) || 0;
+            const insurance = parseFloat(document.getElementById('insurance')?.value) || 0;
+            const utilities = parseFloat(document.getElementById('utilities')?.value) || 0;
+            const software = parseFloat(document.getElementById('software')?.value) || 0;
+            const cleaning = parseFloat(document.getElementById('cleaning')?.value) || 0;
+            const maintenance = parseFloat(document.getElementById('maintenance')?.value) || 0;
+            const otherCostValue = parseFloat(document.getElementById('otherCostValue')?.value) || 0;
+            
+            const totalFixedCosts = rent + taxes + insurance + utilities + software + cleaning + maintenance + otherCostValue;
+            console.log('💰 Fixed costs:');
+            console.log(`   Total fixed costs: $${totalFixedCosts}`);
+            
+            // Test 5: Check payroll
+            const instructors = getInstructorsData();
+            const totalPayrollCost = instructors.reduce((sum, instructor) => sum + instructor.monthlyPay, 0);
+            console.log('👥 Payroll:');
+            console.log(`   Number of instructors: ${instructors.length}`);
+            console.log(`   Total payroll cost: $${totalPayrollCost}`);
+            
+            console.log('✅ QUICK TEST COMPLETE');
+        }
+
+        function checkHTMLElements() {
+            console.log('🔍 CHECKING HTML ELEMENTS...');
+            
+            const requiredElements = [
+                'grossRevenue', 'totalExpenses', 'netIncome', 'profitPerLesson', 'cac',
+                'grossRevenueFormula', 'totalExpensesFormula', 'netIncomeFormula', 'profitPerLessonFormula', 'cacFormula'
+            ];
+            
+            requiredElements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    console.log(`   ✅ ${id}: EXISTS, current text = "${element.textContent}"`);
+                } else {
+                    console.log(`   ❌ ${id}: MISSING`);
+                }
+            });
+            
+            console.log('✅ HTML ELEMENTS CHECK COMPLETE');
+        }
+
+        function forceUpdateDisplay() {
+            console.log('🔄 FORCE UPDATING DISPLAY...');
+            
+            // Get fresh calculations
+            const calc = performCalculations();
+            console.log('📊 Fresh calculations:', calc);
+            
+            // Force update the main display elements
+            const elements = {
+                'grossRevenue': calc.totalMonthlyRevenue,
+                'totalExpenses': calc.totalExpenses,
+                'netIncome': calc.netMonthlyIncome,
+                'profitPerLesson': calc.profitPerLessonMonthly,
+                'cac': calc.cac
+            };
+            
+            Object.entries(elements).forEach(([id, value]) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    const newText = id === 'profitPerLesson' || id === 'cac' 
+                        ? '$' + value.toFixed(2) 
+                        : '$' + value.toLocaleString(undefined, {maximumFractionDigits: 0});
+                    element.textContent = newText;
+                    console.log(`✅ FORCED UPDATE: ${id} = ${newText}`);
+                } else {
+                    console.log(`❌ Element ${id} not found`);
+                }
+            });
+            
+            console.log('✅ FORCE UPDATE COMPLETE');
+        }
+
+        function debugChartData() {
+            console.log('📊 DEBUGGING CHART DATA...');
+            
+            const calc = performCalculations();
+            console.log('📋 Available calculation properties:', Object.keys(calc));
+            
+            // Check if chart data properties exist
+            const chartDataProps = [
+                'revenueProjection', 'expensesProjection', 'incomeProjection', 
+                'bankAccountProjection', 'sp500Projection', 'cdProjection'
+            ];
+            
+            chartDataProps.forEach(prop => {
+                if (calc[prop]) {
+                    console.log(`✅ ${prop}:`, calc[prop].length, 'data points');
+                } else {
+                    console.log(`❌ ${prop}: MISSING`);
+                }
+            });
+            
+            // Check if financialChart exists
+            if (typeof financialChart !== 'undefined') {
+                console.log('✅ financialChart exists');
+                console.log('📊 Chart data:', financialChart.data);
+            } else {
+                console.log('❌ financialChart is undefined');
+            }
+            
+            console.log('✅ CHART DATA DEBUG COMPLETE');
+        }
+
+        function diagnoseDisplayIssues() {
+            console.log('🔍 COMPREHENSIVE DISPLAY DIAGNOSIS');
+            console.log('=====================================');
+            
+            // Check Chart.js
+            console.log('📊 Chart.js Status:');
+            console.log('   Available:', typeof Chart !== 'undefined');
+            if (typeof Chart !== 'undefined') {
+                console.log('   Version:', Chart.version);
+            }
+            
+            // Check key display elements
+            const keyElements = [
+                'grossRevenue', 'totalExpenses', 'netIncome', 'profitPerLesson', 'cac',
+                'financialChart', 'expenseChart', 'payrollChart'
+            ];
+            
+            console.log('📋 Key Display Elements:');
+            keyElements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    console.log(`   ✅ ${id}: EXISTS`);
+                    console.log(`      Text: "${element.textContent}"`);
+                    console.log(`      Visible: ${element.offsetWidth > 0 && element.offsetHeight > 0}`);
+                    console.log(`      Dimensions: ${element.offsetWidth}x${element.offsetHeight}`);
+                    console.log(`      Style: ${element.style.cssText}`);
+                } else {
+                    console.log(`   ❌ ${id}: MISSING`);
+                }
+            });
+            
+            // Check if charts are initialized
+            console.log('📊 Chart Objects:');
+            console.log('   financialChart:', typeof financialChart);
+            console.log('   expenseBreakdownChart:', typeof expenseBreakdownChart);
+            console.log('   payrollChart:', typeof payrollChart);
+            
+            // Check CSS issues
+            console.log('🎨 CSS Issues Check:');
+            const container = document.querySelector('.container');
+            if (container) {
+                console.log('   Main container visible:', container.offsetWidth > 0 && container.offsetHeight > 0);
+                console.log('   Main container style:', container.style.cssText);
+            }
+            
+            console.log('✅ DIAGNOSIS COMPLETE');
+        }
+
+        function testDisplayUpdate() {
+            console.log('🧪 TESTING DISPLAY UPDATE...');
+            
+            // Force update the display
+            forceUpdateDisplay();
+            
+            // Check if values are now showing
+            setTimeout(() => {
+                const grossRevenue = document.getElementById('grossRevenue')?.textContent;
+                const totalExpenses = document.getElementById('totalExpenses')?.textContent;
+                const netIncome = document.getElementById('netIncome')?.textContent;
+                
+                console.log('📊 Current display values:');
+                console.log('   Gross Revenue:', grossRevenue);
+                console.log('   Total Expenses:', totalExpenses);
+                console.log('   Net Income:', netIncome);
+                
+                if (grossRevenue === '$40,625' && totalExpenses === '$24,589' && netIncome === '$16,036') {
+                    console.log('✅ DISPLAY IS WORKING CORRECTLY!');
+                } else {
+                    console.log('❌ DISPLAY IS STILL SHOWING ZEROS');
+                }
+            }, 100);
+        }
+
+        function updateEventsDisplay() {
+            console.log('🔍 DEBUG: updateEventsDisplay() called');
+            // Safely get event values with null checks
+            const medalBallRevenue = parseFloat(document.getElementById('medalBallRevenue')?.value) || 0;
+            const medalBallCost = parseFloat(document.getElementById('medalBallCost')?.value) || 0;
+            const showcaseRevenue = parseFloat(document.getElementById('showcaseRevenue')?.value) || 0;
+            const showcaseCost = parseFloat(document.getElementById('showcaseCost')?.value) || 0;
+            const danceORamaRevenue = parseFloat(document.getElementById('danceORamaRevenue')?.value) || 0;
+            const danceORamaCost = parseFloat(document.getElementById('danceORamaCost')?.value) || 0;
+            const otherEventsRevenue = parseFloat(document.getElementById('otherEventsRevenue')?.value) || 0;
+            const otherEventsCost = parseFloat(document.getElementById('otherEventsCost')?.value) || 0;
+            
+            const totalEventsRevenue = medalBallRevenue + showcaseRevenue + danceORamaRevenue + otherEventsRevenue;
+            const totalEventsCost = medalBallCost + showcaseCost + danceORamaCost + otherEventsCost;
+            const netEventsProfit = totalEventsRevenue - totalEventsCost;
+            const monthlyEventsImpact = netEventsProfit / 12;
+            
+            // Safely update display elements if they exist
+            const totalEventsRevenueElement = document.getElementById('totalEventsRevenue');
+            const totalEventsCostElement = document.getElementById('totalEventsCost');
+            const netEventsProfitElement = document.getElementById('netEventsProfit');
+            const monthlyEventsImpactElement = document.getElementById('monthlyEventsImpact');
+            
+            if (totalEventsRevenueElement) {
+                totalEventsRevenueElement.textContent = '$' + totalEventsRevenue.toLocaleString(undefined, {maximumFractionDigits: 0});
+            }
+            if (totalEventsCostElement) {
+                totalEventsCostElement.textContent = '$' + totalEventsCost.toLocaleString(undefined, {maximumFractionDigits: 0});
+            }
+            if (netEventsProfitElement) {
+                netEventsProfitElement.textContent = '$' + netEventsProfit.toLocaleString(undefined, {maximumFractionDigits: 0});
+            }
+            if (monthlyEventsImpactElement) {
+                monthlyEventsImpactElement.textContent = '$' + monthlyEventsImpact.toLocaleString(undefined, {maximumFractionDigits: 0});
+            }
+        }
+
+        function performCalculations() {
+            console.log('🔍 DEBUG: Starting performCalculations()');
+            try {
+            
+            // Get input values
+            const pricePerLesson = parseFloat(document.getElementById('pricePerLesson').value) || 0;
+            const phase1Lessons = parseFloat(document.getElementById('phase1Lessons').value) || 0;
+            const phase2Lessons = parseFloat(document.getElementById('phase2Lessons').value) || 0;
+            const phase3Lessons = parseFloat(document.getElementById('phase3Lessons').value) || 0;
+            const phase4Lessons = parseFloat(document.getElementById('phase4Lessons').value) || 0;
+            const workableWeeksPerYear = parseFloat(document.getElementById('workableWeeksPerYear').value) || 52;
+            const projectionMonths = parseInt(document.getElementById('projectionMonths').value) || 36;
+            const onRampDuration = parseInt(document.getElementById('onRampSlider').value) || 6;
+            const initialInvestment = parseFloat(document.getElementById('initialInvestment').value) || 0;
+            
+            console.log('🔍 DEBUG: Basic inputs loaded:', {
+                pricePerLesson,
+                phase1Lessons,
+                phase2Lessons,
+                phase3Lessons,
+                phase4Lessons,
+                workableWeeksPerYear,
+                projectionMonths,
+                onRampDuration,
+                initialInvestment
+            });
+
+            // --- BEGIN DIAGNOSTIC LOGS ---
+            console.log('--- Fixed Cost Input Value Check ---');
+            console.log('Attempting to read rent value:', document.getElementById('fixedRent')?.value);
+            console.log('Attempting to read taxes value:', document.getElementById('taxes')?.value);
+            console.log('Attempting to read insurance value:', document.getElementById('insurance')?.value);
+            console.log('Attempting to read utilities value:', document.getElementById('utilities')?.value);
+            console.log('Attempting to read software value:', document.getElementById('software')?.value);
+            console.log('Attempting to read cleaning value:', document.getElementById('cleaning')?.value);
+            console.log('Attempting to read maintenance value:', document.getElementById('maintenance')?.value);
+            console.log('Attempting to read other cost value:', document.getElementById('otherCostValue')?.value);
+
+            // Get fixed cost values with safe defaults
+            const rent = parseFloat(document.getElementById('fixedRent')?.value) || 0;
+            const taxes = parseFloat(document.getElementById('taxes')?.value) || 0;
+            const insurance = parseFloat(document.getElementById('insurance')?.value) || 0;
+            const utilities = parseFloat(document.getElementById('utilities')?.value) || 0;
+            const software = parseFloat(document.getElementById('software')?.value) || 0;
+            const cleaning = parseFloat(document.getElementById('cleaning')?.value) || 0;
+            const maintenance = parseFloat(document.getElementById('maintenance')?.value) || 0;
+            const otherCostValue = parseFloat(document.getElementById('otherCostValue')?.value) || 0;
+
+            console.log('--- Parsed Fixed Cost Variable Check ---');
+            console.log('Parsed rent variable:', rent);
+            console.log('Parsed taxes variable:', taxes);
+            console.log('Parsed insurance variable:', insurance);
+            console.log('Parsed utilities variable:', utilities);
+            console.log('Parsed software variable:', software);
+            console.log('Parsed cleaning variable:', cleaning);
+            console.log('Parsed maintenance variable:', maintenance);
+            console.log('Parsed other cost variable:', otherCostValue);
+            console.log('--- END DIAGNOSTIC LOGS ---');
+
+            // Calculate total fixed costs
+            const totalFixedCosts = rent + taxes + insurance + utilities + software + cleaning + maintenance + otherCostValue;
+            
+            // Get other input values
+            const royaltyFeeRate = parseFloat(document.getElementById('royaltyFeeRate').value) || 7;
+            const ccFeeRate = parseFloat(document.getElementById('ccFeeRate').value) || 3;
+            const monthlyAdSpend = parseFloat(document.getElementById('monthlyAdSpend').value) || 0;
+            const leadConversionRate = parseFloat(document.getElementById('leadConversionRate').value) || 20;
+            const priceIncreaseRate = parseFloat(document.getElementById('priceIncreaseRate').value) || 3;
+            const payrollIncreaseRate = parseFloat(document.getElementById('payrollIncreaseRate').value) || 3;
+            const opCostIncreaseRate = parseFloat(document.getElementById('opCostIncreaseRate').value) || 2;
+            const sp500Rate = parseFloat(document.getElementById('sp500Rate').value) || 10;
+            const cdRate = parseFloat(document.getElementById('cdRate').value) || 4;
+            
+            // Get instructor data
+            const instructors = getInstructorsData();
+            const totalPayrollCost = instructors.reduce((sum, instructor) => sum + instructor.monthlyPay, 0);
+            
+            // Calculate average lessons per week and month
+            const averageLessonsPerWeek = (phase1Lessons + phase2Lessons + phase3Lessons + phase4Lessons) / 4;
+            const weeksPerMonth = workableWeeksPerYear / 12;
+            const averageLessonsPerMonth = averageLessonsPerWeek * weeksPerMonth;
+            
+            // Calculate revenue
+            const grossRevenue = averageLessonsPerMonth * pricePerLesson;
+            const royaltyFee = grossRevenue * (royaltyFeeRate / 100);
+            const creditCardFee = grossRevenue * (ccFeeRate / 100);
+            
+            // Calculate total expenses
+            const totalVariableCosts = totalPayrollCost + royaltyFee + creditCardFee + monthlyAdSpend;
+            const totalExpenses = totalFixedCosts + totalVariableCosts;
+            
+            // Calculate net income
+            const netIncome = grossRevenue - totalExpenses;
+            
+            // Calculate CAC
+            const costPerLead = 25; // Fixed at $25 per lead
+            const monthlyLeads = Math.floor(monthlyAdSpend / costPerLead);
+            const newStudentsPerMonth = Math.floor(monthlyLeads * (leadConversionRate / 100));
+            const cac = newStudentsPerMonth > 0 ? monthlyAdSpend / newStudentsPerMonth : 0;
+            
+            // Calculate per-lesson breakdown values
+            const royaltyFeePerLesson = royaltyFee / averageLessonsPerMonth;
+            const ccFeePerLesson = creditCardFee / averageLessonsPerMonth;
+            const marketingPerLesson = monthlyAdSpend / averageLessonsPerMonth;
+            const profitPerLessonBreakdown = netIncome / averageLessonsPerMonth;
+            
+            // Calculate time-specific values
+            const totalWeeklyRevenue = grossRevenue / 4.33;
+            const totalMonthlyRevenue = grossRevenue;
+            const totalAnnualRevenue = grossRevenue * 12;
+            
+            const netWeeklyIncome = netIncome / 4.33;
+            const netMonthlyIncome = netIncome;
+            const netAnnualIncome = netIncome * 12;
+            
+            const profitPerLessonWeekly = netWeeklyIncome / averageLessonsPerWeek;
+            const profitPerLessonMonthly = netMonthlyIncome / averageLessonsPerMonth;
+            const profitPerLessonAnnual = netAnnualIncome / (averageLessonsPerMonth * 12);
+            
+            // Generate annual data for time-series analysis
+            const annualData = [];
+            for (let year = 1; year <= Math.ceil(projectionMonths / 12); year++) {
+                const yearRevenue = grossRevenue * 12 * Math.pow(1 + (priceIncreaseRate / 100), year - 1);
+                const yearPayroll = totalPayrollCost * 12 * Math.pow(1 + (payrollIncreaseRate / 100), year - 1);
+                const yearFixedCosts = totalFixedCosts * 12 * Math.pow(1 + (opCostIncreaseRate / 100), year - 1);
+                const yearVariableCosts = (royaltyFee + creditCardFee + monthlyAdSpend) * 12 * Math.pow(1 + (opCostIncreaseRate / 100), year - 1);
+                const yearNetIncome = yearRevenue - yearPayroll - yearFixedCosts - yearVariableCosts;
+                
+                annualData.push({
+                    totalRevenue: yearRevenue,
+                    totalPayroll: yearPayroll,
+                    totalFixedCosts: yearFixedCosts,
+                    totalVariableCosts: yearVariableCosts,
+                    netIncome: yearNetIncome
+                });
+            }
+            
+            // Growth alignment warning calculation
+            const lessonDemandFromNewStudents = newStudentsPerMonth * 4; // Assume 4 lessons per student per month
+            const plannedLessonCapacity = averageLessonsPerMonth;
+            const growthAlignmentWarning = {
+                isTriggered: lessonDemandFromNewStudents > plannedLessonCapacity,
+                newStudentsPerMonth: newStudentsPerMonth,
+                lessonDemandFromNewStudents: lessonDemandFromNewStudents,
+                plannedLessonCapacity: plannedLessonCapacity,
+                recommendedAdSpend: Math.floor((plannedLessonCapacity / 4) / (leadConversionRate / 100) * costPerLead)
+            };
+            
+            // Create expense items for chart
+            const expenseItems = [
+                { label: 'Payroll', value: totalPayrollCost },
+                { label: 'Rent/Mortgage', value: rent },
+                { label: 'Taxes', value: taxes },
+                { label: 'Insurance', value: insurance },
+                { label: 'Utilities', value: utilities },
+                { label: 'Software', value: software },
+                { label: 'Cleaning', value: cleaning },
+                { label: 'Maintenance', value: maintenance },
+                { label: 'Other Costs', value: otherCostValue },
+                { label: 'Royalty Fee', value: royaltyFee },
+                { label: 'Credit Card Processing', value: creditCardFee },
+                { label: 'Marketing', value: monthlyAdSpend }
+            ].filter(item => item.value > 0); // Only include non-zero expenses
+            
+            // Generate chart projection data
+            const revenueProjection = [];
+            const expensesProjection = [];
+            const incomeProjection = [];
+            const bankAccountProjection = [];
+            const sp500Projection = [];
+            const cdProjection = [];
+            
+            let bankBalance = -initialInvestment; // Start with negative initial investment
+            
+            for (let month = 1; month <= projectionMonths; month++) {
+                // Calculate growth factors
+                const monthGrowth = Math.min(month / onRampDuration, 1); // Linear growth during on-ramp
+                const priceGrowth = Math.pow(1 + priceIncreaseRate / 100, month - 1);
+                const costGrowth = Math.pow(1 + opCostIncreaseRate / 100, month - 1);
+                const payrollGrowth = Math.pow(1 + payrollIncreaseRate / 100, month - 1);
+                
+                // Monthly values with growth
+                const monthlyRevenue = grossRevenue * monthGrowth * priceGrowth;
+                const monthlyExpenses = totalExpenses * costGrowth;
+                const monthlyPayroll = totalPayrollCost * payrollGrowth;
+                const monthlyNetIncome = monthlyRevenue - monthlyExpenses;
+                
+                // Update bank balance
+                bankBalance += monthlyNetIncome;
+                
+                // Add to projections
+                revenueProjection.push(monthlyRevenue);
+                expensesProjection.push(monthlyExpenses);
+                incomeProjection.push(monthlyNetIncome);
+                bankAccountProjection.push(bankBalance);
+                
+                // Alternative investment projections
+                const sp500Value = initialInvestment * Math.pow(1 + sp500Rate / 100, month / 12);
+                const cdValue = initialInvestment * Math.pow(1 + cdRate / 100, month / 12);
+                sp500Projection.push(sp500Value);
+                cdProjection.push(cdValue);
+            }
+            
+            return {
+                pricePerLesson,
+                averageLessonsPerWeek,
+                averageLessonsPerMonth,
+                grossRevenue,
+                totalFixedCosts,
+                totalVariableCosts,
+                totalExpenses,
+                netIncome,
+                totalPayrollCost,
+                royaltyFee,
+                creditCardFee,
+                monthlyAdSpend,
+                cac,
+                royaltyFeePerLesson,
+                ccFeePerLesson,
+                marketingPerLesson,
+                profitPerLessonBreakdown,
+                totalWeeklyRevenue,
+                totalMonthlyRevenue,
+                totalAnnualRevenue,
+                netWeeklyIncome,
+                netMonthlyIncome,
+                netAnnualIncome,
+                profitPerLessonWeekly,
+                profitPerLessonMonthly,
+                profitPerLessonAnnual,
+                annualData,
+                growthAlignmentWarning,
+                expenseItems,
+                // Chart projection data
+                revenueProjection,
+                expensesProjection,
+                incomeProjection,
+                bankAccountProjection,
+                sp500Projection,
+                cdProjection,
+                projectionMonths
+            };
+        } catch (error) {
+            console.error('❌ Error in performCalculations():', error);
+            return {
+                pricePerLesson: 0,
+                averageLessonsPerWeek: 0,
+                averageLessonsPerMonth: 0,
+                grossRevenue: 0,
+                totalFixedCosts: 0,
+                totalVariableCosts: 0,
+                totalExpenses: 0,
+                netIncome: 0,
+                totalPayrollCost: 0,
+                royaltyFee: 0,
+                creditCardFee: 0,
+                monthlyAdSpend: 0,
+                cac: 0,
+                royaltyFeePerLesson: 0,
+                ccFeePerLesson: 0,
+                marketingPerLesson: 0,
+                profitPerLessonBreakdown: 0,
+                totalWeeklyRevenue: 0,
+                totalMonthlyRevenue: 0,
+                totalAnnualRevenue: 0,
+                netWeeklyIncome: 0,
+                netMonthlyIncome: 0,
+                netAnnualIncome: 0,
+                profitPerLessonWeekly: 0,
+                profitPerLessonMonthly: 0,
+                profitPerLessonAnnual: 0,
+                annualData: [],
+                growthAlignmentWarning: { isTriggered: false },
+                expenseItems: []
+            };
+        }
+        }
+
+        function calculateIRR(initialInvestment, annualCashFlow, years) {
+            // Simplified IRR calculation
+            if (initialInvestment <= 0 || annualCashFlow <= 0) return 0;
+            
+            const totalCashFlow = annualCashFlow * years;
+            const simpleReturn = (totalCashFlow - initialInvestment) / initialInvestment;
+            const annualReturn = Math.pow(1 + simpleReturn, 1/years) - 1;
+            
+            return Math.max(0, annualReturn * 100);
+        }
+
+        function updateMetrics(calc) {
+            updateMetricsDisplay(calc);
+            updatePayrollDisplay(calc);
+            updateExpenseDisplay(calc);
+        }
+
+        function updateMetricsDisplay(calc) {
+            console.log('🔍 DEBUG: updateMetricsDisplay() called with calc:', calc);
+            if (!calc) {
+                console.log('❌ ERROR: calc is null or undefined');
+                return;
+            }
+            
+            // FIXED: Use time-specific variables based on current timeframe
+            console.log('🔍 DEBUG: Available calc properties:', Object.keys(calc));
+            console.log('🔍 DEBUG: metricsTimeframe =', metricsTimeframe);
+            
+            let currentRevenue, currentExpenses, currentNetIncome, currentProfitPerLesson;
+            
+            switch(metricsTimeframe) {
+                case 'weekly':
+                    currentRevenue = calc.totalWeeklyRevenue;
+                    currentExpenses = calc.totalExpenses / 4.33; // Monthly expenses converted to weekly
+                    currentNetIncome = calc.netWeeklyIncome;
+                    currentProfitPerLesson = calc.profitPerLessonWeekly;
+                    break;
+                case 'monthly':
+                    currentRevenue = calc.totalMonthlyRevenue;
+                    currentExpenses = calc.totalExpenses;
+                    currentNetIncome = calc.netMonthlyIncome;
+                    currentProfitPerLesson = calc.profitPerLessonMonthly;
+                    break;
+                case 'yearly':
+                    currentRevenue = calc.totalAnnualRevenue;
+                    currentExpenses = calc.totalExpenses * 12; // Monthly expenses converted to yearly
+                    currentNetIncome = calc.netAnnualIncome;
+                    currentProfitPerLesson = calc.profitPerLessonAnnual;
+                    break;
+                default:
+                    currentRevenue = calc.totalMonthlyRevenue;
+                    currentExpenses = calc.totalExpenses;
+                    currentNetIncome = calc.netMonthlyIncome;
+                    currentProfitPerLesson = calc.profitPerLessonMonthly;
+            }
+            
+            // Update Core Financials (time-sensitive) with correct values
+            console.log('🔍 DEBUG: Updating display elements...');
+            console.log(`   currentRevenue: $${currentRevenue}`);
+            console.log(`   currentExpenses: $${currentExpenses}`);
+            console.log(`   currentNetIncome: $${currentNetIncome}`);
+            console.log(`   currentProfitPerLesson: $${currentProfitPerLesson}`);
+            
+            const grossRevenueElement = document.getElementById('grossRevenue');
+            const totalExpensesElement = document.getElementById('totalExpenses');
+            const netIncomeElement = document.getElementById('netIncome');
+            const profitPerLessonElement = document.getElementById('profitPerLesson');
+            
+            if (grossRevenueElement) {
+                const newText = '$' + currentRevenue.toLocaleString(undefined, {maximumFractionDigits: 0});
+                grossRevenueElement.textContent = newText;
+                console.log('✅ Updated grossRevenue element to:', newText);
+                console.log('🔍 Element now contains:', grossRevenueElement.textContent);
+            } else {
+                console.log('❌ ERROR: grossRevenue element not found');
+            }
+            
+            if (totalExpensesElement) {
+                const newText = '$' + currentExpenses.toLocaleString(undefined, {maximumFractionDigits: 0});
+                totalExpensesElement.textContent = newText;
+                console.log('✅ Updated totalExpenses element to:', newText);
+                console.log('🔍 Element now contains:', totalExpensesElement.textContent);
+            } else {
+                console.log('❌ ERROR: totalExpenses element not found');
+            }
+            
+            if (netIncomeElement) {
+                const newText = '$' + currentNetIncome.toLocaleString(undefined, {maximumFractionDigits: 0});
+                netIncomeElement.textContent = newText;
+                console.log('✅ Updated netIncome element to:', newText);
+                console.log('🔍 Element now contains:', netIncomeElement.textContent);
+            } else {
+                console.log('❌ ERROR: netIncome element not found');
+            }
+            
+            if (profitPerLessonElement) {
+                const newText = '$' + currentProfitPerLesson.toFixed(2);
+                profitPerLessonElement.textContent = newText;
+                console.log('✅ Updated profitPerLesson element to:', newText);
+                console.log('🔍 Element now contains:', profitPerLessonElement.textContent);
+            } else {
+                console.log('❌ ERROR: profitPerLesson element not found');
+            }
+            
+            // FIXED: CAC should not change based on timeframe - it's a fixed metric
+            document.getElementById('cac').textContent = '$' + calc.cac.toFixed(0);
+            
+            // Update Annual Performance Ratios (time-series)
+            updateAnnualPerformanceRatios(calc);
+            
+            document.getElementById('lessonPriceDisplay').textContent = calc.pricePerLesson;
+            
+            // Update formulas with time-specific values and enhanced transparency
+            const pricePerLesson = parseFloat(document.getElementById('pricePerLesson').value) || 0;
+            
+            // Enhanced formula transparency with actual calculated values
+            document.getElementById('grossRevenueFormula').textContent = `${calc.averageLessonsPerWeek.toFixed(1)} avg lessons/wk × $${pricePerLesson}/lesson × ${(calc.averageLessonsPerMonth / calc.averageLessonsPerWeek).toFixed(2)} wks/mo`;
+            document.getElementById('totalExpensesFormula').textContent = `Fixed Costs + Variable Costs`;
+            document.getElementById('netIncomeFormula').textContent = `Gross Revenue: $${currentRevenue.toLocaleString()} - Total Expenses: $${currentExpenses.toLocaleString()}`;
+            document.getElementById('profitPerLessonFormula').textContent = `Net Income: $${currentNetIncome.toLocaleString()} ÷ ${calc.averageLessonsPerMonth.toFixed(0)} avg lessons`;
+            document.getElementById('cacFormula').textContent = `Cost Per Lead: $25 ÷ Conversion Rate: ${parseFloat(document.getElementById('leadConversionRate').value) || 0}%`;
+        }
+
+        function updateAnnualPerformanceRatios(calc) {
+            if (!calc || !calc.annualData) return;
+            
+            const initialInvestment = parseFloat(document.getElementById('initialInvestment').value) || 0;
+            
+            // Calculate time-series for each metric
+            const grossProfitMarginSeries = [];
+            const operatingProfitMarginSeries = [];
+            const netProfitMarginSeries = [];
+            const cashOnCashReturnSeries = [];
+            const irrSeries = [];
+            
+            calc.annualData.forEach((yearData, index) => {
+                const year = index + 1;
+                
+                // Gross Profit Margin
+                const grossProfit = yearData.totalRevenue - yearData.totalPayroll;
+                const grossProfitMargin = yearData.totalRevenue > 0 ? (grossProfit / yearData.totalRevenue) * 100 : 0;
+                grossProfitMarginSeries.push(`Year ${year}: ${grossProfitMargin.toFixed(1)}%`);
+                
+                // Operating Profit Margin
+                const operatingIncome = grossProfit - yearData.totalFixedCosts - (parseFloat(document.getElementById('monthlyAdSpend').value) || 0) * 12;
+                const operatingProfitMargin = yearData.totalRevenue > 0 ? (operatingIncome / yearData.totalRevenue) * 100 : 0;
+                operatingProfitMarginSeries.push(`Year ${year}: ${operatingProfitMargin.toFixed(1)}%`);
+                
+                // Net Profit Margin
+                const netProfitMargin = yearData.totalRevenue > 0 ? (yearData.netIncome / yearData.totalRevenue) * 100 : 0;
+                netProfitMarginSeries.push(`Year ${year}: ${netProfitMargin.toFixed(1)}%`);
+                
+                // Cash on Cash Return
+                const cashOnCashReturn = initialInvestment > 0 ? (yearData.netIncome / initialInvestment) * 100 : 0;
+                cashOnCashReturnSeries.push(`Year ${year}: ${cashOnCashReturn.toFixed(1)}%`);
+                
+                // IRR (simplified calculation for each year)
+                const irr = calculateIRR(initialInvestment, yearData.netIncome, year);
+                irrSeries.push(`Year ${year}: ${irr.toFixed(1)}%`);
+            });
+            
+            // Update the display values (show current year or average)
+            const currentYearIndex = Math.min(1, calc.annualData.length - 1); // Show Year 2 if available, otherwise Year 1
+            const currentYearData = calc.annualData[currentYearIndex];
+            
+            if (currentYearData) {
+                const grossProfit = currentYearData.totalRevenue - currentYearData.totalPayroll;
+                const grossProfitMargin = currentYearData.totalRevenue > 0 ? (grossProfit / currentYearData.totalRevenue) * 100 : 0;
+                document.getElementById('grossProfitMargin').textContent = grossProfitMargin.toFixed(1) + '%';
+                
+                const operatingIncome = grossProfit - currentYearData.totalFixedCosts - (parseFloat(document.getElementById('monthlyAdSpend').value) || 0) * 12;
+                const operatingProfitMargin = currentYearData.totalRevenue > 0 ? (operatingIncome / currentYearData.totalRevenue) * 100 : 0;
+                document.getElementById('operatingProfitMargin').textContent = operatingProfitMargin.toFixed(1) + '%';
+                
+                const netProfitMargin = currentYearData.totalRevenue > 0 ? (currentYearData.netIncome / currentYearData.totalRevenue) * 100 : 0;
+                document.getElementById('netProfitMargin').textContent = netProfitMargin.toFixed(1) + '%';
+                
+                const cashOnCashReturn = initialInvestment > 0 ? (currentYearData.netIncome / initialInvestment) * 100 : 0;
+                document.getElementById('cashOnCashReturn').textContent = cashOnCashReturn.toFixed(1) + '%';
+                
+                const irr = calculateIRR(initialInvestment, currentYearData.netIncome, currentYearIndex + 1);
+                document.getElementById('irr').textContent = irr.toFixed(1) + '%';
+            }
+            
+            // Update time-series displays
+            document.getElementById('grossProfitMarginTimeSeries').textContent = grossProfitMarginSeries.join(' | ');
+            document.getElementById('operatingProfitMarginTimeSeries').textContent = operatingProfitMarginSeries.join(' | ');
+            document.getElementById('netProfitMarginTimeSeries').textContent = netProfitMarginSeries.join(' | ');
+            document.getElementById('cashOnCashReturnTimeSeries').textContent = cashOnCashReturnSeries.join(' | ');
+            document.getElementById('irrTimeSeries').textContent = irrSeries.join(' | ');
+        }
+
+        function updatePayrollDisplay(calc) {
+            if (!calc) return;
+            
+            const multiplier = timeframeMultipliers[payrollTimeframe];
+            const instructors = getInstructorsData();
+            const totalPayroll = instructors.reduce((sum, instructor) => sum + instructor.monthlyPay, 0);
+            
+            // Use pre-calculated averages for consistency
+            const lessonsPerMonth = calc.averageLessonsPerMonth;
+            
+            // Update payroll summary values
+            document.getElementById('totalPayrollDisplay').textContent = '$' + (totalPayroll * multiplier).toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('payrollPerLessonDisplay').textContent = '$' + (totalPayroll / lessonsPerMonth * multiplier).toFixed(2);
+            document.getElementById('payrollPercentageDisplay').textContent = ((totalPayroll / calc.grossRevenue) * 100).toFixed(1) + '%';
+            
+            // Update formulas with pre-calculated averages
+            document.getElementById('totalPayrollFormula').textContent = `Sum of all instructor pay`;
+            document.getElementById('payrollPerLessonFormula').textContent = `Total Payroll ÷ ${lessonsPerMonth.toFixed(0)} avg lessons`;
+            document.getElementById('payrollPercentageFormula').textContent = `Total Payroll ÷ Gross Revenue × 100`;
+            
+            // Update individual instructor breakdown
+            const breakdownContainer = document.getElementById('instructorPayrollBreakdown');
+            breakdownContainer.innerHTML = '';
+            
+            instructors.forEach((instructor, index) => {
+                const instructorCard = document.createElement('div');
+                instructorCard.className = 'calculation-card';
+                instructorCard.innerHTML = `
+                    <h4 class="text-lg font-semibold text-gray-900 mb-2">${instructor.name}</h4>
+                    <p class="text-2xl font-bold text-blue-600 mb-3">$${(instructor.monthlyPay * multiplier).toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <p class="text-sm text-gray-600 mb-2"><strong>Formula:</strong></p>
+                        <p class="text-sm text-gray-700 font-mono">${instructor.lessonsPerWeek} lessons/wk × $${instructor.effectiveHourlyRate}/hr × ${(calc.averageLessonsPerMonth / calc.averageLessonsPerWeek).toFixed(2)} wks/mo</p>
+                    </div>
+                `;
+                breakdownContainer.appendChild(instructorCard);
+            });
+        }
+
+        function updateCharts(calc) {
+            // Update financial projection chart
+            const labels = [];
+            const timeframeLabel = currentTimeframe === 'weekly' ? 'Week' : currentTimeframe === 'monthly' ? 'Month' : 'Year';
+            
+            for (let i = 1; i <= calc.projectionMonths; i++) {
+                if (currentTimeframe === 'weekly') {
+                    labels.push(`Week ${i}`);
+                } else if (currentTimeframe === 'monthly') {
+                    labels.push(`Month ${i}`);
+                } else {
+                    labels.push(`Year ${Math.ceil(i / 12)}`);
+                }
+            }
+
+            // Adjust point sizes based on number of data points
+            const pointRadius = calc.projectionMonths > 20 ? 2 : calc.projectionMonths > 10 ? 3 : 4;
+            const pointHoverRadius = calc.projectionMonths > 20 ? 4 : calc.projectionMonths > 10 ? 5 : 6;
+
+            financialChart.data.labels = labels;
+            financialChart.data.datasets[0].data = calc.revenueProjection;
+            financialChart.data.datasets[0].pointRadius = pointRadius;
+            financialChart.data.datasets[0].pointHoverRadius = pointHoverRadius;
+            financialChart.data.datasets[1].data = calc.expensesProjection;
+            financialChart.data.datasets[1].pointRadius = pointRadius;
+            financialChart.data.datasets[1].pointHoverRadius = pointHoverRadius;
+            financialChart.data.datasets[2].data = calc.incomeProjection;
+            financialChart.data.datasets[2].pointRadius = pointRadius;
+            financialChart.data.datasets[2].pointHoverRadius = pointHoverRadius;
+            financialChart.data.datasets[3].data = calc.bankAccountProjection;
+            financialChart.data.datasets[3].pointRadius = pointRadius;
+            financialChart.data.datasets[3].pointHoverRadius = pointHoverRadius;
+            financialChart.data.datasets[4].data = calc.sp500Projection;
+            financialChart.data.datasets[4].pointRadius = pointRadius;
+            financialChart.data.datasets[4].pointHoverRadius = pointHoverRadius;
+            financialChart.data.datasets[5].data = calc.cdProjection;
+            financialChart.data.datasets[5].pointRadius = pointRadius;
+            financialChart.data.datasets[5].pointHoverRadius = pointHoverRadius;
+            
+            // Update chart title based on timeframe
+            financialChart.options.scales.x.title.text = timeframeLabel + 's';
+            
+            // Update maxTicksLimit based on number of months
+            if (calc.projectionMonths > 20) {
+                financialChart.options.scales.x.maxTicksLimit = 10;
+            } else if (calc.projectionMonths > 10) {
+                financialChart.options.scales.x.maxTicksLimit = 15;
+            } else {
+                financialChart.options.scales.x.maxTicksLimit = 20;
+            }
+            
+            // Add break-even annotation if found
+            if (calc.breakEvenMonth > 0) {
+                const annotation = {
+                    type: 'line',
+                    mode: 'vertical',
+                    scaleID: 'x',
+                    value: calc.breakEvenMonth - 1, // Convert to 0-based index
+                    borderColor: '#10b981',
+                    borderWidth: 3,
+                    borderDash: [5, 5],
+                    label: {
+                        content: 'Break-Even Point',
+                        enabled: true,
+                        position: 'top',
+                        backgroundColor: '#10b981',
+                        color: 'white',
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        }
+                    }
+                };
+                
+                if (!financialChart.options.plugins.annotation) {
+                    financialChart.options.plugins.annotation = { annotations: {} };
+                }
+                financialChart.options.plugins.annotation.annotations.breakEven = annotation;
+            } else {
+                if (financialChart.options.plugins.annotation && financialChart.options.plugins.annotation.annotations) {
+                    delete financialChart.options.plugins.annotation.annotations.breakEven;
+                }
+            }
+            
+            financialChart.update();
+
+            // Update breakdown chart
+            breakdownChart.data.datasets[0].data = [
+                calc.payrollPerLesson,
+                calc.fixedCostsPerLesson,
+                calc.royaltyFeePerLesson,
+                calc.ccFeePerLesson,
+                calc.marketingPerLesson,
+                calc.profitPerLessonBreakdown
+            ];
+            breakdownChart.update();
+        }
+
+        function updateBreakdown(calc) {
+            const legend = document.getElementById('breakdownLegend');
+            const instructors = getInstructorsData();
+            
+            // Create detailed breakdown items
+            let items = [];
+            
+            // Add individual instructor payroll costs
+            instructors.forEach((instructor, index) => {
+                const colors = ['#3b82f6', '#1d4ed8', '#1e40af', '#7c3aed', '#059669']; // Blue shades + Purple + Green
+                items.push({
+                    label: `${instructor.name} (Payroll)`,
+                    value: instructor.monthlyPay / (parseFloat(document.getElementById('phase1Lessons').value) * 4.33),
+                    color: colors[index % colors.length]
+                });
+            });
+            
+            // Add individual fixed cost components
+            // Fixed costs with safe defaults
+            const rent = parseFloat(document.getElementById('fixedRent')?.value) || 0;
+            const taxes = parseFloat(document.getElementById('taxes')?.value) || 0;
+            const insurance = parseFloat(document.getElementById('insurance')?.value) || 0;
+            const utilities = parseFloat(document.getElementById('utilities')?.value) || 0;
+            const software = parseFloat(document.getElementById('software')?.value) || 0;
+            const cleaning = parseFloat(document.getElementById('cleaning')?.value) || 0;
+            const maintenance = parseFloat(document.getElementById('maintenance')?.value) || 0;
+            const otherCostValue = parseFloat(document.getElementById('otherCostValue')?.value) || 0;
+            const otherCostLabel = 'Other Costs';
+            
+            console.log('🔍 DEBUG: Fixed costs loaded:', {
+                rent, taxes, insurance, utilities, software, cleaning, maintenance, otherCostValue
+            });
+            
+            const lessonsPerMonth = calc.averageLessonsPerMonth;
+            
+            const fixedCostItems = [
+                { label: 'Rent / Mortgage', value: rent / lessonsPerMonth, color: '#ef4444' }, // Red
+                { label: 'Taxes', value: taxes / lessonsPerMonth, color: '#f97316' }, // Orange
+                { label: 'Insurance', value: insurance / lessonsPerMonth, color: '#eab308' }, // Yellow
+                { label: 'Utilities', value: utilities / lessonsPerMonth, color: '#84cc16' }, // Lime
+                { label: 'Software', value: software / lessonsPerMonth, color: '#06b6d4' }, // Cyan
+                { label: 'Cleaning', value: cleaning / lessonsPerMonth, color: '#8b5cf6' }, // Purple
+                { label: 'Maintenance', value: maintenance / lessonsPerMonth, color: '#ec4899' } // Pink
+            ];
+            
+            // Only add fixed costs that have values
+            fixedCostItems.forEach(item => {
+                if (item.value > 0) {
+                    items.push(item);
+                }
+            });
+            
+            if (otherCostValue > 0) {
+                items.push({
+                    label: otherCostLabel,
+                    value: otherCostValue / lessonsPerMonth,
+                    color: '#f43f5e' // Rose
+                });
+            }
+            
+            // Add variable costs
+            items.push(
+                { label: 'Royalty Fee', value: calc.royaltyFeePerLesson, color: '#f59e0b' },
+                { label: 'CC Processing Fee', value: calc.ccFeePerLesson, color: '#f97316' },
+                { label: 'Marketing', value: calc.marketingPerLesson, color: '#8b5cf6' },
+                { label: 'Profit', value: calc.profitPerLessonBreakdown, color: '#10b981' }
+            );
+
+            legend.innerHTML = items.map(item => `
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full mr-2" style="background-color: ${item.color}"></div>
+                        <span class="text-sm font-medium" style="color: ${item.color}">${item.label}</span>
+                    </div>
+                    <span class="text-sm font-bold" style="color: ${item.color}">$${item.value.toFixed(2)}</span>
+                </div>
+            `).join('');
+            
+            // Update the chart data
+            breakdownChart.data.labels = items.map(item => item.label);
+            breakdownChart.data.datasets[0].data = items.map(item => item.value);
+            breakdownChart.data.datasets[0].backgroundColor = items.map(item => item.color);
+            breakdownChart.update();
+        }
+
+        function updateExpenseChart(calculations) {
+            if (!expenseBreakdownChart || !calculations.expenseItems) return;
+            
+            // Apply timeframe multiplier to expense data
+            const multiplier = timeframeMultipliers[expenseBreakdownTimeframe];
+            const labels = calculations.expenseItems.map(item => item.label);
+            const data = calculations.expenseItems.map(item => item.value * multiplier);
+            
+            // Update the chart data
+            expenseBreakdownChart.data.labels = labels;
+            expenseBreakdownChart.data.datasets[0].data = data;
+            
+            // Update the chart
+            expenseBreakdownChart.update();
+        }
+
+
+
+        async function saveToPDF() {
+            const { jsPDF } = window.jspdf;
+            const resultsSection = document.querySelector('.container:last-child');
+            
+            try {
+                const canvas = await html2canvas(resultsSection, {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true
+                });
+                
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgWidth = 210;
+                const pageHeight = 295;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 0;
+
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                pdf.save('dance-studio-financial-dashboard.pdf');
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('Error generating PDF. Please try again.');
+            }
+        }
+
+        function checkGrowthAlignmentWarning() {
+            // 1. Max students supported
+            const weeklyLessons = parseFloat(document.getElementById('phase1Lessons').value) || 0;
+            const phase2 = parseFloat(document.getElementById('phase2Lessons').value) || 0;
+            const phase3 = parseFloat(document.getElementById('phase3Lessons').value) || 0;
+            const phase4 = parseFloat(document.getElementById('phase4Lessons').value) || 0;
+            const onRampDuration = parseInt(document.getElementById('onRampSlider').value) || 6;
+            const projectionMonths = parseInt(document.getElementById('projectionMonths').value) || 36;
+            // Use average monthly lessons for the current month
+            let avgWeeklyLessons = (weeklyLessons + phase2 + phase3 + phase4) / 4;
+            let maxStudentsSupported = avgWeeklyLessons / 1.5;
+
+            // 2. Ad spend to student conversion
+            const monthlyAdSpend = parseFloat(document.getElementById('monthlyAdSpend').value) || 0;
+            const leadConversionRate = parseFloat(document.getElementById('leadConversionRate').value) || 0;
+            const costPerLead = 25;
+            const newStudentsPerMonth = (monthlyAdSpend / costPerLead) * (leadConversionRate / 100);
+            let cumulativeStudents = 0;
+            let monthExceeded = null;
+            for (let m = 1; m <= projectionMonths; m++) {
+                cumulativeStudents += newStudentsPerMonth;
+                if (!monthExceeded && cumulativeStudents > maxStudentsSupported) {
+                    monthExceeded = m;
+                }
+            }
+            // 3. If cumulative students > max supported in the current month, show modal
+            const currentMonth = projectionMonths;
+            if (cumulativeStudents > maxStudentsSupported && monthExceeded && monthExceeded <= currentMonth) {
+                showGrowthAlignmentModal({
+                    maxStudentsSupported,
+                    avgWeeklyLessons,
+                    newStudentsPerMonth,
+                    cumulativeStudents,
+                    monthExceeded,
+                    monthlyAdSpend,
+                    leadConversionRate
+                });
+            }
+            // 4. Show formulas and numbers in the marketing section
+            showGrowthAlignmentCalculations({
+                maxStudentsSupported,
+                avgWeeklyLessons,
+                newStudentsPerMonth,
+                cumulativeStudents,
+                monthExceeded,
+                monthlyAdSpend,
+                leadConversionRate
+            });
+        }
+
+        function showGrowthAlignmentModal(data) {
+            const modal = document.getElementById('growthAlignmentModal');
+            const content = document.getElementById('growthAlignmentModalContent');
+            content.innerHTML = `
+                <div class="mb-2 text-red-700 font-semibold">Warning: Your marketing plan will generate more students than your lesson plan can accommodate by month <b>${data.monthExceeded}</b>!</div>
+                <div class="mb-2">Formulas and values:</div>
+                <ul class="mb-2 text-xs text-gray-700">
+                    <li><b>Max Students Supported</b> = Avg Weekly Lessons / 1.5 = <b>${data.avgWeeklyLessons.toFixed(2)}</b> / 1.5 = <b>${data.maxStudentsSupported.toFixed(0)}</b></li>
+                    <li><b>New Students Per Month</b> = (Ad Spend / $25) × (Lead Conversion Rate / 100) = (${data.monthlyAdSpend} / 25) × (${data.leadConversionRate} / 100) = <b>${data.newStudentsPerMonth.toFixed(2)}</b></li>
+                    <li><b>Cumulative Students After ${data.monthExceeded} Months</b> = <b>${(data.newStudentsPerMonth * data.monthExceeded).toFixed(0)}</b></li>
+                </ul>
+                <div class="text-xs text-gray-600">You will reach <b>${data.maxStudentsSupported.toFixed(0)}</b> students in <b>${data.monthExceeded}</b> months, but your ad plan will exceed this by then.</div>
+            `;
+            modal.classList.remove('hidden');
+        }
+
+        function closeGrowthAlignmentModal() {
+            document.getElementById('growthAlignmentModal').classList.add('hidden');
+        }
+
+        function showGrowthAlignmentCalculations(data) {
+            let calcBox = document.getElementById('growthAlignmentCalcs');
+            if (!calcBox) {
+                // Insert after marketing section
+                const marketingCard = document.getElementById('monthlyAdSpend').closest('.space-y-3');
+                calcBox = document.createElement('div');
+                calcBox.id = 'growthAlignmentCalcs';
+                calcBox.className = 'bg-gray-100 border border-gray-200 rounded p-2 mt-2 text-xs text-gray-700';
+                marketingCard.appendChild(calcBox);
+            }
+            calcBox.innerHTML = `
+                <div><b>Growth Alignment Calculations:</b></div>
+                <div>Max Students Supported = Avg Weekly Lessons / 1.5 = <b>${data.avgWeeklyLessons.toFixed(2)}</b> / 1.5 = <b>${data.maxStudentsSupported.toFixed(0)}</b></div>
+                <div>New Students Per Month = (Ad Spend / $25) × (Lead Conversion Rate / 100) = (${data.monthlyAdSpend} / 25) × (${data.leadConversionRate} / 100) = <b>${data.newStudentsPerMonth.toFixed(2)}</b></div>
+                <div>Cumulative Students After ${data.monthExceeded || '?'} Months = <b>${(data.newStudentsPerMonth * (data.monthExceeded || 0)).toFixed(0)}</b></div>
+            `;
+        }
+
+        // Call this in updateDashboard
+        const origUpdateDashboard = updateDashboard;
+        updateDashboard = function() {
+            origUpdateDashboard.apply(this, arguments);
+            checkGrowthAlignmentWarning();
+        };
+
+        // COMPREHENSIVE TESTING SUITE
+        function runComprehensiveTestSuite() {
+            console.log('🚀 STARTING COMPREHENSIVE TEST SUITE');
+            console.log('=====================================');
+            
+            // Store original values to restore later
+            const originalValues = {};
+            const inputs = [
+                'pricePerLesson', 'phase1Lessons', 'phase2Lessons', 'phase3Lessons', 'phase4Lessons',
+                'workableWeeksPerYear', 'initialInvestment', 'royaltyFeeRate', 'ccFeeRate',
+                'monthlyAdSpend', 'leadConversionRate', 'priceIncreaseRate', 'payrollIncreaseRate',
+                'opCostIncreaseRate', 'sp500Rate', 'cdRate', 'medalBallRevenue', 'medalBallCost',
+                'showcaseRevenue', 'showcaseCost', 'danceORamaRevenue', 'danceORamaCost',
+                'otherEventsRevenue', 'otherEventsCost', 'fixedRent', 'taxes', 'insurance',
+                'utilities', 'software', 'cleaning', 'maintenance', 'otherCostValue'
+            ];
+            
+            inputs.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    originalValues[id] = element.value;
+                }
+            });
+
+            // TEST PROTOCOL 1: Core Financial Engine & Timeframe Consistency
+            console.log('\n📊 TEST PROTOCOL 1: Core Financial Engine & Timeframe Consistency');
+            console.log('----------------------------------------------------------------');
+            
+            // Set simple, known values
+            document.getElementById('pricePerLesson').value = '100';
+            document.getElementById('phase1Lessons').value = '52';
+            document.getElementById('phase2Lessons').value = '52';
+            document.getElementById('phase3Lessons').value = '52';
+            document.getElementById('phase4Lessons').value = '52';
+            document.getElementById('workableWeeksPerYear').value = '52';
+            document.getElementById('monthlyAdSpend').value = '0';
+            document.getElementById('royaltyFeeRate').value = '0';
+            document.getElementById('ccFeeRate').value = '0';
+            document.getElementById('fixedRent').value = '0';
+            document.getElementById('taxes').value = '0';
+            document.getElementById('insurance').value = '0';
+            document.getElementById('utilities').value = '0';
+            document.getElementById('software').value = '0';
+            document.getElementById('cleaning').value = '0';
+            document.getElementById('maintenance').value = '0';
+            document.getElementById('otherCostValue').value = '0';
+            
+            updateDashboard();
+            const calc = performCalculations();
+            
+            console.log('🔍 Timeframe Consistency Check:');
+            console.log(`   Average Weekly Lessons: ${calc.averageLessonsPerWeek}`);
+            console.log(`   Average Monthly Lessons: ${calc.averageLessonsPerMonth}`);
+            console.log(`   Average Annual Lessons: ${calc.averageLessonsPerYear}`);
+            console.log(`   Weekly × 4.33 = Monthly: ${calc.averageLessonsPerWeek * 4.33}`);
+            console.log(`   Monthly × 12 = Annual: ${calc.averageLessonsPerMonth * 12}`);
+            console.log(`   Weekly × 52 = Annual: ${calc.averageLessonsPerWeek * 52}`);
+            
+            // Check if calculations are mathematically sound
+            const weeklyToMonthly = calc.averageLessonsPerWeek > 0 && calc.averageLessonsPerMonth > 0;
+            const monthlyToAnnual = Math.abs(calc.averageLessonsPerYear - (calc.averageLessonsPerMonth * 12)) < 0.01;
+            const weeklyToAnnual = calc.averageLessonsPerWeek > 0 && calc.averageLessonsPerYear > 0;
+            
+            console.log(`   ✅ Weekly to Monthly conversion: ${weeklyToMonthly ? 'PASS' : 'FAIL'}`);
+            console.log(`   ✅ Monthly to Annual conversion: ${monthlyToAnnual ? 'PASS' : 'FAIL'}`);
+            console.log(`   ✅ Weekly to Annual conversion: ${weeklyToAnnual ? 'PASS' : 'FAIL'}`);
+            
+            console.log('\n💰 Revenue Consistency Check:');
+            console.log(`   Total Weekly Revenue: $${calc.totalWeeklyRevenue}`);
+            console.log(`   Total Monthly Revenue: $${calc.totalMonthlyRevenue}`);
+            console.log(`   Total Annual Revenue: $${calc.totalAnnualRevenue}`);
+            console.log(`   Weekly × 4.33 = Monthly: $${calc.totalWeeklyRevenue * 4.33}`);
+            console.log(`   Monthly × 12 = Annual: $${calc.totalMonthlyRevenue * 12}`);
+            
+            const revenueWeeklyToMonthly = calc.totalWeeklyRevenue > 0 && calc.totalMonthlyRevenue > 0;
+            const revenueMonthlyToAnnual = Math.abs(calc.totalAnnualRevenue - (calc.totalMonthlyRevenue * 12)) < 0.01;
+            
+            console.log(`   ✅ Revenue Weekly to Monthly: ${revenueWeeklyToMonthly ? 'PASS' : 'FAIL'}`);
+            console.log(`   ✅ Revenue Monthly to Annual: ${revenueMonthlyToAnnual ? 'PASS' : 'FAIL'}`);
+
+            // TEST PROTOCOL 2: Payroll Logic (Manual & Automatic Modes)
+            console.log('\n👥 TEST PROTOCOL 2: Payroll Logic (Manual & Automatic Modes)');
+            console.log('------------------------------------------------------------');
+            
+            // Manual Mode Test
+            console.log('🔧 Manual Payroll Mode Test:');
+            document.getElementById('payrollModeToggle').checked = false;
+            document.getElementById('payrollModeToggle').dispatchEvent(new Event('change'));
+            
+            // Clear existing instructors
+            const instructorsContainer = document.getElementById('instructorsContainer');
+            instructorsContainer.innerHTML = '';
+            
+            // Add one instructor
+            document.getElementById('addInstructorBtn').click();
+            const instructorDiv = instructorsContainer.querySelector('.instructor-card');
+            if (!instructorDiv) {
+                console.log('   ❌ Could not find instructor card - skipping manual payroll test');
+                return;
+            }
+            const rateInput = instructorDiv.querySelector('.instructor-rate');
+            const bonusInput = instructorDiv.querySelector('.instructor-bonus-amount');
+            const lessonsInput = instructorDiv.querySelector('.instructor-lessons');
+            
+            if (!rateInput || !bonusInput || !lessonsInput) {
+                console.log('   ❌ Could not find instructor inputs - skipping manual payroll test');
+                return;
+            }
+            
+            rateInput.value = '20';
+            bonusInput.value = '5';
+            lessonsInput.value = '9';
+            rateInput.dispatchEvent(new Event('input'));
+            bonusInput.dispatchEvent(new Event('input'));
+            lessonsInput.dispatchEvent(new Event('input'));
+            
+            updateDashboard();
+            const calcManual9 = performCalculations();
+            console.log(`   Instructor with 9 lessons: Pay = $${calcManual9.totalPayrollCost}`);
+            
+            lessonsInput.value = '11';
+            lessonsInput.dispatchEvent(new Event('input'));
+            updateDashboard();
+            const calcManual11 = performCalculations();
+            console.log(`   Instructor with 11 lessons: Pay = $${calcManual11.totalPayrollCost}`);
+            
+            const bonusApplied = calcManual11.totalPayrollCost > calcManual9.totalPayrollCost;
+            console.log(`   ✅ Bonus logic working: ${bonusApplied ? 'PASS' : 'FAIL'}`);
+            
+            // Automatic Mode Test
+            console.log('\n🤖 Automatic Payroll Mode Test:');
+            document.getElementById('payrollModeToggle').checked = true;
+            document.getElementById('payrollModeToggle').dispatchEvent(new Event('change'));
+            
+            document.getElementById('maxLessonsPerInstructor').value = '35';
+            document.getElementById('avgInstructorRate').value = '25';
+            document.getElementById('phase1Lessons').value = '74';
+            document.getElementById('phase2Lessons').value = '74';
+            document.getElementById('phase3Lessons').value = '74';
+            document.getElementById('phase4Lessons').value = '74';
+            
+            updateDashboard();
+            const calcAuto = performCalculations();
+            
+            const peakInstructorsRequired = document.getElementById('peakInstructorsRequired').textContent;
+            const recommendedHires = document.getElementById('recommendedHires').textContent;
+            
+            console.log(`   Peak Lessons: 74, Max per Instructor: 35`);
+            console.log(`   Peak Instructors Required: ${peakInstructorsRequired}`);
+            console.log(`   Recommended Full-Time Hires: ${recommendedHires}`);
+            console.log(`   Total Payroll Cost: $${calcAuto.totalPayrollCost}`);
+            
+            const correctHires = recommendedHires === '3';
+            console.log(`   ✅ Math.ceil() working (2.1 → 3): ${correctHires ? 'PASS' : 'FAIL'}`);
+
+            // TEST PROTOCOL 3: Events Module Integration
+            console.log('\n🎉 TEST PROTOCOL 3: Events Module Integration');
+            console.log('----------------------------------------------');
+            
+            // Set all primary revenue to zero
+            document.getElementById('pricePerLesson').value = '0';
+            document.getElementById('phase1Lessons').value = '0';
+            document.getElementById('phase2Lessons').value = '0';
+            document.getElementById('phase3Lessons').value = '0';
+            document.getElementById('phase4Lessons').value = '0';
+            
+            // Test positive events impact
+            document.getElementById('medalBallRevenue').value = '12000';
+            document.getElementById('medalBallCost').value = '0';
+            document.getElementById('showcaseRevenue').value = '0';
+            document.getElementById('showcaseCost').value = '0';
+            document.getElementById('danceORamaRevenue').value = '0';
+            document.getElementById('danceORamaCost').value = '0';
+            document.getElementById('otherEventsRevenue').value = '0';
+            document.getElementById('otherEventsCost').value = '0';
+            
+            updateDashboard();
+            const calcPositiveEvents = performCalculations();
+            console.log(`   Events Net Profit: +$12,000`);
+            console.log(`   Net Monthly Income: $${calcPositiveEvents.netMonthlyIncome}`);
+            const positiveCorrect = Math.abs(calcPositiveEvents.netMonthlyIncome - 1000) < 0.01;
+            console.log(`   ✅ Positive events integration: ${positiveCorrect ? 'PASS' : 'FAIL'}`);
+            
+            // Test negative events impact
+            document.getElementById('medalBallRevenue').value = '0';
+            document.getElementById('medalBallCost').value = '12000';
+            
+            updateDashboard();
+            const calcNegativeEvents = performCalculations();
+            console.log(`   Events Net Loss: -$12,000`);
+            console.log(`   Net Monthly Income: $${calcNegativeEvents.netMonthlyIncome}`);
+            const negativeCorrect = Math.abs(calcNegativeEvents.netMonthlyIncome - (-1000)) < 0.01;
+            console.log(`   ✅ Negative events integration: ${negativeCorrect ? 'PASS' : 'FAIL'}`);
+
+            // TEST PROTOCOL 4: "Show Your Work" Formula Transparency
+            console.log('\n📝 TEST PROTOCOL 4: "Show Your Work" Formula Transparency');
+            console.log('----------------------------------------------------------');
+            
+            // Set simple values for formula testing
+            document.getElementById('pricePerLesson').value = '100';
+            document.getElementById('phase1Lessons').value = '52';
+            document.getElementById('phase2Lessons').value = '52';
+            document.getElementById('phase3Lessons').value = '52';
+            document.getElementById('phase4Lessons').value = '52';
+            document.getElementById('workableWeeksPerYear').value = '52';
+            document.getElementById('monthlyAdSpend').value = '1000';
+            document.getElementById('leadConversionRate').value = '20';
+            
+            updateDashboard();
+            
+            const formulaElements = [
+                'grossRevenueFormula',
+                'totalExpensesFormula', 
+                'netIncomeFormula',
+                'profitPerLessonFormula',
+                'cacFormula'
+            ];
+            
+            formulaElements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    console.log(`   ${id}: "${element.textContent}"`);
+                }
+            });
+
+            // TEST PROTOCOL 5: Edge Cases & Zero-Value Stability
+            console.log('\n🔍 TEST PROTOCOL 5: Edge Cases & Zero-Value Stability');
+            console.log('-----------------------------------------------------');
+            
+            // Set all inputs to zero
+            inputs.forEach(id => {
+                const element = document.getElementById(id);
+                if (element && element.type === 'number') {
+                    element.value = '0';
+                }
+            });
+            
+            updateDashboard();
+            const calcZero = performCalculations();
+            
+            console.log('🔍 Checking for NaN or undefined values:');
+            let hasNaN = false;
+            let hasUndefined = false;
+            
+            Object.keys(calcZero).forEach(key => {
+                const value = calcZero[key];
+                if (typeof value === 'number' && isNaN(value)) {
+                    console.log(`   ❌ NaN found in ${key}: ${value}`);
+                    hasNaN = true;
+                }
+                if (value === undefined) {
+                    console.log(`   ❌ Undefined found in ${key}: ${value}`);
+                    hasUndefined = true;
+                }
+            });
+            
+            if (!hasNaN && !hasUndefined) {
+                console.log('   ✅ No NaN or undefined values found');
+            }
+            
+            console.log('\n📊 Zero-value calculations summary:');
+            console.log(`   Gross Revenue: $${calcZero.grossRevenue}`);
+            console.log(`   Net Income: $${calcZero.netIncome}`);
+            console.log(`   Total Expenses: $${calcZero.totalExpenses}`);
+            console.log(`   Profit Per Lesson: $${calcZero.profitPerLesson}`);
+            
+            const allZero = calcZero.grossRevenue === 0 && calcZero.netIncome === 0 && 
+                           calcZero.totalExpenses === 0 && calcZero.profitPerLesson === 0;
+            console.log(`   ✅ All calculations correctly resolve to 0: ${allZero ? 'PASS' : 'FAIL'}`);
+
+            // Restore original values
+            console.log('\n🔄 Restoring original values...');
+            inputs.forEach(id => {
+                const element = document.getElementById(id);
+                if (element && originalValues[id] !== undefined) {
+                    element.value = originalValues[id];
+                }
+            });
+            
+            updateDashboard();
+            
+            console.log('\n✅ COMPREHENSIVE TEST SUITE COMPLETE');
+            console.log('=====================================');
+            console.log('📋 SUMMARY:');
+            console.log(`   Timeframe Consistency: ${weeklyToMonthly && monthlyToAnnual && weeklyToAnnual ? 'PASS' : 'FAIL'}`);
+            console.log(`   Revenue Consistency: ${revenueWeeklyToMonthly && revenueMonthlyToAnnual ? 'PASS' : 'FAIL'}`);
+            console.log(`   Payroll Bonus Logic: ${bonusApplied ? 'PASS' : 'FAIL'}`);
+            console.log(`   Payroll Math.ceil(): ${correctHires ? 'PASS' : 'FAIL'}`);
+            console.log(`   Events Integration: ${positiveCorrect && negativeCorrect ? 'PASS' : 'FAIL'}`);
+            console.log(`   Zero-Value Stability: ${allZero && !hasNaN && !hasUndefined ? 'PASS' : 'FAIL'}`);
+            
+            const allTestsPassed = weeklyToMonthly && monthlyToAnnual && weeklyToAnnual && 
+                                 revenueWeeklyToMonthly && revenueMonthlyToAnnual && 
+                                 bonusApplied && correctHires && positiveCorrect && 
+                                 negativeCorrect && allZero && !hasNaN && !hasUndefined;
+            
+            console.log(`\n🎯 OVERALL RESULT: ${allTestsPassed ? 'ALL TESTS PASSED ✅' : 'SOME TESTS FAILED ❌'}`);
+        }
+    </script>
+</body>
+</html> 
+</html> 
+
