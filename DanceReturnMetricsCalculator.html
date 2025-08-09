@@ -563,7 +563,7 @@
                             <div class="flex items-center space-x-4">
                                 <span class="mode-label" id="manualModeLabel">Manual Payroll</span>
                                 <label class="mode-toggle">
-                                    <input type="checkbox" id="payrollModeToggle" checked>
+                                    <input type="checkbox" id="payrollModeToggle">
                                     <span class="slider-toggle"></span>
                                 </label>
                                 <span class="mode-label" id="autoModeLabel">Automatic Payroll</span>
@@ -572,10 +572,7 @@
 
                         <!-- Manual Payroll Mode -->
                         <div id="manualPayrollMode">
-                            <div id="instructorsContainer" class="flex space-x-4 overflow-x-auto pb-4 mb-4">
-                                <!-- Dynamic instructor inputs will be generated here -->
-                            </div>
-                            <button id="addInstructorBtn" class="btn-primary w-full">Add Instructor</button>
+                            <button id="addInstructorBtn" class="btn-primary w-full mb-4">Add Instructor</button>
                         </div>
 
                         <!-- Automatic Payroll Mode -->
@@ -602,6 +599,26 @@
                                             <span id="recommendedHires" class="text-blue-600 font-semibold">0</span>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Instructor Container (shared between both modes) -->
+                        <div id="instructorsContainer" class="flex space-x-4 overflow-x-auto pb-4 mb-4">
+                            <!-- Dynamic instructor inputs will be generated here -->
+                        </div>
+                        <div id="instructorNote" class="text-center py-8 text-gray-500">
+                            <div class="bg-gray-50 rounded-lg p-6 border-2 border-dashed border-gray-300">
+                                <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">No Instructors Added</h3>
+                                <p class="text-sm text-gray-600 mb-4">
+                                    In <strong>Manual Mode</strong>: Click "Add Instructor" to add your instructors manually.<br>
+                                    In <strong>Automatic Mode</strong>: Instructors will be generated automatically based on your lesson plan.
+                                </p>
+                                <div class="text-xs text-gray-500">
+                                    💡 <strong>Tip:</strong> Switch between Manual and Automatic modes using the toggle above.
                                 </div>
                             </div>
                         </div>
@@ -1320,7 +1337,7 @@
         let payrollTimeframe = 'monthly'; // For payroll section
         let expenseTimeframe = 'monthly'; // For expense section
         let expenseBreakdownTimeframe = 'monthly'; // For expense breakdown chart
-        let payrollMode = 'automatic'; // 'manual' or 'automatic'
+        let payrollMode = 'manual'; // 'manual' or 'automatic'
         let irrTimeframe = 3; // Default to 3 years for IRR calculation
         let timeframeMultipliers = {
             weekly: 1/4.33,
@@ -1896,6 +1913,13 @@
                     }
                 });
             });
+            
+            // Workable weeks input for automatic payroll
+            document.getElementById('workableWeeksPerYear').addEventListener('input', function() {
+                if (payrollMode === 'automatic') {
+                    updateAutomaticPayroll();
+                }
+            });
 
             // IRR timeframe selector buttons
             ['irr1Year', 'irr2Year', 'irr3Year', 'irr4Year', 'irr5Year'].forEach(id => {
@@ -1916,9 +1940,14 @@
             // Initialize payroll mode first
             updatePayrollMode();
             
-            // Only add default instructor if in manual mode
+            // Initialize instructor note
+            updateInstructorNote();
+            
+            // Add default instructor if in manual mode, or generate automatic instructors if in automatic mode
             if (payrollMode === 'manual') {
-                addInstructor();
+                // Don't add default instructor - let user add manually
+            } else {
+                generateAutomaticInstructors();
             }
             
             // Initialize marketing calculations
@@ -2106,11 +2135,15 @@
                 manualLabel.classList.remove('active');
                 autoLabel.classList.add('active');
                 updateAutomaticPayroll();
+                // Generate automatic instructors in the manual format
+                generateAutomaticInstructors();
             } else {
                 manualMode.classList.remove('hidden');
                 automaticMode.classList.add('hidden');
                 manualLabel.classList.add('active');
                 autoLabel.classList.remove('active');
+                // Clear automatic instructors when switching to manual
+                clearAutomaticInstructors();
             }
         }
 
@@ -2130,6 +2163,134 @@
             
             document.getElementById('peakInstructorsRequired').textContent = peakInstructorsRequired.toFixed(1);
             document.getElementById('recommendedHires').textContent = recommendedHires;
+            
+            // Update automatic instructors if in automatic mode
+            if (payrollMode === 'automatic') {
+                generateAutomaticInstructors();
+            }
+        }
+
+        function generateAutomaticInstructors() {
+            const instructorsContainer = document.getElementById('instructorsContainer');
+            if (!instructorsContainer) {
+                return;
+            }
+            
+            const avgInstructorRate = parseFloat(document.getElementById('avgInstructorRate').value) || 25;
+            const maxLessonsPerInstructor = parseFloat(document.getElementById('maxLessonsPerInstructor').value) || 35;
+            const phase1Lessons = parseFloat(document.getElementById('phase1Lessons').value) || 0;
+            const phase2Lessons = parseFloat(document.getElementById('phase2Lessons').value) || 0;
+            const phase3Lessons = parseFloat(document.getElementById('phase3Lessons').value) || 0;
+            const phase4Lessons = parseFloat(document.getElementById('phase4Lessons').value) || 0;
+            const workableWeeksPerYear = parseFloat(document.getElementById('workableWeeksPerYear').value) || 50;
+            const weeksPerMonth = workableWeeksPerYear / 12;
+            
+            // Find peak lessons per week
+            const peakLessonsPerWeek = Math.max(phase1Lessons, phase2Lessons, phase3Lessons, phase4Lessons);
+            const requiredInstructors = peakLessonsPerWeek / maxLessonsPerInstructor;
+            const effectiveInstructors = Math.ceil(requiredInstructors);
+            
+            // Clear existing instructors
+            instructorsContainer.innerHTML = '';
+            
+            // Create automatic instructors with intelligent bonus logic
+            for (let i = 0; i < effectiveInstructors; i++) {
+                
+                let lessonsPerInstructor;
+                let effectiveHourlyRate = avgInstructorRate;
+                let instructorName = `Auto Instructor ${i + 1}`;
+                
+                if (i < effectiveInstructors - 1) {
+                    // Full instructors get max lessons and bonus
+                    lessonsPerInstructor = maxLessonsPerInstructor;
+                    if (lessonsPerInstructor >= 5) { // Bonus threshold
+                        effectiveHourlyRate = avgInstructorRate + 2.50; // Bonus amount
+                        instructorName = `Auto Instructor ${i + 1} (Full-Time)`;
+                    }
+                } else {
+                    // Last instructor gets remaining lessons (no bonus)
+                    const totalLessonsAssigned = (effectiveInstructors - 1) * maxLessonsPerInstructor;
+                    lessonsPerInstructor = Math.max(0, peakLessonsPerWeek - totalLessonsAssigned);
+                    instructorName = `Auto Instructor ${i + 1} (Part-Time)`;
+                }
+                
+                const monthlyPay = lessonsPerInstructor * weeksPerMonth * effectiveHourlyRate;
+                const annualPay = lessonsPerInstructor * workableWeeksPerYear * effectiveHourlyRate;
+                
+                // Create instructor card in manual format
+                const instructorId = Date.now() + i; // Unique ID
+                const newInstructorDiv = document.createElement('div');
+                newInstructorDiv.className = 'border border-gray-200 rounded-lg p-4 bg-blue-50 min-w-[300px] flex-shrink-0';
+                newInstructorDiv.id = `instructor-${instructorId}`;
+
+                newInstructorDiv.innerHTML = `
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="font-medium text-gray-900">${instructorName}</h4>
+                        <span class="text-blue-600 text-sm font-medium">Auto-Generated</span>
+                    </div>
+                    <div class="space-y-3 mb-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Instructor Name</label>
+                            <input type="text" class="instructor-name input-field w-full" value="${instructorName}" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Lessons Taught Per Week</label>
+                            <input type="number" class="instructor-lessons input-field w-full" value="${lessonsPerInstructor}" min="0" step="0.5" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Baseline Hourly Rate</label>
+                            <div class="input-adornment-container currency">
+                                <input type="number" class="instructor-rate" value="${avgInstructorRate}" min="0" step="0.01" readonly>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Bonus Threshold (Lessons)</label>
+                            <input type="number" class="instructor-bonus-threshold input-field w-full" value="5" min="0" step="1" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Bonus Amount</label>
+                            <div class="input-adornment-container currency">
+                                <input type="number" class="instructor-bonus-amount" value="2.50" min="0" step="0.01" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-blue-50 p-3 rounded border border-blue-200">
+                        <div class="space-y-2 text-sm">
+                            <div>
+                                <span class="font-medium text-gray-700">Monthly Pay:</span>
+                                <span class="instructor-monthly-pay text-blue-600 font-semibold">$${monthlyPay.toLocaleString(undefined, {maximumFractionDigits: 0})}</span>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-700">Annual Pay:</span>
+                                <span class="instructor-annual-pay text-blue-600 font-semibold">$${annualPay.toLocaleString(undefined, {maximumFractionDigits: 0})}</span>
+                            </div>
+                            <div class="bg-gray-100 p-2 rounded mt-2">
+                                <p class="text-xs text-gray-600 font-mono instructor-formula">${lessonsPerInstructor} lessons/wk × $${effectiveHourlyRate}/hr × ${weeksPerMonth.toFixed(2)} wks/mo</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                instructorsContainer.appendChild(newInstructorDiv);
+            }
+            
+            updateInstructorNote();
+        }
+
+        function clearAutomaticInstructors() {
+            const instructorsContainer = document.getElementById('instructorsContainer');
+            instructorsContainer.innerHTML = '';
+            updateInstructorNote();
+        }
+
+        function updateInstructorNote() {
+            const instructorsContainer = document.getElementById('instructorsContainer');
+            const instructorNote = document.getElementById('instructorNote');
+            
+            if (instructorsContainer && instructorNote) {
+                const hasInstructors = instructorsContainer.children.length > 0;
+                instructorNote.style.display = hasInstructors ? 'none' : 'block';
+            }
         }
 
         function switchMetricsTimeframe(newTimeframe) {
@@ -2341,6 +2502,7 @@
                 input.addEventListener('change', updateDashboard);
             });
             
+            updateInstructorNote();
             updateDashboard();
         }
 
@@ -2348,6 +2510,7 @@
             const instructorDiv = document.getElementById(`instructor-${instructorId}`);
             if (instructorDiv) {
                 instructorDiv.remove();
+                updateInstructorNote();
                 updateDashboard();
             }
         }
@@ -2355,106 +2518,55 @@
         function getInstructorsData() {
             const instructors = [];
             
-            // Handle automatic payroll mode
-            if (payrollMode === 'automatic') {
-                const avgInstructorRate = parseFloat(document.getElementById('avgInstructorRate').value) || 25;
-                const maxLessonsPerInstructor = parseFloat(document.getElementById('maxLessonsPerInstructor').value) || 35;
-                const phase1Lessons = parseFloat(document.getElementById('phase1Lessons').value) || 0;
-                const phase2Lessons = parseFloat(document.getElementById('phase2Lessons').value) || 0;
-                const phase3Lessons = parseFloat(document.getElementById('phase3Lessons').value) || 0;
-                const phase4Lessons = parseFloat(document.getElementById('phase4Lessons').value) || 0;
-                const workableWeeksPerYear = parseFloat(document.getElementById('workableWeeksPerYear').value) || 50;
-                const weeksPerMonth = workableWeeksPerYear / 12;
-                
-                // Find peak lessons per week
-                const peakLessonsPerWeek = Math.max(phase1Lessons, phase2Lessons, phase3Lessons, phase4Lessons);
-                const requiredInstructors = peakLessonsPerWeek / maxLessonsPerInstructor;
-                const effectiveInstructors = Math.ceil(requiredInstructors);
-                
-
-                
-                // Create virtual instructors for automatic mode with intelligent bonus logic
-                for (let i = 0; i < effectiveInstructors; i++) {
-                    let lessonsPerInstructor;
-                    let effectiveHourlyRate = avgInstructorRate;
+            // Both automatic and manual modes now use the same instructor container
+            const instructorDivs = document.querySelectorAll('#instructorsContainer > div');
+            const workableWeeksPerYear = parseFloat(document.getElementById('workableWeeksPerYear').value) || 50;
+            const weeksPerMonth = workableWeeksPerYear / 12;
+            
+            instructorDivs.forEach(div => {
+                const inputs = div.querySelectorAll('input');
+                if (inputs.length >= 5) {
+                    const name = inputs[0].value || 'Instructor';
+                    const lessonsPerWeek = parseFloat(inputs[1].value) || 0;
+                    const baselineRate = parseFloat(inputs[2].value) || 0;
+                    const bonusThreshold = parseFloat(inputs[3].value) || 5;
+                    const bonusAmount = parseFloat(inputs[4].value) || 0;
                     
-                    if (i < effectiveInstructors - 1) {
-                        // Full instructors get max lessons and bonus
-                        lessonsPerInstructor = maxLessonsPerInstructor;
-                        if (lessonsPerInstructor >= 5) { // Bonus threshold
-                            effectiveHourlyRate = avgInstructorRate + 2.50; // Bonus amount
-                        }
-                    } else {
-                        // Last instructor gets remaining lessons (no bonus)
-                        const totalLessonsAssigned = (effectiveInstructors - 1) * maxLessonsPerInstructor;
-                        lessonsPerInstructor = Math.max(0, peakLessonsPerWeek - totalLessonsAssigned);
+                    // Calculate effective hourly rate (baseline rate as floor)
+                    let effectiveHourlyRate = baselineRate;
+                    if (lessonsPerWeek >= bonusThreshold) {
+                        const bonusIncrements = Math.floor(lessonsPerWeek / bonusThreshold);
+                        effectiveHourlyRate = Math.max(baselineRate, baselineRate + (bonusIncrements * bonusAmount));
                     }
                     
-                    const monthlyPay = lessonsPerInstructor * weeksPerMonth * effectiveHourlyRate;
-                    const annualPay = lessonsPerInstructor * workableWeeksPerYear * effectiveHourlyRate;
+                    // Calculate pay using workable weeks
+                    const monthlyPay = lessonsPerWeek * weeksPerMonth * effectiveHourlyRate;
+                    const annualPay = lessonsPerWeek * workableWeeksPerYear * effectiveHourlyRate;
+                    
+                    // Update the formula display
+                    const formulaElement = div.querySelector('.instructor-formula');
+                    if (formulaElement) {
+                        formulaElement.textContent = `${lessonsPerWeek} lessons/wk × $${effectiveHourlyRate.toFixed(2)}/hr × ${weeksPerMonth.toFixed(2)} wks/mo`;
+                    }
+                    
+                    // Update the pay displays
+                    const monthlyPaySpan = div.querySelector('.instructor-monthly-pay');
+                    const annualPaySpan = div.querySelector('.instructor-annual-pay');
+                    if (monthlyPaySpan) monthlyPaySpan.textContent = '$' + monthlyPay.toLocaleString(undefined, {maximumFractionDigits: 0});
+                    if (annualPaySpan) annualPaySpan.textContent = '$' + annualPay.toLocaleString(undefined, {maximumFractionDigits: 0});
                     
                     instructors.push({
-                        name: `Auto Instructor ${i + 1}`,
-                        lessonsPerWeek: lessonsPerInstructor,
-                        baselineRate: avgInstructorRate,
-                        bonusThreshold: 0,
-                        bonusAmount: 0,
+                        name: name,
+                        lessonsPerWeek: lessonsPerWeek,
+                        baselineRate: baselineRate,
+                        bonusThreshold: bonusThreshold,
+                        bonusAmount: bonusAmount,
                         effectiveHourlyRate: effectiveHourlyRate,
                         monthlyPay: monthlyPay,
                         annualPay: annualPay
                     });
                 }
-            } else {
-                // Manual payroll mode
-                const instructorDivs = document.querySelectorAll('#instructorsContainer > div');
-                const workableWeeksPerYear = parseFloat(document.getElementById('workableWeeksPerYear').value) || 50;
-                const weeksPerMonth = workableWeeksPerYear / 12;
-                
-                instructorDivs.forEach(div => {
-                    const inputs = div.querySelectorAll('input');
-                    if (inputs.length >= 5) {
-                        const name = inputs[0].value || 'Instructor';
-                        const lessonsPerWeek = parseFloat(inputs[1].value) || 0;
-                        const baselineRate = parseFloat(inputs[2].value) || 0;
-                        const bonusThreshold = parseFloat(inputs[3].value) || 5;
-                        const bonusAmount = parseFloat(inputs[4].value) || 0;
-                        
-                        // Calculate effective hourly rate (baseline rate as floor)
-                        let effectiveHourlyRate = baselineRate;
-                        if (lessonsPerWeek >= bonusThreshold) {
-                            const bonusIncrements = Math.floor(lessonsPerWeek / bonusThreshold);
-                            effectiveHourlyRate = Math.max(baselineRate, baselineRate + (bonusIncrements * bonusAmount));
-                        }
-                        
-                        // Calculate pay using workable weeks
-                        const monthlyPay = lessonsPerWeek * weeksPerMonth * effectiveHourlyRate;
-                        const annualPay = lessonsPerWeek * workableWeeksPerYear * effectiveHourlyRate;
-                        
-                        // Update the formula display
-                        const formulaElement = div.querySelector('.instructor-formula');
-                        if (formulaElement) {
-                            formulaElement.textContent = `${lessonsPerWeek} lessons/wk × $${effectiveHourlyRate.toFixed(2)}/hr × ${weeksPerMonth.toFixed(2)} wks/mo`;
-                        }
-                        
-                        // Update the pay displays
-                        const monthlyPaySpan = div.querySelector('.instructor-monthly-pay');
-                        const annualPaySpan = div.querySelector('.instructor-annual-pay');
-                        if (monthlyPaySpan) monthlyPaySpan.textContent = '$' + monthlyPay.toLocaleString(undefined, {maximumFractionDigits: 0});
-                        if (annualPaySpan) annualPaySpan.textContent = '$' + annualPay.toLocaleString(undefined, {maximumFractionDigits: 0});
-                        
-                        instructors.push({
-                            name: name,
-                            lessonsPerWeek: lessonsPerWeek,
-                            baselineRate: baselineRate,
-                            bonusThreshold: bonusThreshold,
-                            bonusAmount: bonusAmount,
-                            effectiveHourlyRate: effectiveHourlyRate,
-                            monthlyPay: monthlyPay,
-                            annualPay: annualPay
-                        });
-                    }
-                });
-            }
+            });
             
             return instructors;
         }
@@ -3936,38 +4048,157 @@
 
 
         async function saveToPDF() {
-            const { jsPDF } = window.jspdf;
-            const resultsSection = document.querySelector('.container:last-child');
-            
             try {
-                const canvas = await html2canvas(resultsSection, {
-                    scale: 2,
-                    useCORS: true,
-                    allowTaint: true
-                });
-                
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                const imgWidth = 210;
-                const pageHeight = 295;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 0;
-
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
+                const { jsPDF } = window.jspdf;
+                if (!jsPDF) {
+                    alert('PDF library not loaded. Please refresh the page and try again.');
+                    return;
                 }
-
-                pdf.save('dance-studio-financial-dashboard.pdf');
+                
+                // Get current calculations
+                const calc = performCalculations();
+                if (!calc) {
+                    alert('Unable to perform calculations. Please check your inputs.');
+                    return;
+                }
+                
+                // Create PDF
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                let yPos = 20;
+                const margin = 15;
+                const pageWidth = 210 - (2 * margin);
+                
+                // Helper function to add text safely
+                const addText = (text, fontSize = 12, isBold = false) => {
+                    if (yPos > 280) return false;
+                    
+                    pdf.setFontSize(fontSize);
+                    pdf.setFont(undefined, isBold ? 'bold' : 'normal');
+                    
+                    const lines = pdf.splitTextToSize(text, pageWidth);
+                    pdf.text(lines, margin, yPos);
+                    yPos += (lines.length * fontSize * 0.4) + 2;
+                    return true;
+                };
+                
+                // Helper function to add section
+                const addSection = (title, data) => {
+                    addText('', 12, false);
+                    addText(title, 14, true);
+                    addText('', 12, false);
+                    
+                    Object.entries(data).forEach(([key, value]) => {
+                        addText(`${key}: ${value}`, 10, false);
+                    });
+                };
+                
+                // Title
+                addText('DANCE STUDIO FINANCIAL ANALYSIS REPORT', 16, true);
+                addText(`Generated: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, 10, false);
+                addText('', 12, false);
+                
+                // Revenue & Profitability
+                const revenueData = {
+                    'Gross Revenue (Monthly)': `$${calc.totalMonthlyRevenue ? calc.totalMonthlyRevenue.toLocaleString() : '0'}`,
+                    'Net Income (Monthly)': `$${calc.netMonthlyIncome ? calc.netMonthlyIncome.toLocaleString() : '0'}`,
+                    'Profit Per Lesson': `$${calc.profitPerLessonMonthly ? calc.profitPerLessonMonthly.toFixed(2) : '0.00'}`,
+                    'Customer Acquisition Cost': `$${calc.cac ? calc.cac.toFixed(0) : '0'}`,
+                    'Break-Even Point': `${calc.breakEvenMonth ? calc.breakEvenMonth : '0'} months`,
+                    'Net Profit Margin': `${calc.totalMonthlyRevenue && calc.netMonthlyIncome ? ((calc.netMonthlyIncome / calc.totalMonthlyRevenue) * 100).toFixed(1) : '0'}%`
+                };
+                addSection('REVENUE & PROFITABILITY', revenueData);
+                
+                // Operational Costs
+                const costData = {
+                    'Total Monthly Expenses': `$${calc.totalExpenses ? calc.totalExpenses.toLocaleString() : '0'}`,
+                    'Total Fixed Costs': `$${calc.totalFixedCosts ? calc.totalFixedCosts.toLocaleString() : '0'}`,
+                    'Total Variable Costs': `$${calc.totalVariableCosts ? calc.totalVariableCosts.toLocaleString() : '0'}`,
+                    'Total Payroll Cost': `$${calc.totalPayrollCost ? calc.totalPayrollCost.toLocaleString() : '0'}`,
+                    'Payroll % of Revenue': `${calc.totalMonthlyRevenue && calc.totalPayrollCost ? ((calc.totalPayrollCost / calc.totalMonthlyRevenue) * 100).toFixed(1) : '0'}%`
+                };
+                addSection('OPERATIONAL COSTS', costData);
+                
+                // Key Input Parameters
+                const inputData = {
+                    'Price Per Lesson': `$${parseFloat(document.getElementById('pricePerLesson')?.value) || 0}`,
+                    'Phase 1 Lessons/Week': `${parseFloat(document.getElementById('phase1Lessons')?.value) || 0}`,
+                    'Phase 2 Lessons/Week': `${parseFloat(document.getElementById('phase2Lessons')?.value) || 0}`,
+                    'Phase 3 Lessons/Week': `${parseFloat(document.getElementById('phase3Lessons')?.value) || 0}`,
+                    'Phase 4 Lessons/Week': `${parseFloat(document.getElementById('phase4Lessons')?.value) || 0}`,
+                    'Initial Investment': `$${(parseFloat(document.getElementById('initialInvestment')?.value) || 0).toLocaleString()}`,
+                    'Monthly Ad Spend': `$${(parseFloat(document.getElementById('monthlyAdSpend')?.value) || 0).toLocaleString()}`,
+                    'Lead Conversion Rate': `${parseFloat(document.getElementById('leadConversionRate')?.value) || 0}%`
+                };
+                addSection('KEY INPUT PARAMETERS', inputData);
+                
+                // Fixed Costs Breakdown
+                const fixedCostData = {
+                    'Rent/Mortgage': `$${(parseFloat(document.getElementById('fixedRent')?.value) || 0).toLocaleString()}`,
+                    'Taxes': `$${(parseFloat(document.getElementById('taxes')?.value) || 0).toLocaleString()}`,
+                    'Insurance': `$${(parseFloat(document.getElementById('insurance')?.value) || 0).toLocaleString()}`,
+                    'Utilities': `$${(parseFloat(document.getElementById('utilities')?.value) || 0).toLocaleString()}`,
+                    'Software': `$${(parseFloat(document.getElementById('software')?.value) || 0).toLocaleString()}`,
+                    'Cleaning': `$${(parseFloat(document.getElementById('cleaning')?.value) || 0).toLocaleString()}`,
+                    'Maintenance': `$${(parseFloat(document.getElementById('maintenance')?.value) || 0).toLocaleString()}`,
+                    'Other Costs': `$${(parseFloat(document.getElementById('otherCostValue')?.value) || 0).toLocaleString()}`
+                };
+                addSection('FIXED COSTS BREAKDOWN', fixedCostData);
+                
+                // Variable Costs Breakdown
+                const variableCostData = {
+                    'Total Payroll': `$${calc.totalPayrollCost ? calc.totalPayrollCost.toLocaleString() : '0'}`,
+                    'Royalty Fee': `$${calc.royaltyFee ? calc.royaltyFee.toLocaleString() : '0'}`,
+                    'Credit Card Processing': `$${calc.creditCardFee ? calc.creditCardFee.toLocaleString() : '0'}`,
+                    'Marketing/Advertising': `$${calc.monthlyAdSpend ? calc.monthlyAdSpend.toLocaleString() : '0'}`
+                };
+                addSection('VARIABLE COSTS BREAKDOWN', variableCostData);
+                
+                // Events Impact
+                const eventsData = {
+                    'Total Events Revenue': `$${(parseFloat(document.getElementById('medalBallRevenue')?.value) || 0 + parseFloat(document.getElementById('showcaseRevenue')?.value) || 0 + parseFloat(document.getElementById('danceORamaRevenue')?.value) || 0 + parseFloat(document.getElementById('otherEventsRevenue')?.value) || 0).toLocaleString()}`,
+                    'Total Events Cost': `$${(parseFloat(document.getElementById('medalBallCost')?.value) || 0 + parseFloat(document.getElementById('showcaseCost')?.value) || 0 + parseFloat(document.getElementById('danceORamaCost')?.value) || 0 + parseFloat(document.getElementById('otherEventsCost')?.value) || 0).toLocaleString()}`,
+                    'Net Events Profit': `$${((parseFloat(document.getElementById('medalBallRevenue')?.value) || 0 + parseFloat(document.getElementById('showcaseRevenue')?.value) || 0 + parseFloat(document.getElementById('danceORamaRevenue')?.value) || 0 + parseFloat(document.getElementById('otherEventsRevenue')?.value) || 0) - (parseFloat(document.getElementById('medalBallCost')?.value) || 0 + parseFloat(document.getElementById('showcaseCost')?.value) || 0 + parseFloat(document.getElementById('danceORamaCost')?.value) || 0 + parseFloat(document.getElementById('otherEventsCost')?.value) || 0)).toLocaleString()}`,
+                    'Monthly Events Impact': `$${(((parseFloat(document.getElementById('medalBallRevenue')?.value) || 0 + parseFloat(document.getElementById('showcaseRevenue')?.value) || 0 + parseFloat(document.getElementById('danceORamaRevenue')?.value) || 0 + parseFloat(document.getElementById('otherEventsRevenue')?.value) || 0) - (parseFloat(document.getElementById('medalBallCost')?.value) || 0 + parseFloat(document.getElementById('showcaseCost')?.value) || 0 + parseFloat(document.getElementById('danceORamaCost')?.value) || 0 + parseFloat(document.getElementById('otherEventsCost')?.value) || 0)) / 12).toLocaleString()}`
+                };
+                addSection('ANNUAL EVENTS IMPACT', eventsData);
+                
+                // Summary
+                addText('', 12, false);
+                addText('SUMMARY & RECOMMENDATIONS', 14, true);
+                addText('', 12, false);
+                
+                const isProfitable = calc.netMonthlyIncome > 0;
+                const profitMargin = calc.totalMonthlyRevenue > 0 ? (calc.netMonthlyIncome / calc.totalMonthlyRevenue) * 100 : 0;
+                
+                addText(`Overall Profitability: ${isProfitable ? 'PROFITABLE' : 'NOT PROFITABLE'}`, 12, true);
+                addText(`Monthly Net Income: $${calc.netMonthlyIncome ? calc.netMonthlyIncome.toLocaleString() : '0'}`, 10, false);
+                addText(`Profit Margin: ${profitMargin.toFixed(1)}%`, 10, false);
+                addText(`Break-Even: ${calc.breakEvenMonth ? calc.breakEvenMonth : '0'} months`, 10, false);
+                
+                if (calc.breakEvenMonth > 0 && calc.breakEvenMonth <= 24) {
+                    addText('✓ Break-even achieved within reasonable timeframe', 10, false);
+                } else if (calc.breakEvenMonth > 24) {
+                    addText('⚠ Consider reducing costs or increasing revenue', 10, false);
+                }
+                
+                if (profitMargin >= 15) {
+                    addText('✓ Strong profit margin indicates good business model', 10, false);
+                } else if (profitMargin >= 5) {
+                    addText('⚠ Moderate profit margin - consider optimization', 10, false);
+                } else {
+                    addText('⚠ Low profit margin - review pricing and costs', 10, false);
+                }
+                
+                // Footer
+                addText('', 12, false);
+                addText('Generated by Dance Studio Financial Calculator - Created by Daniel Almond', 8, false);
+                
+                // Save the PDF
+                pdf.save('dance-studio-financial-analysis.pdf');
+                
             } catch (error) {
                 console.error('Error generating PDF:', error);
-                alert('Error generating PDF. Please try again.');
+                alert('Error generating PDF: ' + error.message + '. Please try again.');
             }
         }
 
@@ -4678,7 +4909,15 @@
             setTimeout(() => {
                 runComprehensiveBackgroundTests();
             }, 2000);
+            
+            // Test automatic instructor functionality
+            setTimeout(() => {
+                console.log('🧪 Testing automatic instructor functionality...');
+                console.log('✅ If you see automatic instructor cards when in automatic mode, the feature is working!');
+                console.log('✅ If you can switch between manual and automatic modes, the feature is working!');
+            }, 3000);
         });
+
     </script>
     
     <!-- Footer -->
