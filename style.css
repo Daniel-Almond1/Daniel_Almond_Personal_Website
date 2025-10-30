@@ -430,8 +430,9 @@ body {
 }
 .credentials {
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 .credential {
   background: #e0e6ed;
@@ -453,6 +454,16 @@ body {
 
 .credential:hover .credential-value {
   transform: scale(1.1);
+}
+
+/* Make credential links behave like the credential boxes */
+.credentials a.credential {
+  display: block;
+  cursor: pointer;
+}
+
+.credentials a.credential:hover {
+  background: #d0d8e0;
 }
 .cta-buttons {
   display: flex;
@@ -1399,6 +1410,13 @@ section {
   }
   .hero-visual {
     justify-content: center;
+  }
+  .credentials {
+    justify-content: center;
+  }
+  .credential {
+    flex: 1 1 calc(50% - 0.5rem);
+    min-width: 140px;
   }
   .work-item {
     flex-direction: column;
