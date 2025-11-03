@@ -1046,25 +1046,36 @@ section {
 .about-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  gap: 3rem;
   align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .about-image {
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(42,77,122,0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .about-image img {
   width: 100%;
-  height: 400px;
+  height: 500px;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
 
 .about-image:hover img {
   transform: scale(1.05);
+}
+
+.about-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .about-description p {
@@ -1475,6 +1486,14 @@ section {
     grid-template-columns: 1fr;
     gap: 2rem;
     text-align: center;
+  }
+  
+  .about-image {
+    order: -1;
+  }
+  
+  .about-image img {
+    height: 400px;
   }
   
   .explore-grid {
