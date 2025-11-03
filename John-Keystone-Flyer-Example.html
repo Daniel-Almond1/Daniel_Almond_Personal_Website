@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keystone Real Estate Advisors - Project Showcase</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for this page */
+        .intro-section {
+            padding: 6rem 2rem 4rem 2rem;
+            background: #e8f2ff;
+            margin: 0;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .intro-section h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2a4d7a;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .intro-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #222;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-showcase {
+            padding: 4rem 2rem 6rem 2rem;
+            background: #e8f2ff;
+            margin: 0;
+        }
+
+        .card-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Card styles - no rounded corners */
+        .keystone-card {
+            background: white;
+            overflow: visible;
+            box-shadow: 0 6px 24px rgba(42,77,122,0.1);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .keystone-card img {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            display: block;
+            background: #f5f7fa;
+        }
+
+        .keystone-card .card-content {
+            padding: 2rem;
+        }
+
+        .keystone-card .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #2a4d7a;
+        }
+
+        .keystone-card .card-address {
+            font-size: 1rem;
+            color: #718096;
+            margin-bottom: 0.5rem;
+        }
+
+        .keystone-card .card-details {
+            font-size: 0.95rem;
+            color: #a0aec0;
+        }
+
+        /* Hover lift and sheen effect */
+        .keystone-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 16px 48px rgba(42,77,122,0.2);
+        }
+
+        .keystone-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.3) 50%,
+                transparent 70%
+            );
+            transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            transition: transform 0.6s ease;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .keystone-card:hover::after {
+            transform: translateX(100%) translateY(100%) rotate(45deg);
+        }
+
+        .keystone-card img,
+        .keystone-card .card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Download section */
+        .download-section {
+            padding: 4rem 2rem 6rem 2rem;
+            background: #e8f2ff;
+            text-align: center;
+        }
+
+        .download-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #2a4d7a;
+            margin-bottom: 2rem;
+        }
+
+        .download-button {
+            display: inline-block;
+            background: #2a4d7a;
+            color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 4px 15px rgba(42,77,122,0.2);
+        }
+
+        .download-button:hover {
+            background: #1b2c3a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(42,77,122,0.3);
+        }
+
+        .download-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: left 0.3s ease;
+        }
+
+        .download-button:hover::before {
+            left: 100%;
+        }
+
+        .download-button {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .intro-section h1 {
+                font-size: 2rem;
+            }
+
+            .intro-section p {
+                font-size: 1rem;
+            }
+
+            .keystone-card img {
+                height: 300px;
+            }
+
+            .download-section h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo-text">Daniel Almond</a>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="projects.html" class="nav-link">Projects</a>
+                <a href="education.html" class="nav-link">Education</a>
+                <a href="certifications.html" class="nav-link">Certifications</a>
+                <a href="resume.html" class="nav-link">Resume</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="intro-section">
+        <h1>Project Showcase: Keystone Real Estate Advisors</h1>
+        <p>Hi John,</p>
+        
+        <p>Over the weekend, I found time to visit a few of your listings and take some photos with my camera equipment and drone. I then created this presentation flyer so you could see my capabilities and how I would approach it differently from Gray.</p>
+        
+        <p>After reading through his flyers, I noticed they seemed to have some redundant or less useful information. I figured I would try my best and give it my own spin—more streamlined and focused on what potential clients really need to know.</p>
+        
+        <p>I'm fully expecting feedback from you and look forward to learning how to make these flyers even better. This was just a rough attempt to show you a little bit of what I can do.</p>
+        
+        <p>If you have any questions, feel free to text me about it. 🙏🚁</p>
+    </section>
+
+    <section class="card-showcase">
+        <div class="card-wrapper">
+            <a href='./Assets/John Keystone Flyer Assets/DA Example Presentation (2).pdf' target='_blank' class="keystone-card">
+                <img src="./Assets/John Keystone Flyer Assets/sonoma-valley-plaza-thumbnail.png" alt="Sonoma Valley Plaza">
+                <div class="card-content">
+                    <div class="card-title">Sonoma Valley Plaza</div>
+                    <div class="card-address">364 Rohnert Park Expy W, Rohnert Park, CA</div>
+                    <div class="card-details">±1,152 SF Retail Space</div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <section class="download-section">
+        <h2>Download Assets</h2>
+        <a href='./Assets/John Keystone Flyer Assets/DA Example Presentation (2).pdf' download='Keystone_Presentation_Sample.pdf' class='download-button'>Download Presentation (PDF)</a>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Daniel Almond. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
