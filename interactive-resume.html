@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Resume - Daniel Almond</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Interactive Resume Specific Styles */
+        .interactive-resume-section {
+            padding: 3rem 2rem;
+            background: #e8f2ff;
+            margin: 0;
+            position: relative;
+        }
+
+        /* Reduce hero section size for this page */
+        main .hero {
+            padding: 4rem 2rem 3rem 2rem;
+        }
+
+        .interactive-resume-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e0e6ed, transparent);
+        }
+
+        .interactive-work-item {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 6px 24px rgba(42,77,122,0.1);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .interactive-work-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #2a4d7a, #1b2c3a);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .interactive-work-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(42,77,122,0.2);
+        }
+
+        .interactive-work-item:hover::before {
+            transform: scaleX(1);
+        }
+
+        .interactive-work-item.expanded {
+            box-shadow: 0 16px 48px rgba(42,77,122,0.25);
+        }
+
+        .work-header-interactive {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .work-title-section {
+            flex: 1;
+        }
+
+        .work-title-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2a4d7a;
+            margin-bottom: 0.5rem;
+        }
+
+        .work-company {
+            font-size: 1.2rem;
+            color: #1b2c3a;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .work-dates {
+            background: #e0e6ed;
+            color: #2a4d7a;
+            border-radius: 8px;
+            padding: 0.4rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .expand-icon {
+            font-size: 2rem;
+            color: #2a4d7a;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            margin-left: 1rem;
+        }
+
+        .interactive-work-item.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .work-summary {
+            color: #222;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .work-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, padding 0.5s ease;
+            padding: 0;
+        }
+
+        .interactive-work-item.expanded .work-details {
+            max-height: 2000px;
+            padding-top: 1.5rem;
+        }
+
+        .work-details-section {
+            margin-bottom: 2rem;
+        }
+
+        .work-details-section h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: #2a4d7a;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .work-details-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .work-details-section li {
+            padding: 0.8rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: #222;
+            font-size: 1rem;
+            line-height: 1.6;
+            border-bottom: 1px solid #e0e6ed;
+        }
+
+        .work-details-section li:last-child {
+            border-bottom: none;
+        }
+
+        .work-details-section li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #2a4d7a;
+            font-weight: 700;
+        }
+
+        .work-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .work-skill-tag {
+            background: #e8f2ff;
+            color: #2a4d7a;
+            border-radius: 20px;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .work-skill-tag:hover {
+            background: #2a4d7a;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .work-impact {
+            background: #f8f9fa;
+            border-left: 4px solid #2a4d7a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .work-impact h4 {
+            margin-top: 0;
+        }
+
+        .work-impact p {
+            color: #222;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        .resume-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .work-header-interactive {
+                flex-direction: column;
+            }
+
+            .expand-icon {
+                align-self: flex-end;
+                margin-top: -3rem;
+            }
+
+            .work-title-section h3 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo-text">Daniel Almond</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="projects.html" class="nav-link">Projects</a>
+                <a href="education.html" class="nav-link">Education</a>
+                <a href="certifications.html" class="nav-link">Certifications</a>
+                <a href="interactive-resume.html" class="nav-link active">Interactive Resume</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Page Title -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        <span class="title-line-1">Interactive Resume</span>
+                    </h1>
+                    <p class="hero-subtitle">Click on any experience to explore detailed information</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Resume Section -->
+        <section class="interactive-resume-section">
+            <div class="resume-container">
+                <!-- Example Work Experience Entry -->
+                <div class="interactive-work-item" onclick="toggleExpand(this)">
+                    <div class="work-header-interactive">
+                        <div class="work-title-section">
+                            <h3>Dance Instructor & Staff Trainer</h3>
+                            <div class="work-company">Arthur Murray Dance Studio</div>
+                            <div class="work-dates">June 2019 – November 2022</div>
+                        </div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    
+                    <div class="work-summary">
+                        Taught 6–8 private lessons daily, led group classes, trained staff, and coordinated logistics for events while developing presentation and coaching skills in high-pressure settings.
+                    </div>
+
+                    <div class="work-details">
+                        <div class="work-details-section">
+                            <h4>Key Responsibilities</h4>
+                            <ul>
+                                <li>Conducted 6-8 private dance lessons daily, tailoring instruction to individual student needs and skill levels</li>
+                                <li>Led group classes ranging from beginner to advanced levels in multiple ballroom dance styles</li>
+                                <li>Developed and implemented staff training programs to improve teaching quality and consistency</li>
+                                <li>Coordinated event logistics including competitions, showcases, and studio social events</li>
+                                <li>Managed client relationships and provided exceptional customer service to maintain student retention</li>
+                                <li>Assisted in choreographing routines for performances and competitions</li>
+                            </ul>
+                        </div>
+
+                        <div class="work-details-section">
+                            <h4>Major Achievements</h4>
+                            <ul>
+                                <li>Maintained a consistent schedule of 6-8 private lessons daily, demonstrating reliability and student satisfaction</li>
+                                <li>Successfully trained multiple new instructors, improving overall studio teaching standards</li>
+                                <li>Organized and executed multiple successful studio events with 50+ attendees</li>
+                                <li>Earned Arthur Murray certification, demonstrating professional competency in ballroom instruction</li>
+                                <li>Developed strong presentation skills through regular teaching and public speaking opportunities</li>
+                            </ul>
+                        </div>
+
+                        <div class="work-details-section">
+                            <h4>Skills Developed</h4>
+                            <div class="work-skills">
+                                <span class="work-skill-tag">Teaching & Instruction</span>
+                                <span class="work-skill-tag">Leadership</span>
+                                <span class="work-skill-tag">Event Coordination</span>
+                                <span class="work-skill-tag">Customer Service</span>
+                                <span class="work-skill-tag">Public Speaking</span>
+                                <span class="work-skill-tag">Time Management</span>
+                                <span class="work-skill-tag">Team Training</span>
+                                <span class="work-skill-tag">Choreography</span>
+                                <span class="work-skill-tag">Client Relations</span>
+                            </div>
+                        </div>
+
+                        <div class="work-impact">
+                            <h4>Impact & Growth</h4>
+                            <p>This role was instrumental in developing my ability to work under pressure, communicate effectively with diverse audiences, and lead teams. The experience of teaching 6-8 lessons daily honed my time management and organizational skills, while staff training responsibilities enhanced my leadership capabilities. The event coordination aspect provided valuable project management experience that I've applied to other professional endeavors.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Daniel's Personal | All Rights Reserved | Thanks for visiting</p>
+            <p style="font-size: 0.8rem; color: #999; margin-top: 1rem;">Last updated: January 2026</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        function toggleExpand(element) {
+            element.classList.toggle('expanded');
+        }
+
+        // Add smooth scroll animation for work items
+        document.addEventListener('DOMContentLoaded', function() {
+            const workItems = document.querySelectorAll('.interactive-work-item');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, index * 150);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            workItems.forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(30px)';
+                item.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                observer.observe(item);
+            });
+        });
+    </script>
+</body>
+</html>
+
