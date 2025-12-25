@@ -2348,3 +2348,134 @@ section {
     max-width: 100%;
   }
 } 
+
+/* Resume Preview Section Styles */
+.resume-preview-section {
+  padding: 6rem 2rem;
+  background: #fff;
+  margin: 0;
+}
+
+.resume-preview-list {
+  max-width: 1000px;
+  margin: 3rem auto 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.resume-preview-entry {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  padding: 2rem 0;
+  border-bottom: 1px solid #e0e6ed;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.resume-preview-entry:last-of-type {
+  border-bottom: none;
+}
+
+.resume-preview-entry:hover {
+  padding-left: 1rem;
+  background: #f8f9fa;
+  border-left: 3px solid #2a4d7a;
+}
+
+.resume-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  gap: 2rem;
+}
+
+.resume-entry-left {
+  flex: 1;
+}
+
+.resume-entry-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2a4d7a;
+  margin-bottom: 0.25rem;
+}
+
+.resume-entry-company {
+  font-size: 1rem;
+  color: #1b2c3a;
+  font-weight: 600;
+}
+
+.resume-entry-dates {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.resume-entry-summary {
+  color: #222;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.resume-preview-footer {
+  text-align: center;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e0e6ed;
+}
+
+.resume-preview-link {
+  display: inline-block;
+  color: #2a4d7a;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.resume-preview-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #2a4d7a;
+  transition: width 0.3s ease;
+}
+
+.resume-preview-link:hover {
+  color: #1b2c3a;
+}
+
+.resume-preview-link:hover::after {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .resume-preview-section {
+    padding: 4rem 2rem;
+  }
+  
+  .resume-entry-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .resume-entry-dates {
+    white-space: normal;
+  }
+  
+  .resume-preview-entry:hover {
+    padding-left: 0.5rem;
+  }
+}
