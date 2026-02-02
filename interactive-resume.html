@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Resume - Daniel Almond</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Interactive Resume Specific Styles */
+        .interactive-resume-section {
+            padding: 3rem 2rem;
+            background: #e8f2ff;
+            margin: 0;
+            position: relative;
+        }
+
+        /* Reduce hero section size for this page */
+        main .hero {
+            padding: 4rem 2rem 3rem 2rem;
+        }
+
+        .interactive-resume-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e0e6ed, transparent);
+        }
+
+        .interactive-work-item {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 6px 24px rgba(42,77,122,0.1);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .interactive-work-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #2a4d7a, #1b2c3a);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .interactive-work-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(42,77,122,0.2);
+        }
+
+        .interactive-work-item:hover::before {
+            transform: scaleX(1);
+        }
+
+        .interactive-work-item.expanded {
+            box-shadow: 0 16px 48px rgba(42,77,122,0.25);
+        }
+
+        .work-header-interactive {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .work-title-section {
+            flex: 1;
+        }
+
+        .work-title-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2a4d7a;
+            margin-bottom: 0.5rem;
+        }
+
+        .work-company {
+            font-size: 1.2rem;
+            color: #1b2c3a;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .work-dates {
+            background: #e0e6ed;
+            color: #2a4d7a;
+            border-radius: 8px;
+            padding: 0.4rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .expand-icon {
+            font-size: 2rem;
+            color: #2a4d7a;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            margin-left: 1rem;
+        }
+
+        .interactive-work-item.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .work-summary {
+            color: #222;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .work-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, padding 0.5s ease;
+            padding: 0;
+        }
+
+        .interactive-work-item.expanded .work-details {
+            max-height: 2000px;
+            padding-top: 1.5rem;
+        }
+
+        .work-details-section {
+            margin-bottom: 2rem;
+        }
+
+        .work-details-section h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: #2a4d7a;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .work-details-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .work-details-section li {
+            padding: 0.8rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: #222;
+            font-size: 1rem;
+            line-height: 1.6;
+            border-bottom: 1px solid #e0e6ed;
+        }
+
+        .work-details-section li:last-child {
+            border-bottom: none;
+        }
+
+        .work-details-section li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #2a4d7a;
+            font-weight: 700;
+        }
+
+        .work-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .work-skill-tag {
+            background: #e8f2ff;
+            color: #2a4d7a;
+            border-radius: 20px;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .work-skill-tag:hover {
+            background: #2a4d7a;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .work-impact {
+            background: #f8f9fa;
+            border-left: 4px solid #2a4d7a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .work-impact h4 {
+            margin-top: 0;
+        }
+
+        .work-impact p {
+            color: #222;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        .work-links {
+            background: #f0f7ff;
+            border-left: 4px solid #2a4d7a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .work-links h4 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .work-links a {
+            color: #2a4d7a;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-right: 1.5rem;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .work-links a:hover {
+            color: #1b2c3a;
+            text-decoration: underline;
+        }
+
+        .work-links a::after {
+            content: '↗';
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .resume-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Gallery Button Styles */
+        .gallery-button {
+            background: #2a4d7a;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            margin-left: 1rem;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .gallery-button:hover {
+            background: #1b2c3a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(42,77,122,0.3);
+        }
+
+        .gallery-button:active {
+            transform: translateY(0);
+        }
+
+        .gallery-button-icon {
+            font-size: 1rem;
+        }
+
+        /* Gallery Modal Styles */
+        .gallery-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(4px);
+            overflow: auto;
+        }
+
+        .gallery-modal.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            margin: auto;
+            padding: 2rem;
+        }
+
+        .gallery-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 2001;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .gallery-modal-close:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem 0;
+        }
+
+        .gallery-item {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .gallery-lightbox {
+            display: none;
+            position: fixed;
+            z-index: 2100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-lightbox.active {
+            display: flex;
+        }
+
+        .gallery-lightbox img {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .gallery-lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .gallery-lightbox-close:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        /* Hide "Interactive" in nav bar when it would cause wrapping */
+        .nav-interactive {
+            display: inline;
+        }
+
+        .nav-interactive.hide {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .work-header-interactive {
+                flex-direction: column;
+            }
+
+            .work-header-interactive > div:last-child {
+                align-self: flex-end;
+                margin-top: 1rem;
+            }
+
+            .expand-icon {
+                margin-top: 0;
+            }
+
+            .work-title-section h3 {
+                font-size: 1.5rem;
+            }
+
+            .gallery-button {
+                margin-left: 0;
+                margin-right: 1rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .gallery-modal-content {
+                padding: 1rem;
+            }
+
+            .work-links a {
+                display: block;
+                margin-right: 0;
+                margin-bottom: 0.75rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo-text">Daniel Almond</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="projects.html" class="nav-link">Projects</a>
+                <a href="education.html" class="nav-link">Education</a>
+                <a href="certifications.html" class="nav-link">Certifications</a>
+                <a href="interactive-resume.html" class="nav-link active">
+                    <span class="nav-interactive">Interactive </span>
+                    <span class="nav-resume">Resume</span>
+                </a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Page Title -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        <span class="title-line-1">Interactive Resume</span>
+                    </h1>
+                    <p class="hero-subtitle">Click on any experience to explore detailed information</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Resume Section -->
+        <section class="interactive-resume-section">
+            <div class="resume-container">
+                <!-- Commercial Real Estate Associate Entry -->
+                <div id="keystone-real-estate" class="interactive-work-item" onclick="toggleExpand(this)">
+                    <div class="work-header-interactive">
+                        <div class="work-title-section">
+                            <h3>Commercial Real Estate Associate</h3>
+                            <div class="work-company">Keystone Real Estate</div>
+                            <div class="work-dates">November 2025 – Present</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <button class="gallery-button" onclick="event.stopPropagation(); openGallery('keystone-gallery')">
+                                <span class="gallery-button-icon">🖼️</span>
+                                <span>Gallery</span>
+                            </button>
+                            <div class="expand-icon">▼</div>
+                        </div>
+                    </div>
+                    
+                    <div class="work-summary">
+                        Facilitate the leasing and sale of commercial properties by connecting property owners with prospective tenants through strategic matchmaking, market analysis, and comprehensive client representation.
+                    </div>
+
+                    <div class="work-details">
+                        <div class="work-details-section">
+                            <h4>Key Responsibilities</h4>
+                            <ul>
+                                <li>Facilitate the leasing and sale of commercial properties by connecting property owners with prospective tenants through strategic matchmaking and needs analysis</li>
+                                <li>Leverage industry-leading platforms (LoopNet, Crexi) and digital marketing tools (Constant Contact, Google Ads) to maximize listing visibility and analyze market trends</li>
+                                <li>Conduct comprehensive property tours and site visits, acting as a liaison between landlords and tenants to facilitate favorable lease terms and successful placements</li>
+                                <li>Build and maintain strong relationships with property owners, investors, and business clients, ensuring detailed documentation and follow-up throughout the transaction process</li>
+                                <li>Maintain organized transaction files and marketing assets using cloud-based solutions (Dropbox) to ensure data integrity and team accessibility</li>
+                                <li>Perform market analysis to identify trends, pricing strategies, and opportunities in the commercial real estate sector</li>
+                                <li>Manage listing presentations and marketing materials to showcase properties effectively</li>
+                            </ul>
+                        </div>
+
+                        <div class="work-details-section">
+                            <h4>Major Achievements</h4>
+                            <ul>
+                                <li>Successfully connected property owners with qualified tenants through strategic matchmaking and needs analysis</li>
+                                <li>Utilized LoopNet and Crexi platforms effectively to maximize listing visibility and reach target audiences</li>
+                                <li>Implemented digital marketing strategies using Constant Contact and Google Ads to drive lead generation</li>
+                                <li>Established strong stakeholder relationships with property owners, investors, and business clients</li>
+                                <li>Maintained organized digital asset management system using Dropbox for efficient team collaboration</li>
+                                <li>Conducted successful property tours and site visits leading to favorable lease negotiations</li>
+                            </ul>
+                        </div>
+
+                        <div class="work-details-section">
+                            <h4>Skills Developed</h4>
+                            <div class="work-skills">
+                                <span class="work-skill-tag">Commercial Real Estate</span>
+                                <span class="work-skill-tag">LoopNet</span>
+                                <span class="work-skill-tag">Crexi</span>
+                                <span class="work-skill-tag">Market Analysis</span>
+                                <span class="work-skill-tag">Lease Negotiation</span>
+                                <span class="work-skill-tag">Digital Marketing</span>
+                                <span class="work-skill-tag">Constant Contact</span>
+                                <span class="work-skill-tag">Google Ads</span>
+                                <span class="work-skill-tag">Client Relations</span>
+                                <span class="work-skill-tag">Dropbox</span>
+                                <span class="work-skill-tag">Transaction Management</span>
+                            </div>
+                        </div>
+
+                        <div class="work-impact">
+                            <h4>Impact & Growth</h4>
+                            <p>This role has expanded my real estate expertise into the commercial sector, providing valuable experience in commercial leasing, sales, and property management. Working with industry-leading platforms like LoopNet and Crexi has enhanced my technical skills and market analysis capabilities. The digital marketing aspect using Constant Contact and Google Ads has strengthened my ability to drive lead generation and brand awareness. Managing relationships with property owners, investors, and business clients has developed my negotiation and stakeholder management skills, while the cloud-based asset management has improved my organizational efficiency.</p>
+                        </div>
+
+                        <div class="work-links">
+                            <h4>Learn More</h4>
+                            <a href="https://www.keystonerea.com/about" target="_blank" rel="noopener noreferrer">Keystone Real Estate Advisors</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fred Astaire Dance Studio Entry -->
+                <div id="fred-astaire-dance-studio" class="interactive-work-item" onclick="toggleExpand(this)">
+                    <div class="work-header-interactive">
+                        <div class="work-title-section">
+                            <h3>Franchisee & Co-Owner</h3>
+                            <div class="work-company">Fred Astaire Dance Studio</div>
+                            <div class="work-dates">October 2025 – Present</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <button class="gallery-button" onclick="event.stopPropagation(); openGallery('fred-astaire-gallery')">
+                                <span class="gallery-button-icon">🖼️</span>
+                                <span>Gallery</span>
+                            </button>
+                            <div class="expand-icon">▼</div>
+                        </div>
+                    </div>
+                    
+                    <div class="work-summary">
+                        Oversee full-cycle business operations for a newly launched franchise, leading team development, integrating AI and automation tools, and executing digital marketing strategies to drive growth and operational excellence.
+                    </div>
+
+                    <div class="work-details">
+                        <div class="work-details-section">
+                            <h4>Key Responsibilities</h4>
+                            <ul>
+                                <li>Oversee full-cycle business operations for a newly launched franchise, directing daily workflows, scheduling, and facility management to ensure operational excellence</li>
+                                <li>Recruit, onboard, and train instructional staff, fostering a high-performance culture focused on professional development and student retention</li>
+                                <li>Spearhead the integration of advanced AI agents and automation tools to streamline administrative tasks, optimize customer service responses, and reduce operational overhead</li>
+                                <li>Manage the student body lifecycle through robust CRM strategies, resulting in improved engagement and long-term retention</li>
+                                <li>Execute targeted advertising campaigns across multiple digital platforms to drive lead generation and brand awareness in the local market</li>
+                                <li>Direct facility management and scheduling to maintain efficient operations and optimal student experience</li>
+                                <li>Develop and implement business strategies to drive growth and profitability for the franchise</li>
+                            </ul>
+                        </div>
+
+                        <div class="work-details-section">
+                            <h4>Major Achievements</h4>
+                            <ul>
+                                <li>Successfully launched and established a new franchise location in Healdsburg, CA</li>
+                                <li>Built and trained a high-performance instructional team focused on professional development</li>
+                                <li>Integrated advanced AI agents and automation tools to streamline operations and reduce overhead</li>
+                                <li>Implemented robust CRM strategies that improved student engagement and retention</li>
+                                <li>Executed successful digital marketing campaigns across multiple platforms to drive lead generation</li>
+                                <li>Established operational excellence through effective workflow management and facility oversight</li>
+                                <li>Created a culture of excellence focused on student satisfaction and staff development</li>
+                            </ul>
+                        </div>
+
+                        <div class="work-details-section">
+                            <h4>Skills Developed</h4>
+                            <div class="work-skills">
+                                <span class="work-skill-tag">Business Operations</span>
+                                <span class="work-skill-tag">Franchise Management</span>
+                                <span class="work-skill-tag">Team Leadership</span>
+                                <span class="work-skill-tag">Staff Development</span>
+                                <span class="work-skill-tag">AI Integration</span>
+                                <span class="work-skill-tag">Automation</span>
+                                <span class="work-skill-tag">CRM Management</span>
+                                <span class="work-skill-tag">Digital Marketing</span>
+                                <span class="work-skill-tag">Lead Generation</span>
+                                <span class="work-skill-tag">Facility Management</span>
+                                <span class="work-skill-tag">Strategic Planning</span>
+                            </div>
+                        </div>
+
+                        <div class="work-impact">
+                            <h4>Impact & Growth</h4>
+                            <p>This role represents a significant step in my entrepreneurial journey, combining my dance expertise with business ownership and management. Launching and operating a franchise has developed my strategic thinking, operational management, and leadership capabilities. The integration of AI and automation tools demonstrates my commitment to leveraging technology for business efficiency. Managing a team and implementing CRM strategies has enhanced my people management and customer relationship skills. The digital marketing aspect has expanded my ability to drive business growth through targeted campaigns. This experience has positioned me as both a business owner and a leader in the dance instruction industry.</p>
+                        </div>
+
+                        <div class="work-links">
+                            <h4>Learn More</h4>
+                            <a href="https://fred.dance/" target="_blank" rel="noopener noreferrer">Fred Astaire Dance Classes - Healdsburg</a>
+                            <a href="https://www.google.com/search?q=fred+astaire+healdsburg&oq=fred+astaire+healdsburg&gs_lcrp=EgZjaHJvbWUyDggAEEUYJxg5GIAEGIoFMgYIARAjGCcyDQgCEC4YgwEYsQMYgAQyDQgDEC4YxwEY0QMYgAQyDQgEEC4YgwEYsQMYgAQyDQgFEAAYgwEYsQMYgAQyDQgGEC4YgwEYsQMYgAQyBggHEEUYPdIBCDQ2MjFqMGo3qAIAsAIA&sourceid=chrome&ie=UTF-8" target="_blank" rel="noopener noreferrer">Google Search - Fred Astaire Healdsburg</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Arthur Murray Dance Studio Entry -->
+                <div id="arthur-murray-dance-studio" class="interactive-work-item" onclick="toggleExpand(this)">
+                    <div class="work-header-interactive">
+                        <div class="work-title-section">
+                            <h3>Dance Instructor & Staff Trainer</h3>
+                            <div class="work-company">Arthur Murray Dance Studio</div>
+                            <div class="work-dates">June 2019 – November 2022</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <button class="gallery-button" onclick="event.stopPropagation(); openGallery('arthur-murray-gallery')">
+                                <span class="gallery-button-icon">🖼️</span>
+                                <span>Gallery</span>
+                            </button>
+                            <div class="expand-icon">▼</div>
+                        </div>
+                    </div>
+                    
+                    <div class="work-summary">
+                        Taught 6–8 private lessons daily, led group classes, trained staff, and coordinated logistics for events while developing presentation and coaching skills in high-pressure settings.
+                    </div>
+
+                    <div class="work-details">
+                        <div class="work-details-section">
+                            <h4>Key Responsibilities</h4>
+                            <ul>
+                                <li>Conducted 6-8 private dance lessons daily, tailoring instruction to individual student needs and skill levels</li>
+                                <li>Led group classes ranging from beginner to advanced levels in multiple ballroom dance styles</li>
+                                <li>Developed and implemented staff training programs to improve teaching quality and consistency</li>
+                                <li>Coordinated event logistics including competitions, showcases, and studio social events</li>
+                                <li>Managed client relationships and provided exceptional customer service to maintain student retention</li>
+                                <li>Assisted in choreographing routines for performances and competitions</li>
+                            </ul>
+                        </div>
+
+                        <div class="work-details-section">
+                            <h4>Major Achievements</h4>
+                            <ul>
+                                <li>Maintained a consistent schedule of 6-8 private lessons daily, demonstrating reliability and student satisfaction</li>
+                                <li>Successfully trained multiple new instructors, improving overall studio teaching standards</li>
+                                <li>Organized and executed multiple successful studio events with 50+ attendees</li>
+                                <li>Earned Arthur Murray certification, demonstrating professional competency in ballroom instruction</li>
+                                <li>Developed strong presentation skills through regular teaching and public speaking opportunities</li>
+                            </ul>
+                        </div>
+
+                        <div class="work-details-section">
+                            <h4>Skills Developed</h4>
+                            <div class="work-skills">
+                                <span class="work-skill-tag">Teaching & Instruction</span>
+                                <span class="work-skill-tag">Leadership</span>
+                                <span class="work-skill-tag">Event Coordination</span>
+                                <span class="work-skill-tag">Customer Service</span>
+                                <span class="work-skill-tag">Public Speaking</span>
+                                <span class="work-skill-tag">Time Management</span>
+                                <span class="work-skill-tag">Team Training</span>
+                                <span class="work-skill-tag">Choreography</span>
+                                <span class="work-skill-tag">Client Relations</span>
+                            </div>
+                        </div>
+
+                        <div class="work-impact">
+                            <h4>Impact & Growth</h4>
+                            <p>This role was instrumental in developing my ability to work under pressure, communicate effectively with diverse audiences, and lead teams. The experience of teaching 6-8 lessons daily honed my time management and organizational skills, while staff training responsibilities enhanced my leadership capabilities. The event coordination aspect provided valuable project management experience that I've applied to other professional endeavors.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real Estate Agent Entry -->
+                <div id="real-estate-agent" class="interactive-work-item" onclick="toggleExpand(this)">
+                    <div class="work-header-interactive">
+                        <div class="work-title-section">
+                            <h3>Real Estate Agent</h3>
+                            <div class="work-company">Licensed Real Estate Professional</div>
+                            <div class="work-dates">June 2020 – Present</div>
+                        </div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    
+                    <div class="work-summary">
+                        Conducted MLS searches and sourced leads via cold/warm calling; participated in real estate transactions (~10) including showings, negotiations, and open houses.
+                    </div>
+
+                    <div class="work-details">
+                        <div class="work-details-section">
+                            <h4>Key Responsibilities</h4>
+                            <ul>
+                                <li>Conducted comprehensive MLS (Multiple Listing Service) searches using Bareis MLS to identify properties matching client criteria</li>
+                                <li>Generated leads through cold calling, warm calling, and networking to build client base</li>
+                                <li>Managed approximately 10 real estate transactions from initial contact through closing</li>
+                                <li>Coordinated and conducted property showings for prospective buyers</li>
+                                <li>Facilitated negotiations between buyers and sellers to reach mutually beneficial agreements</li>
+                                <li>Organized and hosted open houses to showcase properties to potential buyers</li>
+                                <li>Maintained strong client relationships through regular communication and follow-up</li>
+                                <li>Stayed current with local real estate market trends and property values</li>
+                            </ul>
+                        </div>
+
+                        <div class="work-details-section">
+                            <h4>Major Achievements</h4>
+                            <ul>
+                                <li>Successfully completed approximately 10 real estate transactions, demonstrating competency in the full sales cycle</li>
+                                <li>Developed effective lead generation strategies through cold and warm calling techniques</li>
+                                <li>Built and maintained a network of clients and referral sources</li>
+                                <li>Successfully negotiated deals that satisfied both buyers and sellers</li>
+                                <li>Maintained active real estate license and continued professional development</li>
+                            </ul>
+                        </div>
+
+                        <div class="work-details-section">
+                            <h4>Skills Developed</h4>
+                            <div class="work-skills">
+                                <span class="work-skill-tag">Bareis MLS</span>
+                                <span class="work-skill-tag">Lead Generation</span>
+                                <span class="work-skill-tag">Negotiation</span>
+                                <span class="work-skill-tag">Client Relations</span>
+                                <span class="work-skill-tag">Sales</span>
+                                <span class="work-skill-tag">Market Analysis</span>
+                                <span class="work-skill-tag">Property Valuation</span>
+                                <span class="work-skill-tag">Transaction Management</span>
+                                <span class="work-skill-tag">Networking</span>
+                            </div>
+                        </div>
+
+                        <div class="work-impact">
+                            <h4>Impact & Growth</h4>
+                            <p>This role has provided hands-on experience in the real estate industry, allowing me to apply my business and finance knowledge in a practical setting. The lead generation and sales experience has strengthened my communication and persuasion skills, while transaction management has enhanced my attention to detail and organizational abilities. Working directly with clients has improved my ability to understand needs, build trust, and deliver results.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summit State Bank Entry -->
+                <div id="summit-state-bank" class="interactive-work-item" onclick="toggleExpand(this)">
+                    <div class="work-header-interactive">
+                        <div class="work-title-section">
+                            <h3>Bank Teller</h3>
+                            <div class="work-company">Summit State Bank</div>
+                            <div class="work-dates">December 2022 – July 2023</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <button class="gallery-button" onclick="event.stopPropagation(); openGallery('summit-state-bank-gallery')">
+                                <span class="gallery-button-icon">🖼️</span>
+                                <span>Gallery</span>
+                            </button>
+                            <div class="expand-icon">▼</div>
+                        </div>
+                    </div>
+                    
+                    <div class="work-summary">
+                        Processed transactions, resolved online banking issues, and assisted with account troubleshooting while learning customer tracking, Horizon XE software, and banking laws.
+                    </div>
+
+                    <div class="work-details">
+                        <div class="work-details-section">
+                            <h4>Key Responsibilities</h4>
+                            <ul>
+                                <li>Processed various financial transactions including deposits, withdrawals, transfers, and loan payments</li>
+                                <li>Resolved customer online banking issues and technical problems with accounts</li>
+                                <li>Assisted customers with account troubleshooting and provided solutions to banking inquiries</li>
+                                <li>Learned and utilized Horizon XE banking software for transaction processing and customer management</li>
+                                <li>Maintained knowledge of banking laws and regulations to ensure compliance</li>
+                                <li>Tracked customer interactions and maintained accurate records using customer tracking systems</li>
+                                <li>Assisted with Employee Activity Committee activities and events</li>
+                                <li>Provided exceptional customer service while handling sensitive financial information</li>
+                            </ul>
+                        </div>
+
+                        <div class="work-details-section">
+                            <h4>Major Achievements</h4>
+                            <ul>
+                                <li>Successfully processed numerous financial transactions with accuracy and attention to detail</li>
+                                <li>Effectively resolved online banking issues, improving customer satisfaction</li>
+                                <li>Quickly learned Horizon XE software and banking systems to become proficient</li>
+                                <li>Gained comprehensive understanding of banking laws and regulatory compliance</li>
+                                <li>Contributed to Employee Activity Committee, helping organize team events and activities</li>
+                                <li>Maintained high standards of customer service while handling confidential financial information</li>
+                            </ul>
+                        </div>
+
+                        <div class="work-details-section">
+                            <h4>Skills Developed</h4>
+                            <div class="work-skills">
+                                <span class="work-skill-tag">Horizon XE</span>
+                                <span class="work-skill-tag">Banking Laws</span>
+                                <span class="work-skill-tag">Customer Service</span>
+                                <span class="work-skill-tag">Financial Systems</span>
+                                <span class="work-skill-tag">Transaction Processing</span>
+                                <span class="work-skill-tag">Regulatory Compliance</span>
+                                <span class="work-skill-tag">Problem Solving</span>
+                                <span class="work-skill-tag">Data Entry</span>
+                                <span class="work-skill-tag">Team Collaboration</span>
+                            </div>
+                        </div>
+
+                        <div class="work-impact">
+                            <h4>Impact & Growth</h4>
+                            <p>This position provided valuable experience in the financial services industry, giving me insight into banking operations, regulatory compliance, and customer service in a financial context. Working with Horizon XE software enhanced my technical skills and ability to learn new systems quickly. The experience with banking laws and regulations has been valuable for understanding the financial industry's regulatory environment. The customer service aspect reinforced the importance of clear communication and problem-solving when dealing with financial matters.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cal Poly Affordable Housing Competition Entry -->
+                <div id="cal-poly-housing" class="interactive-work-item" onclick="toggleExpand(this)">
+                    <div class="work-header-interactive">
+                        <div class="work-title-section">
+                            <h3>Project Leader & Team Member</h3>
+                            <div class="work-company">Cal Poly Affordable Housing Competition</div>
+                            <div class="work-dates">April 2024 – April 2024</div>
+                        </div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    
+                    <div class="work-summary">
+                        Led the design and pitch of a 75-unit affordable housing complex in San Luis Obispo, contributing to market research, site design, financial modeling, and risk analysis.
+                    </div>
+
+                    <div class="work-details">
+                        <div class="work-details-section">
+                            <h4>Key Responsibilities</h4>
+                            <ul>
+                                <li>Led the design and development of a comprehensive 75-unit affordable housing complex proposal</li>
+                                <li>Conducted extensive market research to understand local housing needs and demographics</li>
+                                <li>Designed site layout and building plans for the affordable housing development</li>
+                                <li>Developed detailed financial models including pro formas, cash flow projections, and ROI analysis</li>
+                                <li>Performed comprehensive risk analysis to identify potential challenges and mitigation strategies</li>
+                                <li>Created and delivered professional presentation to competition judges</li>
+                                <li>Collaborated with team members to integrate various aspects of the project</li>
+                                <li>Researched affordable housing regulations, zoning requirements, and funding mechanisms</li>
+                            </ul>
+                        </div>
+
+                        <div class="work-details-section">
+                            <h4>Major Achievements</h4>
+                            <ul>
+                                <li>Successfully designed a complete 75-unit affordable housing complex proposal</li>
+                                <li>Won the Cal Poly Affordable Housing Competition, demonstrating excellence in real estate development</li>
+                                <li>Created comprehensive financial models that demonstrated project viability</li>
+                                <li>Conducted thorough market research that informed strategic design decisions</li>
+                                <li>Delivered compelling presentation that effectively communicated the project vision</li>
+                                <li>Applied real estate finance coursework to a practical, real-world project</li>
+                            </ul>
+                        </div>
+
+                        <div class="work-details-section">
+                            <h4>Skills Developed</h4>
+                            <div class="work-skills">
+                                <span class="work-skill-tag">Real Estate Finance</span>
+                                <span class="work-skill-tag">Market Analysis</span>
+                                <span class="work-skill-tag">Financial Modeling</span>
+                                <span class="work-skill-tag">Project Management</span>
+                                <span class="work-skill-tag">Site Design</span>
+                                <span class="work-skill-tag">Risk Analysis</span>
+                                <span class="work-skill-tag">Presentation Skills</span>
+                                <span class="work-skill-tag">Team Leadership</span>
+                                <span class="work-skill-tag">Affordable Housing</span>
+                            </div>
+                        </div>
+
+                        <div class="work-impact">
+                            <h4>Impact & Growth</h4>
+                            <p>This competition project was a significant achievement that allowed me to apply my real estate finance education to a comprehensive, real-world development project. Leading the team and coordinating various aspects of the project enhanced my project management and leadership skills. The financial modeling and risk analysis work deepened my understanding of real estate investment and development. Winning the competition validated my ability to create viable, well-researched real estate proposals and demonstrated my potential in the real estate development field.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Gallery Modal -->
+    <div id="galleryModal" class="gallery-modal">
+        <span class="gallery-modal-close" onclick="closeGallery()">&times;</span>
+        <div class="gallery-modal-content">
+            <div id="galleryGrid" class="gallery-grid"></div>
+        </div>
+    </div>
+
+    <!-- Lightbox for individual images -->
+    <div id="galleryLightbox" class="gallery-lightbox">
+        <span class="gallery-lightbox-close" onclick="closeLightbox()">&times;</span>
+        <img id="lightboxImage" src="" alt="Gallery Image">
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Daniel's Personal | All Rights Reserved | Thanks for visiting</p>
+            <p style="font-size: 0.8rem; color: #999; margin-top: 1rem;">Last updated: January 2026</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        function toggleExpand(element) {
+            element.classList.toggle('expanded');
+        }
+
+        // Function to check if nav text would wrap and hide "Interactive" if needed
+        function checkNavTextWrapping() {
+            const navLink = document.querySelector('.nav-link.active');
+            const navInteractive = document.querySelector('.nav-interactive');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (!navLink || !navInteractive || !navLinks) return;
+            
+            // Show "Interactive" first to measure full width
+            navInteractive.classList.remove('hide');
+            
+            // Force a reflow to get accurate measurements
+            void navLink.offsetWidth;
+            
+            // Check if nav-links would wrap by comparing scrollWidth to clientWidth
+            // If scrollWidth > clientWidth, content is wrapping
+            const navLinksScrollWidth = navLinks.scrollWidth;
+            const navLinksClientWidth = navLinks.clientWidth;
+            
+            // Also check if the nav container itself would cause wrapping
+            const navContainer = navLinks.parentElement;
+            const containerWidth = navContainer.clientWidth;
+            const logo = document.querySelector('.logo-text');
+            const logoWidth = logo ? logo.offsetWidth : 0;
+            const containerPadding = parseFloat(getComputedStyle(navContainer).paddingLeft) * 2 || 0;
+            const availableSpace = containerWidth - logoWidth - containerPadding;
+            
+            // Calculate total width of all nav links
+            let totalLinksWidth = 0;
+            const links = Array.from(navLinks.children);
+            links.forEach(link => {
+                totalLinksWidth += link.offsetWidth;
+            });
+            const gap = parseFloat(getComputedStyle(navLinks).gap) || 32; // 2rem = 32px default
+            const totalWidthWithGaps = totalLinksWidth + (links.length - 1) * gap;
+            
+            // If total width exceeds available space, hide "Interactive"
+            if (totalWidthWithGaps > availableSpace || navLinksScrollWidth > navLinksClientWidth) {
+                navInteractive.classList.add('hide');
+            } else {
+                navInteractive.classList.remove('hide');
+            }
+        }
+
+        // Add smooth scroll animation for work items
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check nav text wrapping on load and resize
+            checkNavTextWrapping();
+            window.addEventListener('resize', checkNavTextWrapping);
+            
+            const workItems = document.querySelectorAll('.interactive-work-item');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, index * 150);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            workItems.forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(30px)';
+                item.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                observer.observe(item);
+            });
+
+            // Handle hash navigation and highlight
+            function handleHashNavigation() {
+                const hash = window.location.hash;
+                if (hash) {
+                    const targetId = hash.substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        // Wait for animations to complete
+                        setTimeout(() => {
+                            // Scroll to element with offset for navbar
+                            const offset = 100;
+                            const elementPosition = targetElement.getBoundingClientRect().top;
+                            const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+                            window.scrollTo({
+                                top: offsetPosition,
+                                behavior: 'smooth'
+                            });
+
+                            // Auto-expand the target element
+                            if (!targetElement.classList.contains('expanded')) {
+                                toggleExpand(targetElement);
+                            }
+                        }, 300);
+                    }
+                }
+            }
+
+            // Handle initial hash on page load
+            handleHashNavigation();
+
+            // Handle hash changes (if user navigates with back/forward)
+            window.addEventListener('hashchange', handleHashNavigation);
+        });
+
+        // Gallery data - mapping gallery IDs to their images
+        const galleryData = {
+            'keystone-gallery': [
+                { src: 'Assets/Interactive Resume Page Assets/Keystone Real Estate/keystone-real-estate-screenshot.png', alt: 'Keystone Real Estate Screenshot' }
+            ],
+            'fred-astaire-gallery': [
+                { src: 'Assets/Interactive Resume Page Assets/Fred Astaire Dance Studio/fred-astaire-dance-shoes.jpg', alt: 'Dance Shoes' },
+                { src: 'Assets/Interactive Resume Page Assets/Fred Astaire Dance Studio/fred-astaire-certificate-gift.jpg', alt: 'Certificate Gift' },
+                { src: 'Assets/Interactive Resume Page Assets/Fred Astaire Dance Studio/fred-astaire-valentines-class.jpg', alt: 'Valentines Class' },
+                { src: 'Assets/Interactive Resume Page Assets/Fred Astaire Dance Studio/fred-astaire-drop-in-class.jpg', alt: 'Drop-in Class' }
+            ],
+            'arthur-murray-gallery': [
+                { src: 'Assets/Interactive Resume Page Assets/Arthur Murray Dance Studio/arthur-murray-teaching-1.jpg', alt: 'Teaching Photo 1' },
+                { src: 'Assets/Interactive Resume Page Assets/Arthur Murray Dance Studio/arthur-murray-teaching-2.jpg', alt: 'Teaching Photo 2' },
+                { src: 'Assets/Interactive Resume Page Assets/Arthur Murray Dance Studio/arthur-murray-teaching-3.jpg', alt: 'Teaching Photo 3' }
+            ],
+            'summit-state-bank-gallery': [
+                { src: 'Assets/Interactive Resume Page Assets/Summit State Bank/summit-state-bank-1.jpg', alt: 'Summit State Bank Photo 1' },
+                { src: 'Assets/Interactive Resume Page Assets/Summit State Bank/summit-state-bank-2.jpg', alt: 'Summit State Bank Photo 2' },
+                { src: 'Assets/Interactive Resume Page Assets/Summit State Bank/summit-state-bank-3.jpg', alt: 'Summit State Bank Photo 3' },
+                { src: 'Assets/Interactive Resume Page Assets/Summit State Bank/summit-state-bank-4.jpg', alt: 'Summit State Bank Photo 4' }
+            ]
+        };
+
+        function openGallery(galleryId) {
+            const modal = document.getElementById('galleryModal');
+            const grid = document.getElementById('galleryGrid');
+            
+            // Clear previous content
+            grid.innerHTML = '';
+            
+            // Get images for this gallery
+            const images = galleryData[galleryId] || [];
+            
+            // Create gallery items
+            images.forEach((image, index) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.onclick = () => openLightbox(image.src, image.alt);
+                
+                const img = document.createElement('img');
+                img.src = image.src;
+                img.alt = image.alt;
+                img.loading = 'lazy';
+                
+                item.appendChild(img);
+                grid.appendChild(item);
+            });
+            
+            // Show modal
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeGallery() {
+            const modal = document.getElementById('galleryModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function openLightbox(imageSrc, imageAlt) {
+            const lightbox = document.getElementById('galleryLightbox');
+            const lightboxImage = document.getElementById('lightboxImage');
+            
+            lightboxImage.src = imageSrc;
+            lightboxImage.alt = imageAlt;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('galleryLightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close modals when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('galleryModal');
+            const lightbox = document.getElementById('galleryLightbox');
+            
+            if (event.target === modal) {
+                closeGallery();
+            }
+            if (event.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeGallery();
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>
+
