@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 440">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2a4d7a"/>
+      <stop offset="1" stop-color="#1b2c3a"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="440" fill="url(#bg)"/>
+  <g stroke="#ffffff" stroke-opacity="0.06" stroke-width="1">
+    <path d="M0 110h800M0 220h800M0 330h800M200 0v440M400 0v440M600 0v440"/>
+  </g>
+  <g transform="translate(322,52)">
+    <path d="M0 0v150h156" stroke="#e8f2ff" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <rect x="24" y="90" width="28" height="60" rx="3" fill="#e8f2ff" opacity="0.85"/>
+    <rect x="66" y="55" width="28" height="95" rx="3" fill="#e8f2ff" opacity="0.92"/>
+    <rect x="108" y="22" width="28" height="128" rx="3" fill="#ffffff"/>
+    <path d="M38 62L80 30L122 -8" stroke="#ffd166" stroke-width="4" fill="none"/>
+    <circle cx="38" cy="62" r="6" fill="#ffd166"/>
+    <circle cx="80" cy="30" r="6" fill="#ffd166"/>
+    <circle cx="122" cy="-8" r="6" fill="#ffd166"/>
+  </g>
+  <text x="400" y="285" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="42" font-weight="bold" fill="#ffffff">Clan Manager</text>
+  <text x="400" y="330" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="25" fill="#e8f2ff">Automation &amp; Dashboard</text>
+  <text x="400" y="378" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#9fb8d4" letter-spacing="1">PYTHON · FLASK · SQLITE</text>
+</svg>

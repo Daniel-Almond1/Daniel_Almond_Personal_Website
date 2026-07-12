@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuesday — Self-Hosted AI Assistant & Home Lab | Daniel Almond</title>
+    <meta name="description" content="An always-on AI assistant running in a security sandbox on a self-hosted Linux mini-PC: Telegram interface, scheduled finance automations, and a family media server.">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo-text">Daniel Almond</a>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="projects.html" class="nav-link active">Projects</a>
+                <a href="interactive-resume.html" class="nav-link">Resume</a>
+                <a href="education.html" class="nav-link">Education</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="project-hero">
+            <div class="project-hero-content">
+                <div class="project-hero-text">
+                    <h1>Tuesday</h1>
+                    <h2>Self-Hosted AI Assistant &amp; Home Lab</h2>
+                    <p class="project-subtitle">I turned a mini-PC into an always-on home server (affectionately named "Sir-Serves-A-Lot") running a sandboxed AI assistant, scheduled finance automations, and a media server my whole family uses.</p>
+                    <div class="project-stats">
+                        <div class="stat"><span class="stat-number">24/7</span><span class="stat-label">Always-On Server</span></div>
+                        <div class="stat"><span class="stat-number">1</span><span class="stat-label">Mini-PC (Beelink)</span></div>
+                        <div class="stat"><span class="stat-number">Sandboxed</span><span class="stat-label">AI Agent Runtime</span></div>
+                        <div class="stat"><span class="stat-number">Whole Family</span><span class="stat-label">Media Server Users</span></div>
+                    </div>
+                </div>
+                <div class="project-hero-image">
+                    <img src="Assets/Project Page Assets/Tech Project Assets/home-lab-cover.svg" alt="Tuesday AI home lab project cover">
+                </div>
+            </div>
+        </section>
+
+        <section class="project-details">
+            <div class="container">
+                <div class="project-content">
+                    <div class="project-description">
+                        <div class="section-div">
+                            <h3 class="section-title"><strong>What It Is</strong></h3>
+                            <p>Tuesday is a personal AI assistant that lives on my own hardware — a Beelink mini-PC running Linux — instead of someone else's cloud. I message her on Telegram and she handles my calendar, tasks, and contacts, tracks my crypto portfolio and net worth, and sends me automated reports. She runs inside a security sandbox that controls exactly what the AI agent is allowed to touch.</p>
+                        </div>
+
+                        <div class="section-div">
+                            <h3 class="section-title"><strong>What's Running On It</strong></h3>
+                            <ul>
+                                <li><strong>Tuesday (AI agent):</strong> an always-on assistant built on an open agent platform, wrapped in a security sandbox with an explicit network policy. She talks to the Claude API for reasoning and to approved services (calendar, search, market data) for real-world tasks.</li>
+                                <li><strong>Scheduled finance automations:</strong> Python scripts fetch crypto and market prices, recalculate my net worth, and generate a monthly finance summary — automatically, on a schedule.</li>
+                                <li><strong>Per-message cost tracking:</strong> a script logs the API cost of every AI interaction, so I always know what the assistant actually costs to run.</li>
+                                <li><strong>Family media server:</strong> movies, shows, and music the whole family can stream — with a <a href="almond-family-media-server.html">request portal I built</a> so family members can ask for new media without texting me.</li>
+                                <li><strong>Audiobook automation:</strong> a wishlist-driven pipeline that fetches and organizes audiobooks automatically.</li>
+                            </ul>
+                        </div>
+
+                        <div class="section-div">
+                            <h3 class="section-title"><strong>How It's Managed (The Part Employers Care About)</strong></h3>
+                            <ul>
+                                <li><strong>Infrastructure as files:</strong> the assistant's configuration, behavior rules, and scheduled tasks are version-controlled files — the server is deployed from them, not hand-edited.</li>
+                                <li><strong>One-command deploys:</strong> a PowerShell script pushes configuration and scripts to the server over SSH (key-only authentication), and a companion script smoke-tests the assistant after every deploy.</li>
+                                <li><strong>Security-first:</strong> the AI runs inside a sandbox with a declared network policy; remote access is restricted to key-based SSH. Building this taught me more about Linux administration, networking, and AI-agent security than any course could.</li>
+                            </ul>
+                        </div>
+
+                        <div class="section-div">
+                            <h3 class="section-title"><strong>Tech Stack</strong></h3>
+                            <div class="project-tags" style="justify-content: flex-start;">
+                                <span>Linux</span><span>AI Agents</span><span>Claude API</span><span>Python</span><span>PowerShell</span><span>SSH</span><span>Telegram Bot</span><span>Cron Scheduling</span>
+                            </div>
+                            <p style="margin-top: 1rem;">Curious how it all fits together? <a href="contact.html">Ask me about the architecture</a> — I love talking about this one.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Daniel Almond | Thanks for visiting</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="projects.html">Projects</a>
+                <a href="interactive-resume.html">Resume</a>
+                <a href="education.html">Education</a>
+                <a href="dance.html">Dance</a>
+                <a href="contact.html">Contact</a>
+                <a href="https://github.com/Daniel-Almond1" target="_blank" rel="noopener noreferrer">GitHub &#8599;</a>
+            </div>
+            <p style="font-size: 0.8rem; color: #999; margin-top: 1rem;">Last updated: June 2026</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

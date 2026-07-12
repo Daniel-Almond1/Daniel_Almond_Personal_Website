@@ -2479,3 +2479,166 @@ section {
     padding-left: 0.5rem;
   }
 }
+
+/* ============================================================
+   2026 Tech-Pivot Additions
+   ============================================================ */
+
+/* Anchor jumps land below the sticky navbar (smooth scrolling is handled in script.js) */
+html {
+  scroll-padding-top: 110px;
+}
+
+/* Homepage hero credential tiles: deliberate 2x2 grid */
+.hero .credentials {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(200px, 1fr));
+  max-width: 620px;
+  gap: 1rem;
+}
+
+@media (max-width: 560px) {
+  .hero .credentials {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+  }
+}
+
+/* Tech-stack tag chips on project cards */
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 1.25rem 0;
+  justify-content: center;
+}
+
+.projects-grid .project-tags {
+  justify-content: flex-start;
+}
+
+.project-tags span {
+  background: #e8f2ff;
+  color: #2a4d7a;
+  border-radius: 8px;
+  padding: 0.2rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* Text-only About layout (single column, no photo) */
+.about-content.single {
+  grid-template-columns: 1fr;
+  max-width: 820px;
+  text-align: left;
+}
+
+/* SVG icons in explore cards */
+.explore-icon svg {
+  width: 52px;
+  height: 52px;
+  display: inline-block;
+}
+
+/* Jump navigation on the Projects page */
+.jump-nav {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto 1.5rem auto;
+}
+
+.jump-nav a {
+  background: #fff;
+  color: #2a4d7a;
+  border: 2px solid #2a4d7a;
+  border-radius: 25px;
+  padding: 0.5rem 1.4rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.jump-nav a:hover {
+  background: #2a4d7a;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* SVG project covers: never crop — show the full 800x440 artwork at any card width */
+.project-image:has(> img[src$=".svg"]) {
+  height: auto;
+  aspect-ratio: 800 / 440;
+}
+
+.project-image:has(> img[src$=".svg"]) img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* aspect matches the box, so this fills without cropping */
+}
+
+/* Section headers between project groups */
+.project-group-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2a4d7a;
+  text-align: center;
+  margin: 4rem 0 1rem 0;
+  letter-spacing: 1px;
+  position: relative;
+}
+
+.project-group-title::after {
+  content: '';
+  position: absolute;
+  bottom: -0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(90deg, #2a4d7a, #1b2c3a);
+  border-radius: 2px;
+}
+
+.project-group-subtitle {
+  text-align: center;
+  color: #222;
+  font-size: 1.05rem;
+  max-width: 700px;
+  margin: 2rem auto 0 auto;
+}
+
+/* Resume page action buttons (PDF downloads) */
+.resume-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+/* Skills matrix (Resume page) */
+.skills-matrix {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.skills-col {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  box-shadow: 0 4px 16px rgba(42,77,122,0.08);
+  border: 1px solid #e0e6ed;
+}
+
+.skills-col h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  color: #2a4d7a;
+  margin: 0 0 1rem 0;
+}

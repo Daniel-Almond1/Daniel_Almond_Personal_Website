@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContactVault Pro — Local-First Personal CRM | Daniel Almond</title>
+    <meta name="description" content="A privacy-respecting Python contact manager that imports from any source, cleans and deduplicates records, and enriches them with human-in-the-loop verification.">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo-text">Daniel Almond</a>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="projects.html" class="nav-link active">Projects</a>
+                <a href="interactive-resume.html" class="nav-link">Resume</a>
+                <a href="education.html" class="nav-link">Education</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="project-hero">
+            <div class="project-hero-content">
+                <div class="project-hero-text">
+                    <h1>ContactVault Pro</h1>
+                    <h2>Local-First Personal CRM</h2>
+                    <p class="project-subtitle">Everyone's contacts are a mess — duplicates, misspelled names, dead emails, missing birthdays. ContactVault turns that mess into an organized, enriched personal database that never leaves your own machine.</p>
+                    <div class="project-stats">
+                        <div class="stat"><span class="stat-number">7+</span><span class="stat-label">Import Formats</span></div>
+                        <div class="stat"><span class="stat-number">100%</span><span class="stat-label">Data Stays Local</span></div>
+                        <div class="stat"><span class="stat-number">Fuzzy</span><span class="stat-label">Duplicate Matching</span></div>
+                        <div class="stat"><span class="stat-number">Human</span><span class="stat-label">In-the-Loop Verification</span></div>
+                    </div>
+                </div>
+                <div class="project-hero-image">
+                    <img src="Assets/Project Page Assets/Tech Project Assets/contactvault-cover.svg" alt="ContactVault Pro project cover">
+                </div>
+            </div>
+        </section>
+
+        <section class="project-details">
+            <div class="container">
+                <div class="project-content">
+                    <div class="project-description">
+                        <div class="section-div">
+                            <h3 class="section-title"><strong>The Problem</strong></h3>
+                            <p>Between real estate clients, dance students, and personal life, my contact list grew into hundreds of inconsistent entries: "john smith" next to "John&nbsp;&nbsp;Smith," phone numbers in five formats, duplicates everywhere, and no record of how I knew people. Cloud CRMs solve this by taking your data; I wanted a tool that solves it while keeping the data <strong>mine</strong>.</p>
+                        </div>
+
+                        <div class="section-div">
+                            <h3 class="section-title"><strong>What I Built</strong></h3>
+                            <ul>
+                                <li><strong>Multi-source import:</strong> pulls contacts in from CSV, Excel, vCard, JSON, and Google/Apple/Outlook exports — hundreds at a time.</li>
+                                <li><strong>Intelligent cleaning:</strong> normalizes names (handles prefixes and suffixes like Dr. and Jr.), standardizes phone numbers to international E.164 format, validates email syntax, and finds duplicate people with fuzzy matching before merging them.</li>
+                                <li><strong>Enrichment engine:</strong> a tiered lookup system (AI-powered search first, then targeted APIs) proposes updates like current job or company — but <strong>nothing changes without my explicit approval</strong>. Human-in-the-loop by design.</li>
+                                <li><strong>Terminal UI:</strong> built with Textual, a modern Python TUI framework — fast, keyboard-driven, and it runs anywhere Python runs, including straight off a USB drive.</li>
+                            </ul>
+                        </div>
+
+                        <div class="section-div">
+                            <h3 class="section-title"><strong>Design Principles</strong></h3>
+                            <ul>
+                                <li><strong>Local-first:</strong> the database is a file on my machine, synced by tools I control — no cloud account, no vendor lock-in.</li>
+                                <li><strong>Portable:</strong> designed to travel on a thumb drive and work across every machine I plug it into.</li>
+                                <li><strong>Trust but verify:</strong> automated suggestions, human decisions. The system never silently rewrites a contact.</li>
+                            </ul>
+                        </div>
+
+                        <div class="section-div">
+                            <h3 class="section-title"><strong>Tech Stack</strong></h3>
+                            <div class="project-tags" style="justify-content: flex-start;">
+                                <span>Python</span><span>Textual (TUI)</span><span>openpyxl</span><span>Pillow</span><span>Data Cleaning</span><span>AI-Assisted Development</span>
+                            </div>
+                            <p style="margin-top: 1rem;">Want a demo or a look at the code? <a href="contact.html">Get in touch</a>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Daniel Almond | Thanks for visiting</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="projects.html">Projects</a>
+                <a href="interactive-resume.html">Resume</a>
+                <a href="education.html">Education</a>
+                <a href="dance.html">Dance</a>
+                <a href="contact.html">Contact</a>
+                <a href="https://github.com/Daniel-Almond1" target="_blank" rel="noopener noreferrer">GitHub &#8599;</a>
+            </div>
+            <p style="font-size: 0.8rem; color: #999; margin-top: 1rem;">Last updated: June 2026</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

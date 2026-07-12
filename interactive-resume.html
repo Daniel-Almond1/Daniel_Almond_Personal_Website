@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Resume - Daniel Almond</title>
+    <title>Resume | Daniel Almond</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
@@ -465,21 +465,17 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="logo-text">Daniel Almond</a>
-            <div class="nav-links">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="projects.html" class="nav-link">Projects</a>
-                <a href="education.html" class="nav-link">Education</a>
-                <a href="certifications.html" class="nav-link">Certifications</a>
-                <a href="interactive-resume.html" class="nav-link active">
-                    <span class="nav-interactive">Interactive </span>
-                    <span class="nav-resume">Resume</span>
-                </a>
-                <a href="contact.html" class="nav-link">Contact</a>
-            </div>
             <div class="hamburger">
                 <span></span>
                 <span></span>
                 <span></span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="projects.html" class="nav-link">Projects</a>
+                <a href="interactive-resume.html" class="nav-link active">Resume</a>
+                <a href="education.html" class="nav-link">Education</a>
+                <a href="contact.html" class="nav-link">Contact</a>
             </div>
         </div>
     </nav>
@@ -491,9 +487,14 @@
             <div class="hero-content">
                 <div class="hero-text">
                     <h1 class="hero-title">
-                        <span class="title-line-1">Interactive Resume</span>
+                        <span class="title-line-1">Resume</span>
                     </h1>
-                    <p class="hero-subtitle">Click on any experience to explore detailed information</p>
+                    <p class="hero-subtitle">Click any experience to expand the details — or grab a PDF below</p>
+                    <div class="resume-actions">
+                        <a href="Assets/Resume Page Assets/Daniel Almond Coding Resume.pdf" class="resume-download-btn" download>Download Tech Resume (PDF)</a>
+                        <a href="Assets/Resume Page Assets/Daniel Almond Resume.docx.pdf" class="resume-download-btn" download>Download General Resume (PDF)</a>
+                        <a href="Assets/Resume Page Assets/Daniel Almond Dancing Resume.pdf" class="resume-download-btn" download>Dance Resume (PDF)</a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -501,6 +502,45 @@
         <!-- Interactive Resume Section -->
         <section class="interactive-resume-section">
             <div class="resume-container">
+
+                <!-- Technical Skills Matrix -->
+                <h2 class="section-title" style="margin: 1rem 0 3rem 0;">Technical Skills</h2>
+                <div class="skills-matrix">
+                    <div class="skills-col">
+                        <h4>Languages</h4>
+                        <div class="work-skills">
+                            <span class="work-skill-tag">Python</span>
+                            <span class="work-skill-tag">JavaScript</span>
+                            <span class="work-skill-tag">HTML &amp; CSS</span>
+                            <span class="work-skill-tag">SQL (SQLite)</span>
+                            <span class="work-skill-tag">Java (coursework)</span>
+                        </div>
+                    </div>
+                    <div class="skills-col">
+                        <h4>Tools &amp; Frameworks</h4>
+                        <div class="work-skills">
+                            <span class="work-skill-tag">Flask</span>
+                            <span class="work-skill-tag">REST APIs</span>
+                            <span class="work-skill-tag">Git &amp; GitHub</span>
+                            <span class="work-skill-tag">Linux Server Admin</span>
+                            <span class="work-skill-tag">AI-Assisted Development</span>
+                            <span class="work-skill-tag">cron / Task Scheduler</span>
+                        </div>
+                    </div>
+                    <div class="skills-col">
+                        <h4>Analytics &amp; Business</h4>
+                        <div class="work-skills">
+                            <span class="work-skill-tag">Excel &amp; Proforma Modeling</span>
+                            <span class="work-skill-tag">Market Analysis</span>
+                            <span class="work-skill-tag">Financial Ratios</span>
+                            <span class="work-skill-tag">Property Valuation</span>
+                            <span class="work-skill-tag">Digital Marketing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-title" style="margin: 2rem 0 3rem 0;">Work Experience</h2>
+
                 <!-- Commercial Real Estate Associate Entry -->
                 <div id="keystone-real-estate" class="interactive-work-item" onclick="toggleExpand(this)">
                     <div class="work-header-interactive">
@@ -651,6 +691,64 @@
                             <h4>Learn More</h4>
                             <a href="https://fred.dance/" target="_blank" rel="noopener noreferrer">Fred Astaire Dance Classes - Healdsburg</a>
                             <a href="https://www.google.com/search?q=fred+astaire+healdsburg&oq=fred+astaire+healdsburg&gs_lcrp=EgZjaHJvbWUyDggAEEUYJxg5GIAEGIoFMgYIARAjGCcyDQgCEC4YgwEYsQMYgAQyDQgDEC4YxwEY0QMYgAQyDQgEEC4YgwEYsQMYgAQyDQgFEAAYgwEYsQMYgAQyDQgGEC4YgwEYsQMYgAQyBggHEEUYPdIBCDQ2MjFqMGo3qAIAsAIA&sourceid=chrome&ie=UTF-8" target="_blank" rel="noopener noreferrer">Google Search - Fred Astaire Healdsburg</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Independent Software Projects Entry -->
+                <div id="software-projects" class="interactive-work-item" onclick="toggleExpand(this)">
+                    <div class="work-header-interactive">
+                        <div class="work-title-section">
+                            <h3>Independent Software Projects</h3>
+                            <div class="work-company">Self-Directed · AI-Assisted Development</div>
+                            <div class="work-dates">2024 – Present</div>
+                        </div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+
+                    <div class="work-summary">
+                        Design and ship working software tools that solve real problems in my businesses and personal life — an automated analytics dashboard, a local-first CRM, and a self-hosted AI assistant running on my own Linux server.
+                    </div>
+
+                    <div class="work-details">
+                        <div class="work-details-section">
+                            <h4>Selected Projects</h4>
+                            <ul>
+                                <li><strong>Clan Manager Dashboard:</strong> automated Python data pipeline polling a live game REST API on a schedule, storing months of per-player history in SQLite, and serving a Flask dashboard that ranks 41 members and recommends promotions — zero manual data entry, running unattended on two machines with lock-file coordination</li>
+                                <li><strong>ContactVault Pro:</strong> local-first personal CRM that imports contacts from any source, normalizes and deduplicates them with fuzzy matching, and proposes enrichments that only apply after human approval — built with Python and the Textual TUI framework</li>
+                                <li><strong>Tuesday (AI Home Lab):</strong> always-on AI assistant in a security sandbox on a self-hosted Linux mini-PC — Telegram interface, scheduled crypto/net-worth automations, per-message API cost tracking, and one-command SSH deploys with post-deploy smoke tests</li>
+                                <li><strong>This portfolio website:</strong> hand-built with HTML/CSS/JavaScript, version-controlled with Git, deployed via GitHub Pages</li>
+                            </ul>
+                        </div>
+
+                        <div class="work-details-section">
+                            <h4>How I Work</h4>
+                            <ul>
+                                <li>Pair modern AI coding tools with my own product thinking: I define the problem, the data model, and the acceptance criteria, then iterate quickly with AI assistance and test everything end-to-end</li>
+                                <li>Bias toward automation: if I have to do a task twice, I script it — schedulers, lock files, and smoke tests keep my tools running without babysitting</li>
+                                <li>Local-first and security-conscious by default: sandboxed agents, key-only SSH, and data that stays on hardware I control</li>
+                            </ul>
+                        </div>
+
+                        <div class="work-details-section">
+                            <h4>Skills Developed</h4>
+                            <div class="work-skills">
+                                <span class="work-skill-tag">Python</span>
+                                <span class="work-skill-tag">Flask</span>
+                                <span class="work-skill-tag">SQLite</span>
+                                <span class="work-skill-tag">REST APIs</span>
+                                <span class="work-skill-tag">Linux</span>
+                                <span class="work-skill-tag">AI Agents</span>
+                                <span class="work-skill-tag">Automation</span>
+                                <span class="work-skill-tag">Git</span>
+                            </div>
+                        </div>
+
+                        <div class="work-links">
+                            <h4>See the Projects</h4>
+                            <a href="project-CoC-Clan-Manager.html">Clan Manager Dashboard</a>
+                            <a href="project-ContactVault-Pro.html">ContactVault Pro</a>
+                            <a href="project-Home-Lab.html">Tuesday — AI Home Lab</a>
                         </div>
                     </div>
                 </div>
@@ -940,8 +1038,17 @@
     <!-- Footer -->
     <footer>
         <div class="footer-content">
-            <p>&copy; 2026 Daniel's Personal | All Rights Reserved | Thanks for visiting</p>
-            <p style="font-size: 0.8rem; color: #999; margin-top: 1rem;">Last updated: January 2026</p>
+            <p>&copy; 2026 Daniel Almond | Thanks for visiting</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="projects.html">Projects</a>
+                <a href="interactive-resume.html">Resume</a>
+                <a href="education.html">Education</a>
+                <a href="dance.html">Dance</a>
+                <a href="contact.html">Contact</a>
+                <a href="https://github.com/Daniel-Almond1" target="_blank" rel="noopener noreferrer">GitHub &#8599;</a>
+            </div>
+            <p style="font-size: 0.8rem; color: #999; margin-top: 1rem;">Last updated: June 2026</p>
         </div>
     </footer>
 
@@ -1017,12 +1124,16 @@
                 rootMargin: '0px 0px -50px 0px'
             });
 
-            workItems.forEach(item => {
-                item.style.opacity = '0';
-                item.style.transform = 'translateY(30px)';
-                item.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                observer.observe(item);
-            });
+            const prefersStatic = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+                || document.visibilityState === 'hidden';
+            if (!prefersStatic) {
+                workItems.forEach(item => {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(30px)';
+                    item.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    observer.observe(item);
+                });
+            }
 
             // Handle hash navigation and highlight
             function handleHashNavigation() {

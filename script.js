@@ -20,6 +20,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Respect reduced-motion preferences and hidden/prerendered documents:
+    // skip hide-then-reveal animations so content is never stuck invisible.
+    const prefersStatic = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        || document.visibilityState === 'hidden';
+
+    if (!prefersStatic) {
     // Animate name slide in
     const nameElement = document.querySelector('.name');
     if (nameElement) {
@@ -107,6 +113,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000 + (index * 150));
     });
 
+    } // end entry animations (prefersStatic guard)
+
     // Animate work items on scroll
     const workItems = document.querySelectorAll('.work-item');
     const projectItems = document.querySelectorAll('.project-item');
@@ -127,39 +135,41 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, observerOptions);
 
-    workItems.forEach(item => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateY(30px)';
-        observer.observe(item);
-    });
+    if (!prefersStatic) {
+        workItems.forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(30px)';
+            observer.observe(item);
+        });
 
-    // Animate project items on scroll
-    projectItems.forEach(item => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateY(30px)';
-        observer.observe(item);
-    });
+        // Animate project items on scroll
+        projectItems.forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(30px)';
+            observer.observe(item);
+        });
 
-    // Animate section titles
-    const sectionTitles = document.querySelectorAll('.section-title');
-    sectionTitles.forEach(title => {
-        title.style.opacity = '0';
-        title.style.transform = 'translateY(20px)';
-        
-        const titleObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }, 300);
-                }
-            });
-        }, observerOptions);
-        
-        titleObserver.observe(title);
-    });
+        // Animate section titles
+        const sectionTitles = document.querySelectorAll('.section-title');
+        sectionTitles.forEach(title => {
+            title.style.opacity = '0';
+            title.style.transform = 'translateY(20px)';
+
+            const titleObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, 300);
+                    }
+                });
+            }, observerOptions);
+
+            titleObserver.observe(title);
+        });
+    }
 
     // Smooth scrolling for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -310,13 +320,5 @@ function animateCount(element, start, end, duration) {
     requestAnimationFrame(updateCount);
 }
 
-// Add subtle parallax effect to background elements
-window.addEventListener('scroll', function() {
-    const scrolled = window.pageYOffset;
-    const parallaxElements = document.querySelectorAll('.hero');
-    
-    parallaxElements.forEach(element => {
-        const speed = 0.5;
-        element.style.transform = `translateY(${scrolled * speed}px)`;
-    });
-}); 
+// (Parallax effect removed June 2026 — it caused the hero section to slide
+// over content below it while scrolling.)

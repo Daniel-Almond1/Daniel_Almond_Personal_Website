@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 440">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2a4d7a"/>
+      <stop offset="1" stop-color="#1b2c3a"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="440" fill="url(#bg)"/>
+  <g stroke="#ffffff" stroke-opacity="0.06" stroke-width="1">
+    <path d="M0 110h800M0 220h800M0 330h800M200 0v440M400 0v440M600 0v440"/>
+  </g>
+  <g transform="translate(336,42)">
+    <rect x="0" y="0" width="128" height="168" rx="8" fill="none" stroke="#e8f2ff" stroke-width="5"/>
+    <path d="M22 30h84M22 56h84M22 82h56" stroke="#e8f2ff" stroke-width="5" stroke-linecap="round" stroke-opacity="0.8"/>
+    <path d="M26 132l22-19 22 19v28h-44z" fill="none" stroke="#ffd166" stroke-width="5" stroke-linejoin="round"/>
+    <circle cx="106" cy="146" r="21" fill="none" stroke="#ffd166" stroke-width="5"/>
+    <path d="M100 146l5 5 10-10" stroke="#ffd166" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="400" y="285" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="40" font-weight="bold" fill="#ffffff">Appraisal Report</text>
+  <text x="400" y="330" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="25" fill="#e8f2ff">103 Stenner Street</text>
+  <text x="400" y="378" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#9fb8d4" letter-spacing="1">COST · INCOME · SALES</text>
+</svg>

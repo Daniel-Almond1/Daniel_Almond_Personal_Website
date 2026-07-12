@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 440">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2a4d7a"/>
+      <stop offset="1" stop-color="#1b2c3a"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="440" fill="url(#bg)"/>
+  <g stroke="#ffffff" stroke-opacity="0.06" stroke-width="1">
+    <path d="M0 110h800M0 220h800M0 330h800M200 0v440M400 0v440M600 0v440"/>
+  </g>
+  <g transform="translate(318,50)">
+    <path d="M0 0v140h180" stroke="#e8f2ff" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M14 118 C50 110, 62 62, 97 55 S 158 22, 172 12" stroke="#ffd166" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+    <circle cx="97" cy="55" r="6" fill="#ffffff"/>
+    <circle cx="172" cy="12" r="6" fill="#ffffff"/>
+    <text x="18" y="24" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#e8f2ff">$ ROI</text>
+  </g>
+  <text x="400" y="278" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="36" font-weight="bold" fill="#ffffff">Dance Return Metrics</text>
+  <text x="400" y="322" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="25" fill="#e8f2ff">Interactive Calculator</text>
+  <text x="400" y="372" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#9fb8d4" letter-spacing="1">JAVASCRIPT · FINANCE</text>
+</svg>

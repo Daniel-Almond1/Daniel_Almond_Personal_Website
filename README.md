@@ -1,90 +1,49 @@
-# Daniel Almond - Professional Portfolio
+# Daniel Almond — Personal Portfolio
 
-A modern, animated professional portfolio website showcasing Daniel Almond's experience, projects, and skills. Built with HTML, CSS, and JavaScript featuring smooth animations and a clean corporate design.
+Portfolio site for Daniel Almond: software projects, commercial real estate work, and dance. Hand-built with plain HTML, CSS, and JavaScript — no frameworks, no build step — and deployed with GitHub Pages.
 
-## Features
+**Live site:** https://daniel-almond1.github.io/Daniel_Almond_Personal_Website/
 
-### 🎨 **Professional Design**
-- **Corporate Color Scheme**: Deep blues and grays for a professional appearance
-- **Smooth Animations**: Name slides in, counters animate up, elements fade in sequentially
-- **Interactive Elements**: Hover effects on cards, buttons, and navigation
-- **Responsive Layout**: Optimized for all devices and screen sizes
+## Highlights
 
-### ✨ **Key Sections**
-- **Home**: Animated introduction with professional credentials
-- **Projects**: Detailed showcase of real estate and business projects
-- **Education**: Academic background and certifications
-- **Dance**: Professional dance experience and achievements
-- **Resume**: Downloadable professional resume
-- **Contact**: Professional contact form
+- **Tech-first project portfolio** — Python/Flask analytics dashboard, a local-first CRM, and a self-hosted AI home lab, alongside real estate investment and finance analysis work
+- **Interactive resume** — expandable work history with photo galleries and downloadable PDFs
+- **Zero dependencies** — one stylesheet, vanilla JS, static hosting; the whole site works by opening `index.html`
 
-## Files Structure
+## Structure
 
 ```
-├── index.html                    # Main homepage
-├── projects.html                 # Project portfolio
-├── education.html                # Education and certifications
-├── dance.html                    # Dance experience
-├── resume.html                   # Resume page
-├── contact.html                  # Contact form
-├── style.css                     # Main stylesheet
-├── script.js                     # JavaScript functionality
-├── Assets/                       # Images and documents
-│   ├── Project Page Assets/      # Project images
-│   ├── Education Page Assets/    # Education materials
-│   ├── Dance Page Assets/        # Dance photos
-│   ├── Resume Page Assets/       # Resume files
-│   └── Index Assets/             # Homepage assets
-└── README.md                     # This file
+index.html                  Homepage (hero, featured projects, about, experience)
+projects.html               All projects in three sections: Tech / Real Estate / Other
+interactive-resume.html     The resume (nav label: "Resume")
+education.html              Education + certifications
+dance.html                  Dance teaching, performing, competing
+contact.html                Contact form (FormSubmit backend)
+project-*.html              Individual project pages
+DanceReturnMetricsCalculator.html   Standalone financial calculator tool
+style.css                   Single shared stylesheet
+script.js                   Shared animations + nav behavior
+Assets/                     Images, PDFs, and per-page assets
+CLAUDE.md                   Conventions for AI-assisted edits (see below)
 ```
 
-## Project Pages
+`resume.html` and `certifications.html` are redirect stubs kept so old links don't break.
 
-### **Real Estate Projects**
-- **553 Flower Avenue**: ADU renovation project
-- **Cornerstone at Rockridge**: Mixed-use development
-- **Broadleaf Flats**: Affordable housing analysis
-- **Chumash Gardens**: Nipomo real estate project
-- **Appraisal Report**: 103 Stenner property appraisal
+## Local development
 
-### **Business Analysis**
-- **Ingredion Stock Analysis**: Financial analysis project
-- **Real Estate Sectors Analysis**: Market research study
+No tooling needed:
 
-### **Leadership Experience**
-- **WOW Leader**: Outdoor recreation leadership role
+```bash
+python3 -m http.server 8000
+# then open http://localhost:8000
+```
 
-## Technologies Used
-
-- **Frontend**: HTML5, CSS3, JavaScript
-- **Design**: Custom CSS animations and transitions
-- **Assets**: Optimized images and PDF documents
-- **Responsive**: Mobile-first design approach
+(Or just open `index.html` in a browser — only the homepage typewriter effect needs the local server.)
 
 ## Deployment
 
-### **GitHub Pages**
-1. Repository is configured for GitHub Pages
-2. Site automatically deploys from main branch
-3. Available at: `https://username.github.io/repository-name`
+Pushing to `main` publishes automatically via GitHub Pages.
 
-### **Local Development**
-1. Clone the repository
-2. Open `index.html` in a web browser
-3. All assets are included locally
+## Conventions
 
-## Browser Support
-- ✅ Chrome 60+
-- ✅ Firefox 55+
-- ✅ Safari 12+
-- ✅ Edge 79+
-
-## Performance Features
-- **Fast Loading**: Optimized images and minimal dependencies
-- **SEO Ready**: Semantic HTML structure
-- **Accessible**: Proper ARIA labels and keyboard navigation
-- **Mobile Optimized**: Responsive design with touch-friendly interactions
-
----
-
-**Professional portfolio website for Daniel Almond** 
+Site-wide conventions (canonical nav/footer, how to add a page, security rules) live in [CLAUDE.md](CLAUDE.md) — read it before editing, whether you're a human or an AI assistant.

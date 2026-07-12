@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact - Daniel Almond</title>
+    <title>Contact | Daniel Almond</title>
+    <meta name="description" content="Get in touch with Daniel Almond about software projects, commercial real estate, or dance instruction.">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 </head>
@@ -12,18 +13,17 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="logo-text">Daniel Almond</a>
-            <div class="nav-links">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="projects.html" class="nav-link">Projects</a>
-                <a href="education.html" class="nav-link">Education</a>
-                <a href="certifications.html" class="nav-link">Certifications</a>
-                <a href="interactive-resume.html" class="nav-link">Interactive Resume</a>
-                <a href="contact.html" class="nav-link active">Contact</a>
-            </div>
             <div class="hamburger">
                 <span></span>
                 <span></span>
                 <span></span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="projects.html" class="nav-link">Projects</a>
+                <a href="interactive-resume.html" class="nav-link">Resume</a>
+                <a href="education.html" class="nav-link">Education</a>
+                <a href="contact.html" class="nav-link active">Contact</a>
             </div>
         </div>
     </nav>
@@ -37,7 +37,7 @@
                     <h1 class="hero-title">
                         <span class="title-line-1">Contact Me</span>
                     </h1>
-                    <p class="hero-subtitle">This is my preferred way to connect - please use the form below</p>
+                    <p class="hero-subtitle">Questions about a project, a property, or a dance lesson — I'd love to hear from you</p>
                 </div>
             </div>
         </section>
@@ -48,33 +48,66 @@
                 <div class="contact-content">
                     <!-- Form Section -->
                     <div class="contact-form-section">
-                        <h3>Share Your Information</h3>
+                        <h3>Send Me a Message</h3>
                         <form action="https://formsubmit.co/7f92164fabc54daf18505d263880ab64" method="POST" class="contact-form" id="contactForm">
                             <!-- Honeypot Field -->
                             <input type="text" name="_honey" style="display: none;" tabindex="-1" autocomplete="off">
 
                             <!-- Hidden CAPTCHA Field -->
                             <input type="hidden" name="_captcha" value="false">
-                            
+
                             <div class="form-group">
                                 <input type="text" name="name" placeholder="Your Name" required>
                             </div>
-                            
+
                             <div class="form-group">
                                 <input type="email" name="email" placeholder="Your Email" required>
                             </div>
-                            
+
                             <div class="form-group">
                                 <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
                             </div>
-                            
+
                             <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
-                            
+
                             <!-- Success Message -->
                             <div id="successMessage" class="success-message" style="display: none;">
                                 <p>Thank you! Your message has been sent successfully. I'll get back to you soon!</p>
                             </div>
                         </form>
+                    </div>
+
+                    <!-- Info Section -->
+                    <div class="contact-info-section">
+                        <div class="social-links">
+                            <h3>Find Me Online</h3>
+                            <div class="social-icons">
+                                <a href="https://github.com/Daniel-Almond1" target="_blank" rel="noopener noreferrer" class="social-link github">
+                                    GitHub — code &amp; this website's source
+                                </a>
+                                <a href="https://www.linkedin.com/in/danielalmond101atgmail/" target="_blank" rel="noopener noreferrer" class="social-link linkedin">
+                                    LinkedIn — professional profile
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="contact-info">
+                            <h3>What to Reach Out About</h3>
+                            <div class="contact-details">
+                                <div class="contact-item">
+                                    <span class="contact-label">Tech</span>
+                                    <span>Software projects, automation, or a walkthrough of anything on my <a href="projects.html#tech">Projects page</a></span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Real Estate</span>
+                                    <span>Commercial leasing, sales, and investment opportunities</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Dance</span>
+                                    <span>Lessons and events at our Fred Astaire studio in Healdsburg</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -85,11 +118,20 @@
     <!-- Footer -->
     <footer>
         <div class="footer-content">
-            <p>&copy; 2026 Daniel's Personal | All Rights Reserved | Thanks for visiting</p>
-            <p style="font-size: 0.8rem; color: #999; margin-top: 1rem;">Last updated: January 2026</p>
+            <p>&copy; 2026 Daniel Almond | Thanks for visiting</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="projects.html">Projects</a>
+                <a href="interactive-resume.html">Resume</a>
+                <a href="education.html">Education</a>
+                <a href="dance.html">Dance</a>
+                <a href="contact.html">Contact</a>
+                <a href="https://github.com/Daniel-Almond1" target="_blank" rel="noopener noreferrer">GitHub &#8599;</a>
+            </div>
+            <p style="font-size: 0.8rem; color: #999; margin-top: 1rem;">Last updated: June 2026</p>
         </div>
     </footer>
 
     <script src="script.js"></script>
 </body>
-</html> 
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clan Manager — Automated Analytics Dashboard | Daniel Almond</title>
+    <meta name="description" content="A Python + Flask system that automatically tracks 41 players' performance from the official Clash of Clans API: scheduled polling, SQLite history, and a ranking dashboard with promotion recommendations.">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo-text">Daniel Almond</a>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="projects.html" class="nav-link active">Projects</a>
+                <a href="interactive-resume.html" class="nav-link">Resume</a>
+                <a href="education.html" class="nav-link">Education</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="project-hero">
+            <div class="project-hero-content">
+                <div class="project-hero-text">
+                    <h1>Clan Manager</h1>
+                    <h2>Automated Analytics &amp; Promotion Dashboard</h2>
+                    <p class="project-subtitle">A fully automated management system for a 41-member competitive gaming clan — data pipeline, historical database, and interactive dashboard, with zero manual data entry.</p>
+                    <div class="project-stats">
+                        <div class="stat"><span class="stat-number">41</span><span class="stat-label">Players Tracked</span></div>
+                        <div class="stat"><span class="stat-number">0</span><span class="stat-label">Manual Data Entries</span></div>
+                        <div class="stat"><span class="stat-number">90-day</span><span class="stat-label">Rolling Performance Metrics</span></div>
+                        <div class="stat"><span class="stat-number">2</span><span class="stat-label">Platforms (PC + Mac)</span></div>
+                    </div>
+                </div>
+                <div class="project-hero-image">
+                    <img src="Assets/Project Page Assets/Tech Project Assets/coc-clan-manager-cover.svg" alt="Clan Manager dashboard project cover">
+                </div>
+            </div>
+        </section>
+
+        <section class="project-details">
+            <div class="container">
+                <div class="project-content">
+                    <div class="project-description">
+                        <div class="section-div">
+                            <h3 class="section-title"><strong>The Problem</strong></h3>
+                            <p>I lead a full 41-member clan in Clash of Clans. Deciding who to promote to Elder or Co-Leader — and who to remove for inactivity — requires knowing every member's war attacks, donations, and activity over months. Tracking that by hand is impossible, and gut-feel decisions caused drama. I wanted the decision to be <strong>data-driven and automatic</strong>.</p>
+                        </div>
+
+                        <div class="section-div">
+                            <h3 class="section-title"><strong>What I Built</strong></h3>
+                            <ul>
+                                <li><strong>Automated data pipeline:</strong> Python scripts poll the official Clash of Clans REST API on a daily schedule, plus an automatic follow-up poll after each war ends so no war data is ever missed.</li>
+                                <li><strong>Historical database:</strong> every snapshot is stored in SQLite, building months of per-player history (war stars, donations, activity) that no game screen can show you.</li>
+                                <li><strong>Flask dashboard:</strong> a local web dashboard with the full roster ranked by rolling 90-day average stars per attack — so one bad war fades naturally instead of ruining a player's standing. It also shows donation averages, a daily-activeness percentage derived from 14 days of snapshots, war history, an ex-member archive, and per-player notes that persist even if a player leaves and rejoins.</li>
+                                <li><strong>Promotion engine:</strong> configurable requirements decide who qualifies for Elder or Co-Leader, and a YAML whitelist with per-player "protected" flags keeps trusted members safe from removal suggestions.</li>
+                            </ul>
+                        </div>
+
+                        <div class="section-div">
+                            <h3 class="section-title"><strong>Engineering Details I'm Proud Of</strong></h3>
+                            <ul>
+                                <li><strong>Cross-device coordination:</strong> the system runs on both my Windows PC (Task Scheduler) and my Mac (cron), with the database syncing between them. A lock file with a 10-minute expiry prevents both machines from polling the API at the same time — a real distributed-systems problem solved with a simple, reliable mechanism.</li>
+                                <li><strong>Zero-maintenance philosophy:</strong> the whitelist regenerates automatically while preserving manual edits, and polling schedules itself around war end times.</li>
+                                <li><strong>Tested end-to-end:</strong> the project includes an API test suite covering the endpoints the pipeline depends on.</li>
+                            </ul>
+                        </div>
+
+                        <div class="section-div">
+                            <h3 class="section-title"><strong>Tech Stack</strong></h3>
+                            <div class="project-tags" style="justify-content: flex-start;">
+                                <span>Python</span><span>Flask</span><span>SQLite</span><span>REST API</span><span>PyYAML</span><span>cron / Task Scheduler</span><span>AI-Assisted Development</span>
+                            </div>
+                            <p style="margin-top: 1rem;">Status: complete and in daily use. Want a walkthrough of the code or the dashboard? <a href="contact.html">Get in touch</a>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Daniel Almond | Thanks for visiting</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="projects.html">Projects</a>
+                <a href="interactive-resume.html">Resume</a>
+                <a href="education.html">Education</a>
+                <a href="dance.html">Dance</a>
+                <a href="contact.html">Contact</a>
+                <a href="https://github.com/Daniel-Almond1" target="_blank" rel="noopener noreferrer">GitHub &#8599;</a>
+            </div>
+            <p style="font-size: 0.8rem; color: #999; margin-top: 1rem;">Last updated: June 2026</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

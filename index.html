@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daniel Almond - Professional Portfolio</title>
+    <title>Daniel Almond — Software Projects, Real Estate & Analytics</title>
+    <meta name="description" content="Portfolio of Daniel Almond: Python automation and dashboard projects, commercial real estate experience, and business analytics. Cal Poly Business Administration grad with a Computer Science minor.">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -40,9 +41,8 @@
             <div class="nav-links">
                 <a href="index.html" class="nav-link active">Home</a>
                 <a href="projects.html" class="nav-link">Projects</a>
+                <a href="interactive-resume.html" class="nav-link">Resume</a>
                 <a href="education.html" class="nav-link">Education</a>
-                <a href="certifications.html" class="nav-link">Certifications</a>
-                <a href="interactive-resume.html" class="nav-link">Interactive Resume</a>
                 <a href="contact.html" class="nav-link">Contact</a>
             </div>
         </div>
@@ -57,30 +57,26 @@
                     </h1>
                     <p class="hero-subtitle" id="typewriter"></p>
                     <div class="credentials">
-                        <a href="project-553-Flower-Avenue.html" class="credential" style="text-decoration: none; color: inherit;">
-                            <span class="credential-label" style="display:block;text-align:center;">First Investment</span>
-                            <span class="credential-value" style="display:block;text-align:center;">Single Family<br>Fix & Flip</span>
-                        </a>
-                        <div class="credential">
-                            <span class="credential-label" style="display:block;text-align:center;">Major</span>
-                            <span class="credential-value" style="display:block;text-align:center;">Business Admin<br>Real Estate Finance</span>
-                        </div>
-                        <a href="project-Broadleaf-Flats.html" class="credential" style="text-decoration: none; color: inherit;">
-                            <span class="credential-label" style="display:block;text-align:center;">Competition Winner</span>
-                            <span class="credential-value" style="display:block;text-align:center;">Broadleaf Flats<br>Cal Poly</span>
-                        </a>
                         <div class="credential">
                             <span class="credential-label" style="display:block;text-align:center;">Minor</span>
                             <span class="credential-value" style="display:block;text-align:center;">Computer<br>Science</span>
                         </div>
-                        <a href="dance.html" class="credential" style="text-decoration: none; color: inherit;">
-                            <span class="credential-label" style="display:block;text-align:center;">Dance Teacher</span>
-                            <span class="credential-value" style="display:block;text-align:center;">Professionally<br>Certified</span>
-                        </a>
                         <div class="credential">
-                            <span class="credential-label" style="display:block;text-align:center;">FAA Drone License</span>
-                            <span class="credential-value" style="display:block;text-align:center;">UAG<br>Licensed</span>
+                            <span class="credential-label" style="display:block;text-align:center;">Major</span>
+                            <span class="credential-value" style="display:block;text-align:center;">Business Admin<br>Real Estate Finance</span>
                         </div>
+                        <a href="project-553-Flower-Avenue.html" class="credential" style="text-decoration: none; color: inherit;">
+                            <span class="credential-label" style="display:block;text-align:center;">First Investment</span>
+                            <span class="credential-value" style="display:block;text-align:center;">553 Flower Ave<br>Fix &amp; Flip</span>
+                        </a>
+                        <a href="dance.html" class="credential" style="text-decoration: none; color: inherit;">
+                            <span class="credential-label" style="display:block;text-align:center;">Studio Co-Owner</span>
+                            <span class="credential-value" style="display:block;text-align:center;">Fred Astaire<br>Franchise</span>
+                        </a>
+                    </div>
+                    <div class="cta-buttons">
+                        <a href="projects.html" class="btn-primary">View My Projects</a>
+                        <a href="interactive-resume.html" class="btn-secondary">View Resume</a>
                     </div>
                 </div>
                 <div class="hero-visual">
@@ -91,70 +87,89 @@
             </div>
         </section>
 
-        <section class="about-me" id="about">
+        <!-- Featured Software Projects -->
+        <section class="explore-site" id="featured-projects">
             <div class="container">
-                <div class="about-content">
-                    <div class="about-image">
-                        <img src="Assets/Index Assets/index-photo.png" alt="Daniel Almond" />
-                    </div>
-                    <div class="about-text">
-                        <h2 class="section-title">About Me</h2>
-                        <div class="about-description">
-                            <p>Hello, and thanks for taking the time to visit my website. My name is Daniel Almond, and here's a little about me:</p>
-                            
-                            <p>I'm a doer. In school, life, hobbies, and other activities, I love being the first to take action or try something new. I've had a supportive upbringing and a loving family that has allowed me to explore many different activities and career paths. I thrive working with people in teams or independently, armed with just two hands and a laptop. I'm excited to share what makes me a unique person and a valuable asset.</p>
-                            
-                            <p>I hope you enjoy exploring the features of this website, as it showcases some of the real projects and activities I've been involved in.</p>
+                <h2 class="section-title">Featured Projects &amp; Ventures</h2>
+                <div class="explore-grid">
+                    <div class="explore-item">
+                        <div class="explore-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#2a4d7a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6" rx="0.5"/><rect x="12" y="8" width="3" height="10" rx="0.5"/><rect x="17" y="5" width="3" height="13" rx="0.5"/></svg>
                         </div>
+                        <h3>Clan Manager Dashboard</h3>
+                        <p>Automated data pipeline and Flask dashboard that tracks 41 players' performance from a live game API and recommends promotions with zero manual data entry.</p>
+                        <div class="project-tags"><span>Python</span><span>Flask</span><span>SQLite</span><span>REST API</span></div>
+                        <a href="project-CoC-Clan-Manager.html" class="explore-link">View Project</a>
                     </div>
+
+                    <div class="explore-item">
+                        <div class="explore-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#2a4d7a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M5.5 16c.8-1.8 2.2-2.5 3.5-2.5s2.7.7 3.5 2.5"/><path d="M15 9h4"/><path d="M15 13h4"/></svg>
+                        </div>
+                        <h3>ContactVault Pro</h3>
+                        <p>A local-first personal CRM that imports messy contacts from any source, then cleans, deduplicates, and enriches them with human-in-the-loop verification.</p>
+                        <div class="project-tags"><span>Python</span><span>Textual TUI</span><span>Data Cleaning</span></div>
+                        <a href="project-ContactVault-Pro.html" class="explore-link">View Project</a>
+                    </div>
+
+                    <div class="explore-item">
+                        <div class="explore-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#2a4d7a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/><circle cx="7" cy="7.5" r="0.9" fill="#2a4d7a"/><circle cx="7" cy="16.5" r="0.9" fill="#2a4d7a"/><path d="M11 7.5h6"/><path d="M11 16.5h6"/></svg>
+                        </div>
+                        <h3>Tuesday — AI Home Lab</h3>
+                        <p>An always-on AI assistant running in a security sandbox on my own mini-PC server — handling calendar, finance tracking, and automated reports over Telegram.</p>
+                        <div class="project-tags"><span>AI Agents</span><span>Linux Server</span><span>Automation</span></div>
+                        <a href="project-Home-Lab.html" class="explore-link">View Project</a>
+                    </div>
+
+                    <div class="explore-item">
+                        <div class="explore-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#2a4d7a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V21h14V9.5"/><rect x="10" y="14" width="4" height="7"/></svg>
+                        </div>
+                        <h3>553 Flower Ave — Fix &amp; Flip</h3>
+                        <p>My first investment property: bought as a fixer-upper, renovated in four months, rented out, then sold after a year of rental income. Sole buyer and agent on the transaction.</p>
+                        <div class="project-tags"><span>Investment</span><span>Renovation</span><span>Deal Management</span></div>
+                        <a href="project-553-Flower-Avenue.html" class="explore-link">View Project</a>
+                    </div>
+
+                    <div class="explore-item">
+                        <div class="explore-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#2a4d7a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10l1-5h14l1 5"/><path d="M4 10a2.4 2.4 0 004 1.6A2.4 2.4 0 0012 11.6 2.4 2.4 0 0016 11.6 2.4 2.4 0 0020 10"/><path d="M5 12v9h14v-9"/><rect x="9" y="15" width="6" height="6"/></svg>
+                        </div>
+                        <h3>Fred Astaire Dance Studio</h3>
+                        <p>Franchisee &amp; co-owner of a dance studio in Healdsburg — building the team, running full-cycle operations and marketing, and integrating AI tools to cut overhead.</p>
+                        <div class="project-tags"><span>Business Ownership</span><span>Operations</span><span>Marketing</span></div>
+                        <a href="interactive-resume.html#fred-astaire-dance-studio" class="explore-link">See the Venture</a>
+                    </div>
+
+                    <div class="explore-item">
+                        <div class="explore-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#2a4d7a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="10" height="18"/><path d="M14 9h6v12H14"/><path d="M7 7h1.5M7 11h1.5M7 15h1.5M10.5 7H12M10.5 11H12M10.5 15H12M17 12h1.5M17 16h1.5"/><path d="M2 21h20"/></svg>
+                        </div>
+                        <h3>Broadleaf Flats — Competition Winner</h3>
+                        <p>Won the Cal Poly affordable-housing competition with a ground-up 75-unit development proposal — complete proforma, site design, and financing plan.</p>
+                        <div class="project-tags"><span>RE Finance</span><span>Proforma</span><span>Team Lead</span></div>
+                        <a href="project-Broadleaf-Flats.html" class="explore-link">View Project</a>
+                    </div>
+                </div>
+                <div style="text-align:center; margin-top: 2.5rem;">
+                    <a href="projects.html" class="resume-preview-link">View All Projects — Software, Real Estate &amp; More →</a>
                 </div>
             </div>
         </section>
 
-        <section class="explore-site" id="explore">
+        <section class="about-me" id="about-me">
             <div class="container">
-                <h2 class="section-title">Explore My Site</h2>
-                <div class="explore-grid">
-                    <div class="explore-item">
-                        <div class="explore-icon">📊</div>
-                        <h3>My Projects</h3>
-                        <p>View my portfolio of real estate analysis projects and other real estate experience.</p>
-                        <a href="projects.html" class="explore-link">View Projects</a>
-                    </div>
-                    
-                    <div class="explore-item">
-                        <div class="explore-icon">💃</div>
-                        <h3>Dance Experience</h3>
-                        <p>My dance experiences with teaching, performing, and competing in multi-style ballroom dance.</p>
-                        <a href="dance.html" class="explore-link">View Dance</a>
-                    </div>
-                    
-                    <div class="explore-item">
-                        <div class="explore-icon">📄</div>
-                        <h3>My Resume</h3>
-                        <p>Explore my interactive resume with detailed work experience.</p>
-                        <a href="interactive-resume.html" class="explore-link">View Resume</a>
-                    </div>
-                    
-                    <div class="explore-item">
-                        <div class="explore-icon">🎓</div>
-                        <h3>Education</h3>
-                        <p>See my academic background and relevant coursework.</p>
-                        <a href="education.html" class="explore-link">View Education</a>
-                    </div>
-                    
-                    <div class="explore-item">
-                        <div class="explore-icon">🏆</div>
-                        <h3>Certifications</h3>
-                        <p>Browse the professional certifications I have earned.</p>
-                        <a href="certifications.html" class="explore-link">View Certifications</a>
-                    </div>
-                    
-                    <div class="explore-item">
-                        <div class="explore-icon">📧</div>
-                        <h3>Get In Touch</h3>
-                        <p>Have a question or want to collaborate? Let's connect.</p>
-                        <a href="contact.html" class="explore-link">Contact Me</a>
+                <div class="about-content single">
+                    <div class="about-text">
+                        <h2 class="section-title">About Me</h2>
+                        <div class="about-description">
+                            <p>Hello, and thanks for taking the time to visit my website. My name is Daniel Almond, and here's a little about me:</p>
+
+                            <p>I'm a doer. In school, life, hobbies, and other activities, I love being the first to take action or try something new. I thrive working with people in teams or independently, armed with just two hands and a laptop. Lately that laptop has been busy: I build my own software tools — data dashboards, automation pipelines, and a self-hosted AI assistant — to solve real problems in my work and businesses.</p>
+
+                            <p>That mix is what makes me different: I analyze deals like a real estate professional, operate like a business owner, and automate like a developer. I hope you enjoy exploring this site — everything on it is a real project or activity I've been part of.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -164,84 +179,43 @@
         <section class="resume-preview-section" id="resume-preview">
             <div class="container">
                 <h2 class="section-title">Professional Experience</h2>
-                <div class="work-grid">
-                <div class="work-item">
-                    <div class="work-header">
-                        <h3>Ballroom Dance Studio</h3>
-                        <span class="work-role">2019 – 2022</span>
-                    </div>
-                    <p class="work-description">Taught 6–8 private lessons daily, led group classes, trained staff, and coordinated logistics for events while developing presentation and coaching skills in high-pressure settings.</p>
-                    <div class="work-achievements">
-                        <span class="achievement">• Taught 6-8 private lessons daily</span>
-                        <span class="achievement">• Led team meetings and staff training</span>
-                        <span class="achievement">• Coordinated events and travel logistics</span>
-                    </div>
-                    <div class="work-tech">
-                        <span>Teaching</span>
-                        <span>Leadership</span>
-                        <span>Event Coordination</span>
-                        <span>Customer Service</span>
-                    </div>
-                    <a href="interactive-resume.html" class="work-link">View Details →</a>
+                <div class="resume-preview-list">
+                    <a href="interactive-resume.html#keystone-real-estate" class="resume-preview-entry">
+                        <div class="resume-entry-header">
+                            <div class="resume-entry-left">
+                                <h3>Commercial Real Estate Associate</h3>
+                                <div class="resume-entry-company">Keystone Real Estate</div>
+                            </div>
+                            <div class="resume-entry-dates">November 2025 – Present</div>
+                        </div>
+                        <p class="resume-entry-summary">Facilitate the leasing and sale of commercial properties by connecting property owners with prospective tenants through strategic matchmaking, market analysis, and comprehensive client representation.</p>
+                    </a>
+
+                    <a href="interactive-resume.html#fred-astaire-dance-studio" class="resume-preview-entry">
+                        <div class="resume-entry-header">
+                            <div class="resume-entry-left">
+                                <h3>Franchisee &amp; Co-Owner</h3>
+                                <div class="resume-entry-company">Fred Astaire Dance Studio</div>
+                            </div>
+                            <div class="resume-entry-dates">October 2025 – Present</div>
+                        </div>
+                        <p class="resume-entry-summary">Oversee full-cycle business operations for a newly launched franchise, leading team development, integrating AI and automation tools, and executing digital marketing strategies.</p>
+                    </a>
+
+                    <a href="interactive-resume.html#software-projects" class="resume-preview-entry">
+                        <div class="resume-entry-header">
+                            <div class="resume-entry-left">
+                                <h3>Independent Software Projects</h3>
+                                <div class="resume-entry-company">Self-Directed / AI-Assisted Development</div>
+                            </div>
+                            <div class="resume-entry-dates">2024 – Present</div>
+                        </div>
+                        <p class="resume-entry-summary">Design and build working software tools — a Flask analytics dashboard, a local-first CRM, and a self-hosted AI assistant on my own Linux server — using Python and modern AI-assisted workflows.</p>
+                    </a>
                 </div>
-                <div class="work-item">
-                    <div class="work-header">
-                        <h3>Real Estate Agent</h3>
-                        <span class="work-role">2020 – Present</span>
-                    </div>
-                    <p class="work-description">Conducted MLS searches and sourced leads via cold/warm calling; participated in real estate transactions (~10) including showings, negotiations, and open houses.</p>
-                    <div class="work-achievements">
-                        <span class="achievement">• Completed ~10 real estate transactions</span>
-                        <span class="achievement">• Conducted MLS searches and lead generation</span>
-                        <span class="achievement">• Managed showings, negotiations, and open houses</span>
-                    </div>
-                    <div class="work-tech">
-                        <span>MLS Software</span>
-                        <span>Lead Generation</span>
-                        <span>Negotiation</span>
-                        <span>Client Relations</span>
-                    </div>
-                    <a href="interactive-resume.html" class="work-link">View Details →</a>
+                <div class="resume-preview-footer">
+                    <a href="interactive-resume.html" class="resume-preview-link">View Full Resume →</a>
                 </div>
-                <div class="work-item">
-                    <div class="work-header">
-                        <h3>Regional Bank</h3>
-                        <span class="work-role">2022 – 2023</span>
-                    </div>
-                    <p class="work-description">Processed transactions, resolved online banking issues, and assisted with account troubleshooting while learning customer tracking, banking software, and banking laws.</p>
-                    <div class="work-achievements">
-                        <span class="achievement">• Processed financial transactions</span>
-                        <span class="achievement">• Resolved online banking issues</span>
-                        <span class="achievement">• Assisted with Employee Activity Committee</span>
-                    </div>
-                    <div class="work-tech">
-                        <span>Banking Software</span>
-                        <span>Banking Laws</span>
-                        <span>Customer Service</span>
-                        <span>Financial Systems</span>
-                    </div>
-                    <a href="interactive-resume.html" class="work-link">View Details →</a>
-                </div>
-                <div class="work-item">
-                    <div class="work-header">
-                        <h3>University Affordable Housing Competition</h3>
-                        <span class="work-role">2025</span>
-                    </div>
-                    <p class="work-description">Led the design and pitch of a 75-unit affordable housing complex, contributing to market research, site design, financial modeling, and risk analysis.</p>
-                    <div class="work-achievements">
-                        <span class="achievement">• Designed 75-unit affordable housing complex</span>
-                        <span class="achievement">• Conducted comprehensive market research</span>
-                        <span class="achievement">• Developed financial modeling and risk analysis</span>
-                    </div>
-                    <div class="work-tech">
-                        <span>Real Estate Finance</span>
-                        <span>Market Analysis</span>
-                        <span>Financial Modeling</span>
-                        <span>Project Management</span>
-                    </div>
-                    <a href="interactive-resume.html" class="work-link">View Details →</a>
-                </div>
-            </div>
             </div>
         </section>
 
@@ -249,16 +223,17 @@
 
     <footer>
         <div class="footer-content">
-            <p>&copy; 2026 Daniel's Personal | All Rights Reserved | Thanks for visiting</p>
+            <p>&copy; 2026 Daniel Almond | Thanks for visiting</p>
             <div class="footer-links">
                 <a href="index.html">Home</a>
                 <a href="projects.html">Projects</a>
+                <a href="interactive-resume.html">Resume</a>
                 <a href="education.html">Education</a>
-                <a href="certifications.html">Certifications</a>
-                <a href="interactive-resume.html">Interactive Resume</a>
+                <a href="dance.html">Dance</a>
                 <a href="contact.html">Contact</a>
+                <a href="https://github.com/Daniel-Almond1" target="_blank" rel="noopener noreferrer">GitHub &#8599;</a>
             </div>
-            <p style="font-size: 0.8rem; color: #999; margin-top: 1rem;">Last updated: January 2026</p>
+            <p style="font-size: 0.8rem; color: #999; margin-top: 1rem;">Last updated: June 2026</p>
         </div>
     </footer>
 
@@ -272,12 +247,12 @@ async function fetchSkills() {
   } catch {
     // Fallback if file fails to load
     return [
-      "Expert Ballroom Dance Teacher",
-      "Real Estate Professional",
-      "Software Developer",
-      "Business Strategist",
-      "Public Speaker",
-      "Team Leader",
+      "Python & Automation Builder",
+      "Data-Driven Analyst",
+      "Commercial Real Estate Professional",
+      "AI Integration Enthusiast",
+      "Self-Hosted Infrastructure Tinkerer",
+      "Ballroom Dance Studio Co-Owner",
       "Creative Problem Solver"
     ];
   }
@@ -326,5 +301,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   typewriterEffect(el, skills);
 });
 </script>
+    <script src="script.js"></script>
 </body>
-</html> 
+</html>
