@@ -30,9 +30,15 @@ If you change nav/footer, change it EVERYWHERE. A normalizer script pattern exis
 5. If it's a top-3 tech project, consider swapping it into the homepage "Featured Software Projects" grid.
 6. Titles: `<title>Project Name | Daniel Almond</title>` + a `<meta name="description">`.
 
+## Privacy rules (non-negotiable)
+
+- **NO downloadable resume PDF on the site, ever** — resumes contain Daniel's personal phone number. The Resume page uses a "Contact for Resume" button linking to `contact.html`, by Daniel's explicit decision (June 2026). Do not re-add resume files to `Assets/` or link any.
+- Never publish Daniel's phone number, home address, personal email, internal IPs/ports/hostnames of his home lab, or SSH usernames anywhere on the site.
+
 ## Things that look like bugs but aren't
 
 - `resume.html` and `certifications.html` are intentional meta-refresh redirect stubs.
+- The Resume page has no PDF download — that's the privacy rule above, not an oversight.
 - `DanceReturnMetricsCalculator.html`, `John-Keystone-Flyer-Example.html`, and `almond-family-media-server.html` are standalone pages with their own styling — they do NOT get the canonical nav.
 - The contact form posts to FormSubmit.co with an activated hash — don't replace it without Daniel's OK.
 
