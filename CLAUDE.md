@@ -39,7 +39,7 @@ If you change nav/footer, change it EVERYWHERE. A normalizer script pattern exis
 
 - `resume.html` and `certifications.html` are intentional meta-refresh redirect stubs.
 - The Resume page has no PDF download — that's the privacy rule above, not an oversight.
-- `DanceReturnMetricsCalculator.html`, `John-Keystone-Flyer-Example.html`, and `almond-family-media-server.html` are standalone pages with their own styling — they do NOT get the canonical nav.
+- `DanceReturnMetricsCalculator.html` and `John-Keystone-Flyer-Example.html` are standalone pages with their own styling — they do NOT get the canonical nav.
 - The contact form posts to FormSubmit.co with an activated hash — don't replace it without Daniel's OK.
 
 ## Known state (June 2026)
