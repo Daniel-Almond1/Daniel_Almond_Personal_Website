@@ -17,7 +17,7 @@ Read this before editing anything. It exists so any AI session (or future Daniel
 
 ## Canonical page chrome
 
-Every page (except redirect stubs and standalone tools) uses the SAME nav and footer. Nav items, in order: **Home · Projects · Resume (interactive-resume.html) · Education · Contact** — Daniel explicitly wants Dance OUT of the nav bar (it stays in the footer, the homepage "Studio Co-Owner" tile, and the Projects → Leadership section). The footer adds Dance and GitHub links. Copy the blocks from `index.html` verbatim; set `class="nav-link active"` on the current page's link (project pages mark **Projects** active; dance.html marks nothing active).
+Every page (except redirect stubs and standalone tools) uses the SAME nav and footer. Nav items, in order: **Home · Projects · Resume (interactive-resume.html) · Education · Contact** — Daniel explicitly wants Dance OUT of the nav bar (it stays in the footer, the homepage "Studio Owner" tile, and the Projects → Leadership section). The footer adds Dance and GitHub links. Copy the blocks from `index.html` verbatim; set `class="nav-link active"` on the current page's link (project pages mark **Projects** active; dance.html marks nothing active).
 
 If you change nav/footer, change it EVERYWHERE. A normalizer script pattern exists for this: regex-replace the `<nav class="navbar">…</nav>` and `<footer>…</footer>` blocks across all pages (see repo history, `normalize_chrome.py` in the June 2026 session).
 
